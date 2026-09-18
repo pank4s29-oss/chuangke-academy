@@ -9,6 +9,7 @@ export type AssignmentField = {
   type: "text" | "textarea" | "checkboxes";
   options?: AssignmentOption[];
   multiple?: boolean;
+  group?: string;
 };
 
 function readFirst(stageKey: string, matcher: (file: string) => boolean) {
@@ -38,31 +39,60 @@ export function readTaskSections(stageKey: string): TaskSection[] {
 function cleanPrompt(line: string) {
   return line.replace(/^\s*[-*]?\s*/, "").replace(/☐\s*/, "").replace(/＿＿+|_{4,}/g, "＿＿＿＿").replace(/\s+/g, " ").trim();
 }
+function meaningfulContext(lines: string[], index: number) {
+  return lines.slice(Math.max(0, index - 5), index).reverse().find((item) => {
+    const value = item.trim();
+    return value && !value.startsWith(">") && !value.startsWith("|") && !/^[-*_]{3,}$/.test(value);
+  }) ?? "請完成這一題";
+}
+function isTableRow(line: string) { return /^\s*\|.*\|\s*$/.test(line); }
+function tableCells(line: string) { return line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((cell) => cell.trim()); }
+function isSeparatorRow(line: string) { return isTableRow(line) && tableCells(line).every((cell) => /^:?-{3,}:?$/.test(cell)); }
+function hasBlank(cell: string) { return /＿＿+|_{4,}/.test(cell) || cell.trim() === ""; }
 
 export function getAssignmentFields(assignment: string, taskKey: string): AssignmentField[] {
   const lines = assignment.split(/\r?\n/);
   const fields: AssignmentField[] = [];
   let index = 0;
+  const add = (field: Omit<AssignmentField, "key">) => { fields.push({ ...field, key: `${taskKey}-answer-${index}` }); index += 1; };
+
   for (let cursor = 0; cursor < lines.length; cursor += 1) {
     const line = lines[cursor];
     if (!line.trim()) continue;
+    if (isTableRow(line) && cursor + 1 < lines.length && isSeparatorRow(lines[cursor + 1])) {
+      const headers = tableCells(line);
+      cursor += 2;
+      while (cursor < lines.length && isTableRow(lines[cursor])) {
+        const cells = tableCells(lines[cursor]);
+        const rowLabel = cells[0] || `第 ${cursor} 列`;
+        cells.forEach((cell, cellIndex) => {
+          if (cellIndex === 0 || !hasBlank(cell)) return;
+          const header = headers[cellIndex] || "答案";
+          add({ prompt: `${rowLabel}｜${header}`, type: cell.length > 28 || header.includes("原話") || header.includes("內容") ? "textarea" : "text", group: headers[0] || "表格作答" });
+        });
+        cursor += 1;
+      }
+      cursor -= 1;
+      continue;
+    }
     if (/^\s*(?:[-*]\s*)?☐\s+/.test(line)) {
       const options: AssignmentOption[] = [];
       const start = cursor;
       while (cursor < lines.length && /^\s*(?:[-*]\s*)?☐\s+/.test(lines[cursor])) {
-        const label = lines[cursor].replace(/^\s*(?:[-*]\s*)?☐\s+/, "").trim();
-        options.push({ key: `${taskKey}-option-${index}-${options.length}`, label });
+        options.push({ key: `${taskKey}-option-${index}-${options.length}`, label: lines[cursor].replace(/^\s*(?:[-*]\s*)?☐\s+/, "").trim() });
         cursor += 1;
       }
       cursor -= 1;
-      const context = lines.slice(Math.max(0, start - 3), start).reverse().find((item) => item.trim() && !item.trim().startsWith(">")) ?? "請選擇符合你的項目";
-      fields.push({ key: `${taskKey}-checkbox-${index}`, prompt: cleanPrompt(context), type: "checkboxes", options, multiple: !/只能勾一個|勾一個/.test(lines.slice(Math.max(0, start - 4), start + 1).join(" ")) });
-      index += 1;
+      add({ prompt: cleanPrompt(meaningfulContext(lines, start)), type: "checkboxes", options, multiple: !/只能勾一個|勾一個/.test(lines.slice(Math.max(0, start - 4), start + 1).join(" ")), group: cleanPrompt(meaningfulContext(lines, start)) });
+      continue;
+    }
+    const inlineOptions = [...line.matchAll(/☐\s*([^☐]+)/g)].map((match) => match[1].trim()).filter(Boolean);
+    if (inlineOptions.length >= 2) {
+      add({ prompt: cleanPrompt(line.replace(/☐\s*[^☐]+/g, "").replace(/\s+/g, " ")) || cleanPrompt(meaningfulContext(lines, cursor)), type: "checkboxes", options: inlineOptions.map((label, optionIndex) => ({ key: `${taskKey}-option-${index}-${optionIndex}`, label })), multiple: true, group: cleanPrompt(meaningfulContext(lines, cursor)) });
       continue;
     }
     if (/＿＿+|_{4,}/.test(line)) {
-      fields.push({ key: `${taskKey}-answer-${index}`, prompt: cleanPrompt(line), type: line.length > 95 || line.includes("| ") ? "textarea" : "text" });
-      index += 1;
+      add({ prompt: cleanPrompt(line), type: line.length > 95 ? "textarea" : "text", group: cleanPrompt(meaningfulContext(lines, cursor)) });
     }
   }
   return fields;
@@ -73,8 +103,4 @@ export function readStageTasks(stageKey: string) {
 }
 
 export type TaskWithFields = TaskSection & { fields: AssignmentField[] };
-
-type TaskWithFieldsResult = TaskWithFields[];
-export function readTaskSectionsWithFields(stageKey: string): TaskWithFieldsResult {
-  return readStageTasks(stageKey);
-}
+export function readTaskSectionsWithFields(stageKey: string): TaskWithFields[] { return readStageTasks(stageKey); }
