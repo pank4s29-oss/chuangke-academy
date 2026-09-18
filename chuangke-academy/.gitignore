@@ -7,3 +7,4 @@ out/
 .content-sync/
 coverage/
 .DS_Store
+tsconfig.tsbuildinfo
