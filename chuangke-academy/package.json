@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "content:import": "tsx scripts/content-import.ts",
+    "content:import": "node scripts/content/import-cli.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },
