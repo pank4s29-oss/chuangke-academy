@@ -1,0 +1,17 @@
+.github/workflows/content-sync.yml
+AGENTS.md
+CHANGELOG.md
+README.md
+content/README.md
+content/source/stage-01/README.md
+content/source/stage-02/06_創客學院_階段二_作業_v2-1.md
+content/source/stage-02/07_創客學院_階段二_講義_v2.md
+docs/CODEX_ADD_NEW_STAGE_PROMPT.md
+docs/CODEX_CONTENT_SYNC_PROMPT.md
+docs/CODEX_FIRST_PROMPT.md
+docs/CONTENT_SYNC_SETUP.md
+docs/CONTENT_SYNC_SPEC.md
+docs/COURSE_CONTENT_IMPORT_GUIDE.md
+docs/GITHUB_ISSUE_001.md
+docs/GITHUB_ISSUE_002.md
+docs/TASKS.md
