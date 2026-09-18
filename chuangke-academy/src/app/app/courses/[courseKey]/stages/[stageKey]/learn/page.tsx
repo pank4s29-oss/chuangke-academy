@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import StageWorkspace from "@/components/StageWorkspace";
+import StageSourceContent from "@/components/StageSourceContent";
 import { course } from "@/lib/content/course";
 
 type Props = { params: { courseKey: string; stageKey: string } };
@@ -11,5 +12,5 @@ export function generateStaticParams() {
 export default function LearnPage({ params }: Props) {
   const stage = params.courseKey === course.key ? course.stages.find((item) => item.key === params.stageKey) : undefined;
   if (!stage) notFound();
-  return <StageWorkspace stage={stage} courseKey={course.key} />;
+  return <><StageWorkspace stage={stage} courseKey={course.key} /><StageSourceContent stageKey={stage.key} /></>;
 }
