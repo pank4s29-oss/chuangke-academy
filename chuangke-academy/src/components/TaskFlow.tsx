@@ -5,23 +5,44 @@ import { useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Stage } from "@/lib/content/schema";
-import type { TaskSection } from "@/lib/content/taskSections";
+import type { AssignmentField, TaskWithFields } from "@/lib/content/taskSections";
 import { createClient } from "@/lib/supabase/client";
 
-type Props = { stage: Stage; courseKey: string; tasks: TaskSection[] };
-
+type Props = { stage: Stage; courseKey: string; tasks: TaskWithFields[] };
 type Tab = "lecture" | "assignment";
+type Answers = Record<string, string | string[]>;
+
+const storageKey = (stageKey: string) => `chuangke-draft-${stageKey}`;
+
+function fieldIsComplete(field: AssignmentField, value: Answers[string]) {
+  if (field.type === "checkboxes") return Array.isArray(value) ? value.length > 0 : Boolean(value);
+  return String(value ?? "").trim().length > 0;
+}
+
+function Field({ field, value, onChange }: { field: AssignmentField; value: Answers[string]; onChange: (value: string | string[]) => void }) {
+  const input = "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] leading-7 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:ring-4 focus:ring-teal-100";
+  if (field.type === "checkboxes") {
+    const selected = Array.isArray(value) ? value : value ? [String(value)] : [];
+    return <fieldset className="mt-3 grid gap-2 sm:grid-cols-2"><legend className="sr-only">{field.prompt}</legend>{field.options?.map((option) => <label key={option.key} className={`flex cursor-pointer items-start gap-3 rounded-xl border px-3 py-3 text-sm leading-6 transition ${selected.includes(option.key) ? "border-teal-300 bg-teal-50 text-teal-950" : "border-slate-200 bg-white text-slate-700 hover:border-teal-200"}`}><input className="mt-1 h-4 w-4 shrink-0 accent-teal-600" type={field.multiple ? "checkbox" : "radio"} name={field.key} checked={selected.includes(option.key)} onChange={(event) => { if (!field.multiple) onChange(event.target.checked ? [option.key] : []); else onChange(event.target.checked ? [...selected, option.key] : selected.filter((key) => key !== option.key)); }} />{option.label}</label>)}</fieldset>;
+  }
+  if (field.type === "textarea") return <textarea className={`${input} min-h-28 resize-y`} placeholder="請在這裡寫下你的版本…" value={String(value ?? "")} onChange={(event) => onChange(event.target.value)} />;
+  return <input className={`${input} mt-3`} placeholder="請填寫你的答案…" value={String(value ?? "")} onChange={(event) => onChange(event.target.value)} />;
+}
 
 export default function TaskFlow({ stage, courseKey, tasks }: Props) {
   const supabase = useMemo(() => createClient(), []);
   const [active, setActive] = useState(0);
   const [tab, setTab] = useState<Tab>("lecture");
   const [userId, setUserId] = useState<string | null>(null);
+  const [answers, setAnswers] = useState<Answers>({});
   const [completed, setCompleted] = useState<string[]>([]);
-  const [status, setStatus] = useState("登入後可同步任務完成狀態");
+  const [status, setStatus] = useState("尚未保存；可先開始填寫");
+  const [showErrors, setShowErrors] = useState(false);
   const task = tasks[active];
 
   useEffect(() => {
+    const saved = window.localStorage.getItem(storageKey(stage.key));
+    if (saved) { try { setAnswers(JSON.parse(saved) as Answers); setStatus("已載入本機草稿"); } catch { window.localStorage.removeItem(storageKey(stage.key)); } }
     let alive = true;
     async function load() {
       const { data: auth } = await supabase.auth.getUser();
@@ -29,25 +50,50 @@ export default function TaskFlow({ stage, courseKey, tasks }: Props) {
       const id = auth.user?.id ?? null;
       setUserId(id);
       if (!id) return;
-      const { data } = await supabase.from("submissions").select("task_key,status").eq("stage_key", stage.key).eq("status", "completed");
-      if (alive) setCompleted((data ?? []).map((row) => row.task_key));
+      const [{ data: answerRows }, { data: submissionRows }] = await Promise.all([
+        supabase.from("answers").select("question_key,value").eq("stage_key", stage.key),
+        supabase.from("submissions").select("task_key,status").eq("stage_key", stage.key),
+      ]);
+      if (alive && answerRows?.length) setAnswers((current) => ({ ...current, ...Object.fromEntries(answerRows.map((row) => [row.question_key, row.value as string | string[]])) }));
+      if (alive && submissionRows) setCompleted(submissionRows.filter((row) => row.status === "completed").map((row) => row.task_key));
+      if (alive) setStatus("已連線；修改會同步到你的帳號");
     }
     void load();
     return () => { alive = false; };
   }, [stage.key, supabase]);
 
-  async function markComplete() {
-    if (!task) return;
-    if (!userId) { setCompleted((current) => current.includes(task.key) ? current : [...current, task.key]); setStatus("本次瀏覽已標記完成；登入後才能跨裝置同步"); return; }
-    setStatus("正在同步…");
-    const { error } = await supabase.from("submissions").upsert({ user_id: userId, course_key: courseKey, stage_key: stage.key, task_key: task.key, status: "completed", answer_json: { source: "task-flow" }, submitted_at: new Date().toISOString() }, { onConflict: "user_id,stage_key,task_key" });
-    if (error) { setStatus(`同步失敗：${error.message}`); return; }
-    setCompleted((current) => current.includes(task.key) ? current : [...current, task.key]);
-    setStatus("任務完成狀態已同步");
+  const currentFields = task?.fields ?? [];
+  const answered = currentFields.filter((field) => fieldIsComplete(field, answers[field.key])).length;
+  const totalAnswered = tasks.reduce((sum, item) => sum + item.fields.filter((field) => fieldIsComplete(field, answers[field.key])).length, 0);
+  const totalFields = tasks.reduce((sum, item) => sum + item.fields.length, 0);
+  const percent = totalFields ? Math.round((totalAnswered / totalFields) * 100) : 0;
+
+  function updateAnswer(key: string, value: string | string[]) {
+    const next = { ...answers, [key]: value };
+    setAnswers(next);
+    window.localStorage.setItem(storageKey(stage.key), JSON.stringify(next));
+    if (userId) void supabase.from("answers").upsert({ user_id: userId, stage_key: stage.key, question_key: key, content_version_id: null, value }, { onConflict: "user_id,stage_key,question_key" });
+    setStatus("草稿已更新");
   }
 
-  if (!task) return <div className="rounded-3xl bg-white p-8">此階段尚未建立任務。</div>;
-  const percent = tasks.length ? Math.round((completed.filter((key) => tasks.some((item) => item.key === key)).length / tasks.length) * 100) : 0;
+  async function saveDraft() {
+    window.localStorage.setItem(storageKey(stage.key), JSON.stringify(answers));
+    if (!userId || !task) { setStatus("已保存到此瀏覽器；登入後即可跨裝置同步"); return; }
+    const { error } = await supabase.from("submissions").upsert({ user_id: userId, course_key: courseKey, stage_key: stage.key, task_key: task.key, status: "draft", answer_json: answers, submitted_at: null }, { onConflict: "user_id,stage_key,task_key" });
+    setStatus(error ? `保存失敗：${error.message}` : "進度已保存，可稍後回來繼續");
+  }
 
-  return <div className="min-h-screen bg-[#f5f7f4] text-slate-900"><header className="border-b border-slate-200/80 bg-white/90 backdrop-blur"><div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 lg:px-8"><Link href="/app" className="flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-xl bg-teal-700 text-sm font-bold text-white">創</span><span className="font-semibold">創客學院</span></Link><div className="flex items-center gap-4 text-sm text-slate-500"><span>{status}</span><Link href="/app" className="font-medium text-teal-700">返回課程</Link></div></div></header><main className="mx-auto grid max-w-6xl gap-8 px-5 py-8 lg:grid-cols-[260px_1fr] lg:px-8"><aside className="lg:sticky lg:top-6 lg:self-start"><p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-700">任務式學習</p><h1 className="mt-3 text-2xl font-bold">{stage.title}</h1><p className="mt-3 text-sm leading-6 text-slate-500">{stage.summary}</p><div className="mt-6 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/70"><div className="flex justify-between text-sm"><span>階段進度</span><strong className="text-teal-700">{percent}%</strong></div><div className="mt-3 h-2 rounded-full bg-slate-100"><div className="h-2 rounded-full bg-teal-600 transition-all" style={{ width: `${percent}%` }} /></div></div><nav className="mt-6 space-y-2" aria-label="階段任務">{tasks.map((item, index) => <button key={item.key} onClick={() => { setActive(index); setTab("lecture"); }} className={`w-full rounded-xl px-3 py-3 text-left text-sm ${index === active ? "bg-teal-700 font-semibold text-white" : "bg-white text-slate-600 hover:bg-teal-50"}`}><span className="block text-xs opacity-70">{completed.includes(item.key) ? "已完成" : `任務 ${index + 1}`}</span><span className="mt-1 block">{item.title}</span></button>)}</nav></aside><section><div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70 lg:p-8"><p className="text-sm font-semibold text-teal-700">任務 {active + 1} / {tasks.length}</p><h2 className="mt-2 text-3xl font-bold tracking-tight">{task.title}</h2><p className="mt-3 leading-7 text-slate-600">完成一個任務的順序是：先讀這一任務的講義，再完成對應作業，最後標記任務完成。</p><div className="mt-7 flex flex-wrap gap-2 border-b border-slate-100 pb-3"><button onClick={() => setTab("lecture")} className={`rounded-xl px-4 py-2 text-sm font-semibold ${tab === "lecture" ? "bg-slate-900 text-white" : "text-slate-500 hover:bg-slate-100"}`}>1. 閱讀講義</button><button onClick={() => setTab("assignment")} className={`rounded-xl px-4 py-2 text-sm font-semibold ${tab === "assignment" ? "bg-teal-700 text-white" : "text-slate-500 hover:bg-slate-100"}`}>2. 完成作業</button></div><div className="prose prose-slate mt-7 max-w-none prose-headings:font-bold prose-a:text-teal-700 prose-blockquote:border-teal-500 prose-blockquote:bg-teal-50 prose-blockquote:px-4 prose-table:text-sm"><ReactMarkdown remarkPlugins={[remarkGfm]}>{tab === "lecture" ? task.lecture : task.assignment}</ReactMarkdown></div><div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-teal-100 bg-teal-50 p-4"><p className="text-sm leading-6 text-teal-900">{tab === "lecture" ? "讀完後切換到「完成作業」，把教材方法用在自己的情境。" : "確認這個任務的作業已完成，再標記任務完成。"}</p>{tab === "lecture" ? <button onClick={() => setTab("assignment")} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white">開始對應作業 →</button> : <button onClick={markComplete} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white">{completed.includes(task.key) ? "已完成此任務" : "標記任務完成"}</button>}</div></div></section></main></div>;
+  async function submitTask() {
+    if (!task) return;
+    setShowErrors(true);
+    if (answered < currentFields.length) { setStatus(`還有 ${currentFields.length - answered} 個欄位未完成，已保留草稿`); await saveDraft(); return; }
+    if (!userId) { setCompleted((current) => current.includes(task.key) ? current : [...current, task.key]); setStatus("本次瀏覽已提交完成；登入後可跨裝置同步"); return; }
+    const { error } = await supabase.from("submissions").upsert({ user_id: userId, course_key: courseKey, stage_key: stage.key, task_key: task.key, status: "completed", answer_json: answers, submitted_at: new Date().toISOString() }, { onConflict: "user_id,stage_key,task_key" });
+    if (error) { setStatus(`提交失敗：${error.message}`); return; }
+    setCompleted((current) => current.includes(task.key) ? current : [...current, task.key]);
+    setStatus("作業已提交完成；之後仍可回來修改");
+  }
+
+  if (!task) return <div className="min-h-screen bg-[#f5f7f4] p-8">此階段尚未建立任務。</div>;
+  return <div className="min-h-screen bg-[#f5f7f4] text-slate-900"><header className="border-b border-slate-200/80 bg-white/95"><div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8"><Link href="/app" className="flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-xl bg-teal-700 text-sm font-bold text-white">創</span><span className="font-semibold">創客學院</span></Link><div className="flex items-center gap-3 text-right text-xs text-slate-500 sm:text-sm"><span>{status}</span><Link href="/app" className="font-semibold text-teal-700 hover:text-teal-900">返回課程</Link></div></div></header><main className="mx-auto grid max-w-7xl gap-8 px-5 py-8 lg:grid-cols-[270px_1fr] lg:px-8"><aside className="lg:sticky lg:top-6 lg:self-start"><p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-700">任務式學習</p><h1 className="mt-3 text-2xl font-bold leading-tight">{stage.title}</h1><p className="mt-3 text-sm leading-7 text-slate-500">{stage.summary}</p><div className="mt-6 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/70"><div className="flex justify-between text-sm"><span>整體填寫進度</span><strong className="text-teal-700">{percent}%</strong></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-teal-600 transition-all" style={{ width: `${percent}%` }} /></div><p className="mt-2 text-xs text-slate-500">{totalAnswered} / {totalFields} 個欄位已填</p></div><nav className="mt-6 space-y-2" aria-label="階段任務">{tasks.map((item, index) => <button key={item.key} onClick={() => { setActive(index); setTab("lecture"); setShowErrors(false); }} className={`w-full rounded-xl px-3 py-3 text-left text-sm transition ${index === active ? "bg-teal-700 font-semibold text-white shadow-sm" : "bg-white text-slate-600 hover:bg-teal-50"}`}><span className="block text-xs opacity-70">{completed.includes(item.key) ? "已提交" : `任務 ${index + 1}`}</span><span className="mt-1 block leading-5">{item.title}</span></button>)}</nav></aside><section><div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70 lg:p-9"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-sm font-semibold text-teal-700">任務 {active + 1} / {tasks.length}</p><h2 className="mt-2 text-3xl font-bold leading-tight tracking-tight">{task.title}</h2><p className="mt-3 max-w-2xl text-[15px] leading-7 text-slate-600">先讀懂這一任務的講義，再完成作業。你可以隨時保存進度，未完成的內容不會遺失。</p></div><div className="rounded-xl bg-teal-50 px-3 py-2 text-right text-xs text-teal-800"><strong className="block text-lg">{answered}/{currentFields.length}</strong>本任務已填</div></div><div className="mt-8 flex flex-wrap gap-2 border-b border-slate-100 pb-3"><button onClick={() => setTab("lecture")} className={`rounded-xl px-4 py-2.5 text-sm font-semibold ${tab === "lecture" ? "bg-slate-900 text-white" : "text-slate-500 hover:bg-slate-100"}`}>1. 閱讀講義</button><button onClick={() => setTab("assignment")} className={`rounded-xl px-4 py-2.5 text-sm font-semibold ${tab === "assignment" ? "bg-teal-700 text-white" : "text-slate-500 hover:bg-slate-100"}`}>2. 完成作業</button></div>{tab === "lecture" ? <div className="prose prose-slate mt-8 max-w-none prose-headings:mt-10 prose-headings:mb-4 prose-headings:font-bold prose-headings:leading-tight prose-p:my-4 prose-p:leading-8 prose-li:my-1 prose-li:leading-7 prose-a:text-teal-700 prose-blockquote:border-teal-500 prose-blockquote:bg-teal-50 prose-blockquote:px-5 prose-table:my-6 prose-table:text-sm"><ReactMarkdown remarkPlugins={[remarkGfm]}>{task.lecture}</ReactMarkdown></div> : <div className="mt-8 space-y-8"><div className="rounded-2xl border border-teal-100 bg-teal-50 p-5 text-sm leading-7 text-teal-950"><strong>作答提醒：</strong>下方是依照正式作業中的勾選題與填空處建立的互動欄位。完成一部分就按「保存進度」；全部完成並確認後，再按「提交這份作業」。</div><div className="space-y-5">{currentFields.map((field, index) => <div key={field.key} className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5"><div className="flex gap-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white text-xs font-bold text-teal-700 ring-1 ring-slate-200">{index + 1}</span><div className="min-w-0 flex-1"><label className="block text-[15px] font-semibold leading-7 text-slate-800">{field.prompt || "請完成這一題"}</label>{field.type === "checkboxes" && <p className="mt-1 text-xs text-slate-500">{field.multiple ? "可複選" : "請選一項"}</p>}<Field field={field} value={answers[field.key] ?? ""} onChange={(value) => updateAnswer(field.key, value)} />{showErrors && !fieldIsComplete(field, answers[field.key]) && <p className="mt-2 text-sm text-rose-600">請完成這個欄位，或先保存進度稍後繼續。</p>}</div></div></div>)}</div><details className="rounded-2xl border border-slate-200 bg-white"><summary className="cursor-pointer px-5 py-4 text-sm font-semibold text-slate-700">查看正式作業原文與範例</summary><div className="prose prose-slate max-w-none border-t border-slate-100 px-5 py-6 prose-headings:mt-8 prose-headings:mb-3 prose-headings:font-bold prose-p:my-3 prose-p:leading-7 prose-li:leading-7 prose-table:text-sm"><ReactMarkdown remarkPlugins={[remarkGfm]}>{task.assignment}</ReactMarkdown></div></details><div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-teal-100 bg-teal-50 p-4"><p className="text-sm leading-6 text-teal-900">{userId ? "已登入：答案會同步到你的帳號。" : "未登入：先保存在本機；登入後可跨裝置同步。"}</p><div className="flex flex-wrap gap-2"><button onClick={saveDraft} className="rounded-xl border border-teal-200 bg-white px-4 py-2.5 text-sm font-semibold text-teal-800 hover:bg-teal-50">保存進度</button><button onClick={submitTask} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-800">{completed.includes(task.key) ? "已提交（可再次提交）" : "檢查並提交"}</button></div></div></div>}</div></section></main></div>;
 }

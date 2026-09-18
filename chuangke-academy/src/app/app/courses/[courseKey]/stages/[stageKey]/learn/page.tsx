@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import TaskFlow from "@/components/TaskFlow";
 import { course } from "@/lib/content/course";
-import { readTaskSections } from "@/lib/content/taskSections";
+import { readTaskSectionsWithFields } from "@/lib/content/taskSections";
 
 type Props = { params: { courseKey: string; stageKey: string } };
 
@@ -12,5 +12,5 @@ export function generateStaticParams() {
 export default function LearnPage({ params }: Props) {
   const stage = params.courseKey === course.key ? course.stages.find((item) => item.key === params.stageKey) : undefined;
   if (!stage) notFound();
-  return <TaskFlow stage={stage} courseKey={course.key} tasks={readTaskSections(stage.key)} />;
+  return <TaskFlow stage={stage} courseKey={course.key} tasks={readTaskSectionsWithFields(stage.key)} />;
 }
