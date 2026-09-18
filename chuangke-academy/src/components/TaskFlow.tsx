@@ -6,6 +6,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Stage } from "@/lib/content/schema";
 import type { AssignmentField, TaskWithFields } from "@/lib/content/taskSections";
+import { fieldsToCanonical } from "@/lib/content/questions";
+import QuestionRenderer from "./QuestionRenderer";
 import StageBlueprint from "./StageBlueprint";
 import { createClient } from "@/lib/supabase/client";
 
@@ -20,14 +22,9 @@ function fieldIsComplete(field: AssignmentField, value: Answers[string]) {
   return String(value ?? "").trim().length > 0;
 }
 
-function Field({ field, value, onChange }: { field: AssignmentField; value: Answers[string]; onChange: (value: string | string[]) => void }) {
-  const input = "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] leading-7 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:ring-4 focus:ring-teal-100";
-  if (field.type === "checkboxes") {
-    const selected = Array.isArray(value) ? value : value ? [String(value)] : [];
-    return <fieldset className="mt-3 grid gap-2 sm:grid-cols-2"><legend className="sr-only">{field.prompt}</legend>{field.options?.map((option) => <label key={option.key} className={`flex cursor-pointer items-start gap-3 rounded-xl border px-3 py-3 text-sm leading-6 transition ${selected.includes(option.key) ? "border-teal-300 bg-teal-50 text-teal-950" : "border-slate-200 bg-white text-slate-700 hover:border-teal-200"}`}><input className="mt-1 h-4 w-4 shrink-0 accent-teal-600" type={field.multiple ? "checkbox" : "radio"} name={field.key} checked={selected.includes(option.key)} onChange={(event) => { if (!field.multiple) onChange(event.target.checked ? [option.key] : []); else onChange(event.target.checked ? [...selected, option.key] : selected.filter((key) => key !== option.key)); }} />{option.label}</label>)}</fieldset>;
-  }
-  if (field.type === "textarea") return <textarea className={`${input} min-h-28 resize-y`} placeholder="請在這裡寫下你的版本…" value={String(value ?? "")} onChange={(event) => onChange(event.target.value)} />;
-  return <input className={`${input} mt-3`} placeholder="請填寫你的答案…" value={String(value ?? "")} onChange={(event) => onChange(event.target.value)} />;
+function Field({ field, value, onChange, showError }: { field: AssignmentField; value: Answers[string]; onChange: (value: string | string[]) => void; showError?: boolean }) {
+  const question = fieldsToCanonical([field])[0];
+  return <QuestionRenderer question={question} value={value ?? ""} onChange={onChange} showError={showError} />;
 }
 
 export default function TaskFlow({ stage, courseKey, tasks }: Props) {
