@@ -30,7 +30,8 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
     const { data: auth } = await supabase.auth.getUser();
     if (!auth.user) { setAllowed(false); setStatus("請先登入教師帳號"); return; }
     const { data: profile } = await supabase.from("profiles").select("id,display_name,role").eq("id", auth.user.id).single();
-    if (profile?.role !== "teacher") { setAllowed(false); setStatus("此頁面僅限教師使用"); return; }
+    if (!profile) { setAllowed(false); setStatus("找不到此登入帳號的 profiles 記錄，請執行 profile bootstrap migration"); return; }
+    if (profile.role !== "teacher") { setAllowed(false); setStatus(`目前角色為 ${profile.role ?? "未設定"}，請將 public.profiles.role 更新為 teacher`); return; }
     setAllowed(true);
     const [{ data: submissionRows, error }, { data: profileRows }] = await Promise.all([
       supabase.from("submissions").select("id,user_id,stage_key,task_key,status,review_status,answer_json,teacher_feedback,consultant_advice,submitted_at,updated_at").order("updated_at", { ascending: false }),
