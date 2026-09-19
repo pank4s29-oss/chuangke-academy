@@ -114,27 +114,75 @@ function isParentheticalAside(value: string) {
   return /^[（(].*[）)]$/.test(value);
 }
 
-/** Find the nearest usable line above `index` to describe what a field is
- *  asking for. Blockquotes, tables and rules are skipped outright; a
- *  parenthetical aside (e.g. "（保證進步幾分、保證幾個月回本…）") is kept only as
- *  a fallback so a real question header just above it wins when one exists. */
+/** Generic "type your answer here" labels (e.g. "**你的答案：**") tell a
+ *  student/teacher nothing about what the question actually is — they only
+ *  mark where the input goes. They must never be used as a field's prompt;
+ *  the scan has to look past them for the real question. */
+function isAnswerPlaceholderLabel(value: string) {
+  return /^(你的答案|答案|回答|作答)$/.test(cleanText(value));
+}
+
+/** A "**句型：**" (sentence template) or "**參考：**" (reference examples) line
+ *  spells out exactly what shape the answer should take, which is far more
+ *  useful to a teacher filling in a blank than the nearest line by distance
+ *  (often just a worked example, or the "你的答案" label itself). When one is
+ *  present in the same block, prefer it over anything else. */
+function isTemplateOrReferenceLine(value: string) {
+  return /^\*\*(句型|參考)[:：]/.test(value);
+}
+
+/** Find the best line above `index` to describe what a field is asking for,
+ *  scanning up to the enclosing block's boundary (a heading or a "---" rule)
+ *  rather than a fixed number of lines, since a block's template/example
+ *  usually sits further back than the "你的答案" label right above the blank.
+ *  Blockquotes and tables are skipped outright; a parenthetical aside (e.g.
+ *  "（保證進步幾分、保證幾個月回本…）") and a bare "你的答案"-style label are kept
+ *  only as fallbacks so a real question or template line wins when one
+ *  exists. If nothing better turns up, the enclosing heading itself (e.g.
+ *  "步驟 3：寫出被服務的身分") is used before giving up entirely. */
 function meaningfulContext(lines: string[], index: number) {
-  const candidates = lines.slice(Math.max(0, index - 8), index).reverse();
-  let aside: string | null = null;
-  for (const item of candidates) {
-    const value = item.trim();
+  const collected: string[] = [];
+  let headingFallback: string | null = null;
+  for (let i = index - 1; i >= 0 && index - i <= 40; i -= 1) {
+    const value = lines[i].trim();
     if (!value) continue;
-    if (value.startsWith(">") || value.startsWith("|") || /^[-*_]{3,}$/.test(value)) continue;
+    // A heading is a real section boundary — stop there, and keep it as a
+    // fallback label. A "---" rule is only ever used as a *visual* divider
+    // between sub-parts of the same task in this content, never a section
+    // break, so (like blockquotes/tables) it's skipped rather than treated
+    // as a stopping point.
+    if (isHeadingLine(value)) {
+      headingFallback = value;
+      break;
+    }
+    if (isRuleLine(value)) continue;
+    collected.push(value);
+  }
+
+  const templateLine = collected.find(isTemplateOrReferenceLine);
+  if (templateLine) return cleanText(templateLine) || "請完成這一題";
+
+  let aside: string | null = null;
+  let answerLabel: string | null = null;
+  for (const value of collected) {
+    if (value.startsWith(">") || value.startsWith("|")) continue;
     // a checkbox option line was already consumed as part of its own group;
     // it should never double as the "context" for a different field below it.
     if (isCheckboxLine(value)) continue;
+    if (isAnswerPlaceholderLabel(value)) {
+      if (answerLabel === null) answerLabel = value;
+      continue;
+    }
     if (isParentheticalAside(value)) {
       if (aside === null) aside = value;
       continue;
     }
     return cleanText(value) || "請完成這一題";
   }
-  return (aside && cleanText(aside)) || "請完成這一題";
+  if (aside) return cleanText(aside) || "請完成這一題";
+  if (headingFallback) return cleanText(headingFallback) || "請完成這一題";
+  if (answerLabel) return cleanText(answerLabel) || "請完成這一題";
+  return "請完成這一題";
 }
 
 function isTableRow(line: string) {
