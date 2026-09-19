@@ -7,7 +7,7 @@ import StageBlueprint from "./StageBlueprint";
 import type { TaskWithFields } from "@/lib/content/taskSections";
 import AssignmentFileImport from "./AssignmentFileImport";
 
-type Submission = { id: string; user_id: string | null; learner_name: string | null; stage_key: string; task_key: string; status: "draft" | "completed"; review_status: "pending" | "approved" | "needs_revision"; answer_json: Record<string, unknown>; teacher_feedback: string | null; consultant_advice: string | null; submitted_at: string | null; updated_at: string };
+type Submission = { id: string; user_id: string | null; learner_name: string | null; stage_key: string; task_key: string; status: "draft" | "completed"; review_status: "pending" | "approved" | "needs_revision"; answer_json: Record<string, unknown>; teacher_feedback: string | null; consultant_advice: string | null; submitted_at: string | null; updated_at: string; imported_file_id: string | null };
 type Profile = { id: string; display_name: string | null; role: string };
 type Props = { optionLabels: Record<string, string>; stageTitles: Record<string, string>; stageTasks: Record<string, TaskWithFields[]> };
 const reviewLabels = { pending: "待批改", approved: "已通過", needs_revision: "需要修改" } as const;
@@ -36,7 +36,7 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
     if (profile.role !== "teacher") { setAllowed(false); setStatus(`目前角色為 ${profile.role ?? "未設定"}，請將 public.profiles.role 更新為 teacher`); return; }
     setAllowed(true);
     const [{ data: submissionRows, error }, { data: profileRows }] = await Promise.all([
-      supabase.from("submissions").select("id,user_id,learner_name,stage_key,task_key,status,review_status,answer_json,teacher_feedback,consultant_advice,submitted_at,updated_at").order("updated_at", { ascending: false }),
+      supabase.from("submissions").select("id,user_id,learner_name,stage_key,task_key,status,review_status,answer_json,teacher_feedback,consultant_advice,submitted_at,updated_at,imported_file_id").order("updated_at", { ascending: false }),
       supabase.from("profiles").select("id,display_name,role"),
     ]);
     if (error) { setStatus(`載入失敗：${error.message}`); return; }
@@ -71,6 +71,7 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
   async function removeSubmission(item: Submission) {
     if (!window.confirm(`確定刪除「${item.learner_name || profiles[item.user_id ?? ""]?.display_name || "這份作業"}」嗎？此操作無法復原。`)) return;
     const { error } = await supabase.from("submissions").delete().eq("id", item.id);
+    if (!error && item.imported_file_id) await supabase.from("assignment_imports").delete().eq("id", item.imported_file_id);
     if (error) { setStatus(`刪除失敗：${error.message}`); return; }
     setSubmissions((current) => current.filter((submission) => submission.id !== item.id));
     if (selected?.id === item.id) setSelected(null);
