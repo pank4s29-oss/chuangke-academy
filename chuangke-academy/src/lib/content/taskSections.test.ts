@@ -81,4 +81,51 @@ describe("getAssignmentFields", () => {
     expect(fields).toHaveLength(1);
     expect(fields[0].type).toBe("text");
   });
+
+  it("looks past a bare '你的答案：' label to find the real question above it", () => {
+    const md = [
+      "### 步驟 3：寫出被服務的身分（一個名詞就好）",
+      "",
+      "**參考：** 上班族、國中生家長、新手媽媽",
+      "",
+      "**你的答案：**",
+      "",
+      "＿＿＿＿＿＿＿＿＿＿＿＿",
+    ].join("\n");
+    const fields = getAssignmentFields(md, "t");
+    expect(fields).toHaveLength(1);
+    expect(fields[0].prompt).not.toBe("你的答案");
+    expect(fields[0].prompt).toContain("參考");
+  });
+
+  it("prefers a 句型 (template) line over a nearer but less useful line when both are in range", () => {
+    const md = [
+      "**句型：** 我只做【1.4-B 的相反】的【你這一行在做的事】。",
+      "",
+      "**你的答案：**",
+      "",
+      "我只做【＿＿＿＿＿＿＿＿＿＿】的【＿＿＿＿＿＿＿＿】。",
+      "",
+      "> **這條為什麼走得通：** 說明文字。",
+      "",
+      "☐ 我走的是篩選型，這一格先標暫定",
+    ].join("\n");
+    const fields = getAssignmentFields(md, "t");
+    const checkboxField = fields.find((f) => f.type === "checkboxes");
+    expect(checkboxField?.prompt).toContain("句型");
+  });
+
+  it("does not treat a '---' divider between sub-parts of the same block as a hard boundary", () => {
+    const md = [
+      "**背景說明文字，這是選 C 的理由。**",
+      "",
+      "---",
+      "",
+      "☐ **A 選項**：說明一",
+      "☐ **B 選項**：說明二",
+    ].join("\n");
+    const fields = getAssignmentFields(md, "t");
+    expect(fields).toHaveLength(1);
+    expect(fields[0].prompt).not.toBe("請完成這一題");
+  });
 });
