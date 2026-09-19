@@ -5,7 +5,7 @@ export type CanonicalQuestion = {
   id: string;
   label: string;
   type: CanonicalQuestionType;
-  options?: { id: string; label: string }[];
+  options?: { id: string; label: string; otherInputKey?: string }[];
   required: boolean;
   source: "structured" | "legacy" | "table";
   group?: string;
@@ -25,7 +25,7 @@ export function fieldsToCanonical(fields: AssignmentField[]): CanonicalQuestion[
     id: field.key,
     label: field.prompt,
     type: field.type === "checkboxes" ? (field.multiple ? "multi_choice" : "single_choice") : field.type === "textarea" ? "long_text" : "short_text",
-    options: field.options?.map((option) => ({ id: option.key, label: option.label })),
+    options: field.options?.map((option) => ({ id: option.key, label: option.label, otherInputKey: option.otherInputKey })),
     required: true,
     source: field.group?.includes("表格") ? "table" : "legacy",
     group: field.group,

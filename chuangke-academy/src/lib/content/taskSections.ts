@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 export type TaskSection = { key: string; title: string; lecture: string; assignment: string };
-export type AssignmentOption = { key: string; label: string };
+export type AssignmentOption = { key: string; label: string; otherInputKey?: string };
 export type AssignmentField = {
   key: string;
   prompt: string;
@@ -10,6 +10,11 @@ export type AssignmentField = {
   options?: AssignmentOption[];
   multiple?: boolean;
   group?: string;
+  layout?: "table";
+  tableRow?: string;
+  tableColumn?: string;
+  hiddenInGroup?: boolean;
+  otherFor?: string;
 };
 
 function readFirst(stageKey: string, matcher: (file: string) => boolean) {
@@ -322,7 +327,7 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
   // Any option whose label still contains a blank marker (e.g. "其他：____")
   // is trimmed down to a clean option label AND spawns a companion free-text
   // field, so "其他" style options are no longer silently dropped.
-  const addCheckboxGroup = (rawOptions: string[], contextLabel: string, singleSelect: boolean) => {
+  const addCheckboxGroup = (rawOptions: string[], contextLabel: string, singleSelect: boolean, tableMeta?: { row: string; column: string; group?: string }) => {
     const fieldIndex = index;
     const cleanOptions: AssignmentOption[] = [];
     const companions: string[] = [];
@@ -331,12 +336,12 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
       const withoutBlank = hasBlankMarker ? rawLabel.replace(BLANK_RE_G, "") : rawLabel;
       const label = cleanText(withoutBlank) || (hasBlankMarker ? "其他" : "");
       if (!label) return;
-      cleanOptions.push({ key: `${taskKey}-option-${fieldIndex}-${cleanOptions.length}`, label });
+      cleanOptions.push({ key: `${taskKey}-option-${fieldIndex}-${cleanOptions.length}`, label, otherInputKey: hasBlankMarker ? `${taskKey}-answer-${fieldIndex + 1 + companions.length}` : undefined });
       if (hasBlankMarker) companions.push(label);
     });
     if (cleanOptions.length === 0) return;
-    add({ prompt: contextLabel || "請完成這一題", type: "checkboxes", options: cleanOptions, multiple: !singleSelect, group: contextLabel });
-    companions.forEach((label) => add({ prompt: `${contextLabel ? `${contextLabel}｜` : ""}${label}（請補充說明）`, type: "text", group: contextLabel }));
+    add({ prompt: contextLabel || "請完成這一題", type: "checkboxes", options: cleanOptions, multiple: !singleSelect, group: tableMeta?.group ?? contextLabel, layout: tableMeta ? "table" : undefined, tableRow: tableMeta?.row, tableColumn: tableMeta?.column });
+    companions.forEach((label, companionIndex) => add({ prompt: `${contextLabel ? `${contextLabel}｜` : ""}${label}（請補充說明）`, type: "text", group: tableMeta?.group ?? contextLabel, hiddenInGroup: true, otherFor: `${taskKey}-answer-${fieldIndex}`, layout: tableMeta ? "table" : undefined, tableRow: tableMeta?.row, tableColumn: tableMeta?.column }));
   };
 
   for (let cursor = 0; cursor < lines.length; cursor += 1) {
@@ -364,7 +369,7 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
             key: `${taskKey}-option-${index}-${i}`,
             label: headers[i] || `選項 ${i}`,
           }));
-          add({ prompt: rowLabel, type: "checkboxes", options, multiple: false, group: groupLabel });
+            add({ prompt: rowLabel, type: "checkboxes", options, multiple: false, group: groupLabel, layout: "table", tableRow: rowLabel, tableColumn: "選擇" });
           cursor += 1;
           continue;
         }
@@ -374,18 +379,18 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
           const trimmed = cell.trim();
           const header = headers[cellIndex] || "答案";
           if (!trimmed) {
-            add({ prompt: `${rowLabel}｜${header}`, type: "text", group: groupLabel });
+            add({ prompt: `${rowLabel}｜${header}`, type: "text", group: groupLabel, layout: "table", tableRow: rowLabel, tableColumn: header });
             return;
           }
           if (trimmed.includes("☐")) {
             // Multiple options packed into one cell, e.g.
             // "☐ 有　☐ 不到 10 句　☐ 有，但我改寫過" — previously dropped entirely.
             const opts = [...trimmed.matchAll(/☐\s*([^☐]+)/g)].map((m) => m[1].trim()).filter(Boolean);
-            if (opts.length) addCheckboxGroup(opts, `${rowLabel}｜${header}`, true);
+            if (opts.length) addCheckboxGroup(opts, `${rowLabel}｜${header}`, true, { row: rowLabel, column: header, group: groupLabel });
             return;
           }
           if (cellHasBlankMarker(trimmed)) {
-            add({ prompt: `${rowLabel}｜${header}`, type: trimmed.length > 28 || header.includes("原話") || header.includes("內容") ? "textarea" : "text", group: groupLabel });
+            add({ prompt: `${rowLabel}｜${header}`, type: trimmed.length > 28 || header.includes("原話") || header.includes("內容") ? "textarea" : "text", group: groupLabel, layout: "table", tableRow: rowLabel, tableColumn: header });
           }
         });
         cursor += 1;
@@ -439,4 +444,43 @@ export function readStageTasks(stageKey: string) {
 export type TaskWithFields = TaskSection & { fields: AssignmentField[] };
 export function readTaskSectionsWithFields(stageKey: string): TaskWithFields[] {
   return readStageTasks(stageKey);
+}
+
+/** Convert a teacher-provided, human-filled Markdown/TXT file into the same
+ * answer shape used by the student form. This intentionally stays conservative:
+ * only checked options and non-empty table/text cells are imported. */
+export function extractImportedAnswers(source: string, fields: AssignmentField[]) {
+  const lines = source.split(/\r?\n/);
+  const answers: Record<string, string | string[]> = {};
+  const checked = (line: string) => /(?:☑|☒|\[[xX]\])/.test(line);
+  const optionLabel = (label: string) => label.replace(/\s+/g, " ").replace(/^\s*[A-D][.、]\s*/, "").replace(/\s*[☐☑☒].*$/, "").trim();
+  for (const field of fields) {
+    if (field.hiddenInGroup) continue;
+    if (field.type === "checkboxes") {
+      const selected = (field.options ?? []).filter((option) => lines.some((line) => checked(line) && line.includes(optionLabel(option.label)))).map((option) => option.key);
+      if (selected.length) answers[field.key] = field.multiple ? selected : [selected[0]];
+      continue;
+    }
+    if (field.layout === "table" && field.tableRow) {
+      const tableLine = lines.find((line) => isTableRow(line) && tableCells(line).some((cell) => cleanText(cell) === cleanText(field.tableRow!)));
+      if (tableLine) {
+        const cells = tableCells(tableLine);
+        const headerLines = lines.slice(0, lines.indexOf(tableLine)).filter((line) => isTableRow(line));
+        const headers = headerLines.length ? tableCells(headerLines[headerLines.length - 1]) : [];
+        const columnIndex = Math.max(0, headers.findIndex((header) => cleanText(header) === cleanText(field.tableColumn ?? "答案")));
+        const value = cells[columnIndex] ?? "";
+        if (value && !/^(＿＿+|_{4,})$/.test(value)) answers[field.key] = value.replace(/☐|☑|☒|\[[xX ]\]/g, "").trim();
+      }
+      continue;
+    }
+    const prompt = field.prompt.split("＿＿＿＿")[0].replace(/[：:]\s*$/, "").trim();
+    const lineIndex = lines.findIndex((line) => prompt && line.includes(prompt));
+    if (lineIndex >= 0) {
+      const sameLine = lines[lineIndex].split(/[：:＝=]/).slice(1).join("：").replace(/＿＿+|_{4,}/g, "").trim();
+      const nextLine = lines.slice(lineIndex + 1).find((line) => line.trim() && !isHeadingLine(line) && !isStructuralBoundary(line));
+      const value = sameLine || (nextLine ?? "").trim();
+      if (value && !/^(請填寫|你的答案|答案)$/.test(value)) answers[field.key] = value;
+    }
+  }
+  return answers;
 }
