@@ -34,12 +34,14 @@ function tableValueForField(lines: string[], field: AssignmentField) {
     const headerIndex = rowIndex > 1 && isSeparatorRow(lines[rowIndex - 1]) ? rowIndex - 2 : rowIndex - 1;
     const header = headerIndex >= 0 && isTableRow(lines[headerIndex]) ? tableCells(lines[headerIndex]) : [];
     if (field.type === "checkboxes" && field.options?.length) {
+      if (field.tableColumn && field.tableColumn !== "選擇" && !header.some((cell) => clean(cell) === clean(field.tableColumn ?? ""))) continue;
       for (const option of field.options) {
         if (cells.some((cell) => optionChecked(cell, option.label) || clean(cell) === optionLabel(option.label))) return option.key;
       }
       continue;
     }
-    const index = Math.max(0, header.findIndex((cell) => clean(cell) === clean(field.tableColumn ?? "答案")));
+    const index = header.findIndex((cell) => clean(cell) === clean(field.tableColumn ?? "答案"));
+    if (index < 0) continue;
     const value = cells[index] ?? "";
     if (value && !/^(＿＿+|_{4,})$/.test(value)) return clean(value);
   }

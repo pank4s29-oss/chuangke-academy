@@ -211,6 +211,14 @@ function isHeadingLine(line: string) {
 function isRuleLine(line: string) {
   return /^[-*_]{3,}\s*$/.test(line.trim());
 }
+function tableSectionLabel(lines: string[], cursor: number) {
+  for (let index = cursor - 1; index >= 0; index -= 1) {
+    const line = lines[index].trim();
+    if (/^#{2,4}\s/.test(line)) return cleanText(line);
+    if (/^#\s/.test(line)) break;
+  }
+  return "表格作答";
+}
 function isBlockquoteLine(line: string) {
   return /^\s*>/.test(line);
 }
@@ -355,7 +363,7 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
       while (cursor < lines.length && isTableRow(lines[cursor])) {
         const cells = tableCells(lines[cursor]);
         const rowLabel = cleanText(cells[0]) || cleanText(cells[1] ?? "") || `第 ${cursor} 列`;
-        const groupLabel = headers[0] || "表格作答";
+        const groupLabel = `${tableSectionLabel(lines, cursor - 2)}｜${headers.slice(1).join("／") || "表格作答"}`;
 
         // A row like "| 題目 | ☐ | ☐ |" under headers "是"/"否" is a
         // single-select choice between the bare-checkbox columns. These used
