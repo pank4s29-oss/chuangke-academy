@@ -198,8 +198,8 @@ function meaningfulContext(lines: string[], index: number) {
     }
     return cleanText(value) || "請完成這一題";
   }
-  if (aside) return cleanText(aside) || "請完成這一題";
   if (headingFallback) return cleanText(headingFallback) || "請完成這一題";
+  if (aside) return cleanText(aside) || "請完成這一題";
   if (answerLabel) return cleanText(answerLabel) || "請完成這一題";
   return "請完成這一題";
 }
@@ -505,7 +505,12 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
       // above it rather than shown bare. Longer inline labels (e.g. "性別偏
       // 向") already carry enough meaning by themselves and are left as-is.
       const surrounding = !before || before.length < 4 ? meaningfulContext(lines, cursor).replace(BLANK_RE_G, "＿＿＿＿").replace(/\s+/g, " ").trim() : "";
-      const contextLabel = before && surrounding ? `${surrounding}｜${before}` : before || surrounding;
+      // In stage 2 task 2, the preceding "人選 2（抄 1.2-E 的 D 項）"
+      // line is only setup. The actual input is the independent binary choice;
+      // do not repeat the setup text in the question label.
+      const contextLabel = taskKey === "stage-02-2-2" && before.includes("二選一")
+        ? before
+        : before && surrounding ? `${surrounding}｜${before}` : before || surrounding;
       const singleSelect = detectSingleSelect(lines, cursor, cursor);
       addCheckboxGroup(inlineOptions, contextLabel, singleSelect);
       continue;

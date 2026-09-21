@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getAssignmentFields } from "./taskSections";
+import { getAssignmentFields, readStageTasks } from "./taskSections";
 
 describe("getAssignmentFields", () => {
   it("keeps every option in a checkbox group even when each option has its own description line", () => {
@@ -187,5 +187,26 @@ describe("getAssignmentFields", () => {
     expect(groups.size).toBe(2);
     expect([...groups].some((group) => group?.includes("找原話"))).toBe(true);
     expect([...groups].some((group) => group?.includes("找競爭者"))).toBe(true);
+  });
+
+  it("keeps stage 2 task 2's person choice independent from the copied person description", () => {
+    const md = [
+      "**人選 2（抄 1.2-E 的 D 項）**",
+      "原話裡一直出現的是【＿＿＿＿】的【＿＿＿＿】。",
+      "**二選一（選擇要畫的人）：** ☐ 我畫人選 1　☐ 我畫人選 2",
+    ].join("\n");
+    const fields = getAssignmentFields(md, "stage-02-2-2");
+    expect(fields.find((field) => field.type === "checkboxes")?.prompt).toBe("二選一（選擇要畫的人）");
+  });
+
+  it("keeps the six portrait sections as separate lecture-aligned groups", () => {
+    const task = readStageTasks("stage-02").find((item) => item.key === "stage-02-2-2");
+    expect(task?.fields.filter((field) => field.group === "第 1 格：他是誰").map((field) => field.prompt)).toEqual([
+      "名字（自己取一個）：＿＿＿＿",
+      "年齡：＿＿＿＿ 歲",
+      "職業／身分：＿＿＿＿",
+    ]);
+    expect(task?.fields.filter((field) => field.group === "第 2 格：他的一天")).toHaveLength(3);
+    expect(task?.fields.some((field) => field.group === "第 3 格：他現在卡在哪一件事")).toBe(true);
   });
 });

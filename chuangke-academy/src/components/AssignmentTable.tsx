@@ -6,7 +6,7 @@ import QuestionRenderer from "./QuestionRenderer";
 
 type Answers = Record<string, string | string[]>;
 type Props = { fields: AssignmentField[]; answers: Answers; onChange: (key: string, value: string | string[]) => void; onOtherChange: (key: string, value: string) => void; showErrors: boolean };
-type Block = { kind: "field"; field: AssignmentField } | { kind: "table"; group: string; fields: AssignmentField[] };
+type Block = { kind: "field"; field: AssignmentField } | { kind: "group"; group: string; fields: AssignmentField[] } | { kind: "table"; group: string; fields: AssignmentField[] };
 
 function complete(field: AssignmentField, value: string | string[] | undefined) {
   return field.type === "checkboxes" ? Array.isArray(value) ? value.length > 0 : Boolean(value) : String(value ?? "").trim().length > 0;
@@ -29,9 +29,14 @@ function TableBlock({ group, fields, answers, onChange, onOtherChange, showError
   </section>;
 }
 
+function GroupBlock({ group, fields, answers, onChange, onOtherChange, showErrors }: { group: string; fields: AssignmentField[]; answers: Answers; onChange: Props["onChange"]; onOtherChange: Props["onOtherChange"]; showErrors: boolean }) {
+  return <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5"><h3 className="border-b border-slate-100 pb-3 text-base font-bold leading-7 text-slate-800">{group}</h3><div className="mt-4 space-y-4">{fields.map((field) => { const question = fieldsToCanonical([field])[0]; return <div key={field.key} className="min-w-0 rounded-xl bg-slate-50/70 p-3 sm:p-4"><label className="block text-sm font-semibold leading-6 text-slate-700">{field.prompt || "請完成這一題"}</label>{field.description && <p className="mt-1 text-sm leading-6 text-slate-500">{field.description}</p>}{field.type === "checkboxes" && <p className="mt-1 text-xs text-slate-500">{field.multiple ? "可複選" : "請選一項"}</p>}<QuestionRenderer question={question} value={answers[field.key] ?? ""} otherValues={answers} onOtherChange={onOtherChange} onChange={(value) => onChange(field.key, value)} />{showErrors && !complete(field, answers[field.key]) && <p className="mt-2 text-sm text-rose-600">請完成這個欄位，或先保存進度稍後繼續。</p>}</div>; })}</div></section>;
+}
+
 function blocksFromFields(fields: AssignmentField[]): Block[] {
   const blocks: Block[] = [];
   const tableBlockByGroup = new Map<string, Extract<Block, { kind: "table" }>>();
+  const fieldGroupByGroup = new Map<string, Extract<Block, { kind: "group" }>>();
   fields.forEach((field) => {
     if (field.layout !== "table") { blocks.push({ kind: "field", field }); return; }
     const group = field.group ?? "表格作答";
@@ -39,12 +44,21 @@ function blocksFromFields(fields: AssignmentField[]): Block[] {
     if (!block) { block = { kind: "table", group, fields: [] }; tableBlockByGroup.set(group, block); blocks.push(block); }
     block.fields.push(field);
   });
-  return blocks;
+  const grouped: Block[] = [];
+  blocks.forEach((block) => {
+    if (block.kind !== "field" || !/^stage-02-2-2-/.test(block.field.key) || !/^第 [1-3] 格：/.test(block.field.group ?? "")) { grouped.push(block); return; }
+    const group = block.field.group!;
+    let target = fieldGroupByGroup.get(group);
+    if (!target) { target = { kind: "group", group, fields: [] }; fieldGroupByGroup.set(group, target); grouped.push(target); }
+    target.fields.push(block.field);
+  });
+  return grouped;
 }
 
 export default function AssignmentTable({ fields, answers, onChange, onOtherChange, showErrors }: Props) {
   return <div className="min-w-0 space-y-5">{blocksFromFields(fields).map((block) => {
     if (block.kind === "table") return <TableBlock key={`table-${block.group}`} group={block.group} fields={block.fields} answers={answers} onChange={onChange} onOtherChange={onOtherChange} showErrors={showErrors} />;
+    if (block.kind === "group") return <GroupBlock key={`group-${block.group}`} group={block.group} fields={block.fields} answers={answers} onChange={onChange} onOtherChange={onOtherChange} showErrors={showErrors} />;
     const field = block.field;
     const question = fieldsToCanonical([field])[0];
     return <div key={field.key} className="min-w-0 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5"><div className="flex min-w-0 gap-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white text-xs font-bold text-teal-700 ring-1 ring-slate-200">{fields.indexOf(field) + 1}</span><div className="min-w-0 flex-1"><label className="block text-[15px] font-semibold leading-7 text-slate-800">{field.prompt || "請完成這一題"}</label>{field.description && <p className="mt-1 text-sm leading-6 text-slate-500">{field.description}</p>}{field.type === "checkboxes" && <p className="mt-1 text-xs text-slate-500">{field.multiple ? "可複選" : "請選一項"}</p>}<QuestionRenderer question={question} value={answers[field.key] ?? ""} otherValues={answers} onOtherChange={onOtherChange} onChange={(value) => onChange(field.key, value)} />{showErrors && !complete(field, answers[field.key]) && <p className="mt-2 text-sm text-rose-600">請完成這個欄位，或先保存進度稍後繼續。</p>}</div></div></div>;
