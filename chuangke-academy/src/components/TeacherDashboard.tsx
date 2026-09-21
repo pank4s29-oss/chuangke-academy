@@ -23,6 +23,7 @@ type Submission = {
   submitted_at: string | null;
   updated_at: string;
   imported_file_id: string | null;
+  workspace_id: string | null;
 };
 type Profile = { id: string; display_name: string | null; role: string };
 type Props = { optionLabels: Record<string, string>; stageTitles: Record<string, string>; stageTasks: Record<string, TaskWithFields[]> };
@@ -49,10 +50,12 @@ type SubmissionGroup = {
   updatedAt: string;
   submittedAt: string | null;
   isImported: boolean;
+  workspaceId: string | null;
+  workspaceName: string | null;
 };
 
 function learnerKeyOf(item: Submission) {
-  return item.user_id ? `u:${item.user_id}` : `n:${(item.learner_name ?? "").trim().toLowerCase() || item.id}`;
+  return item.workspace_id ? `w:${item.workspace_id}` : item.user_id ? `u:${item.user_id}` : `n:${(item.learner_name ?? "").trim().toLowerCase() || item.id}`;
 }
 
 function aggregateReviewStatus(items: Submission[]): ReviewStatus {
@@ -75,6 +78,7 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
   const [allowed, setAllowed] = useState<boolean | null>(null);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
+  const [workspaceNames, setWorkspaceNames] = useState<Record<string, string>>({});
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("");
   const [advice, setAdvice] = useState("");
@@ -93,19 +97,22 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
     if (!profile) { setAllowed(false); setStatus("找不到此登入帳號的 profiles 記錄，請執行 profile bootstrap migration"); return; }
     if (profile.role !== "teacher") { setAllowed(false); setStatus(`目前角色為 ${profile.role ?? "未設定"}，請將 public.profiles.role 更新為 teacher`); return; }
     setAllowed(true);
-    const [{ data: submissionRows, error }, { data: profileRows }] = await Promise.all([
-      supabase.from("submissions").select("id,user_id,learner_name,stage_key,task_key,status,review_status,answer_json,teacher_feedback,consultant_advice,submitted_at,updated_at,imported_file_id").order("updated_at", { ascending: false }),
+    const [{ data: submissionRows, error }, { data: profileRows }, { data: workspaceRows }] = await Promise.all([
+      supabase.from("submissions").select("id,user_id,learner_name,workspace_id,stage_key,task_key,status,review_status,answer_json,teacher_feedback,consultant_advice,submitted_at,updated_at,imported_file_id").order("updated_at", { ascending: false }),
       supabase.from("profiles").select("id,display_name,role"),
+      supabase.from("assignment_workspaces").select("id,name"),
     ]);
     if (error) { setStatus(`載入失敗：${error.message}`); return; }
     setSubmissions((submissionRows ?? []) as Submission[]);
     setProfiles(Object.fromEntries(((profileRows ?? []) as Profile[]).map((item) => [item.id, item])));
+    setWorkspaceNames(Object.fromEntries(((workspaceRows ?? []) as { id: string; name: string }[]).map((item) => [item.id, item.name])));
     setStatus(`共 ${submissionRows?.length ?? 0} 份提交`);
   }, [supabase]);
 
   useEffect(() => { void load(); }, [load]);
 
   function learnerLabelFor(item: Submission) {
+    if (item.workspace_id && workspaceNames[item.workspace_id]) return workspaceNames[item.workspace_id];
     if (item.learner_name?.trim()) return item.learner_name.trim();
     if (item.user_id) return profiles[item.user_id]?.display_name || `學員 ${item.user_id.slice(0, 6)}`;
     return "未命名學員";
@@ -132,6 +139,8 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
         learnerLabel: learnerLabelFor(latest),
         userId: latest.user_id,
         learnerName: latest.learner_name,
+        workspaceId: latest.workspace_id,
+        workspaceName: latest.workspace_id ? workspaceNames[latest.workspace_id] ?? null : null,
         stageKey: latest.stage_key,
         items,
         reviewStatus: aggregateReviewStatus(items),
@@ -141,7 +150,7 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
       };
     }).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [submissions, profiles]);
+  }, [submissions, profiles, workspaceNames]);
 
   const learnerOptions = useMemo(() => {
     const seen = new Map<string, string>();
@@ -206,7 +215,7 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
       const inserted = results.filter((result) => result.insertedId);
       if (inserted.length) {
         next = next.concat(inserted.map((result) => ({
-          id: result.insertedId as string, user_id: selected.userId, learner_name: selected.learnerName, stage_key: selected.stageKey, task_key: result.task.key,
+          id: result.insertedId as string, user_id: selected.userId, learner_name: selected.learnerName, workspace_id: selected.workspaceId, stage_key: selected.stageKey, task_key: result.task.key,
           status: "completed" as const, review_status: "pending" as const, answer_json: result.taskAnswers, teacher_feedback: null, consultant_advice: null,
           submitted_at: new Date().toISOString(), updated_at: new Date().toISOString(), imported_file_id: null,
         })));
