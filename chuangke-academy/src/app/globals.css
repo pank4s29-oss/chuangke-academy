@@ -4,9 +4,11 @@
 
 :root { --background: #f5f7f4; --foreground: #102a2b; }
 @theme inline { --color-background: var(--background); --color-foreground: var(--foreground); --font-sans: var(--font-geist-sans); --font-mono: var(--font-geist-mono); }
-* { box-sizing: border-box; }
+* { box-sizing: border-box; min-width: 0; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--background); color: var(--foreground); font-family: Arial, Helvetica, sans-serif; }
+body { margin: 0; max-width: 100%; overflow-x: hidden; background: var(--background); color: var(--foreground); font-family: Arial, Helvetica, sans-serif; line-break: strict; overflow-wrap: break-word; }
+button, input, textarea, select { max-width: 100%; font: inherit; }
+button, a, p, h1, h2, h3, h4, h5, h6, li, label, th, td, summary { overflow-wrap: break-word; word-break: normal; text-wrap: pretty; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }
 ::selection { background: #99f6e4; color: #102a2b; }
@@ -23,7 +25,8 @@ button { cursor: pointer; }
  * using only CSS, so it can be committed straight from the GitHub web
  * editor with nothing to install and nothing else to keep in sync.
  * ------------------------------------------------------------------- */
-.md-content { color: #1e293b; font-size: 1rem; line-height: 1.75; }
+.md-content { max-width: 100%; color: #1e293b; font-size: 1rem; line-height: 1.8; }
+.md-content > * { max-width: 100%; }
 .md-content > :first-child { margin-top: 0; }
 .md-content > :last-child { margin-bottom: 0; }
 
@@ -57,8 +60,8 @@ button { cursor: pointer; }
 
 .md-content hr { margin: 2.5rem 0; border: none; border-top: 1px solid #e2e8f0; }
 
-.md-content table { margin: 2rem 0; width: 100%; border-collapse: collapse; font-size: 0.9rem; display: block; overflow-x: auto; }
-.md-content th, .md-content td { border: 1px solid #e2e8f0; padding: 0.6rem 0.85rem; text-align: left; vertical-align: top; }
+.md-content table { margin: 2rem 0; width: 100%; max-width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.9rem; }
+.md-content th, .md-content td { min-width: 0; border: 1px solid #e2e8f0; padding: 0.6rem 0.85rem; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
 .md-content th { background: #f8fafc; font-weight: 700; }
 .md-content tr:nth-child(even) td { background: #fafbfc; }
 
@@ -67,3 +70,16 @@ button { cursor: pointer; }
 .md-content pre code { background: none; padding: 0; color: inherit; }
 
 .md-content img { max-width: 100%; border-radius: 0.5rem; margin: 1.5rem 0; }
+
+@media (max-width: 767px) {
+  .md-content { font-size: 0.96rem; line-height: 1.85; }
+  .md-content h1 { font-size: 1.55rem; margin-top: 2rem; }
+  .md-content h2 { font-size: 1.3rem; margin-top: 2.1rem; }
+  .md-content h3 { font-size: 1.12rem; margin-top: 1.75rem; }
+  .md-content p { margin: 0.95rem 0; }
+  .md-content ul, .md-content ol { padding-left: 1.25rem; }
+  .md-content blockquote { margin: 1.2rem 0; padding: 0.75rem 0.9rem; }
+  .md-content table { font-size: 0.73rem; line-height: 1.55; }
+  .md-content th, .md-content td { padding: 0.45rem 0.35rem; }
+  .md-content pre { max-width: 100%; padding: 0.85rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+}
