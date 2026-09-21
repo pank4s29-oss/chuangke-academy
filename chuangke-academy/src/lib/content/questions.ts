@@ -4,6 +4,11 @@ export type CanonicalQuestionType = "short_text" | "long_text" | "single_choice"
 export type CanonicalQuestion = {
   id: string;
   label: string;
+  /** Short helper text shown under the label — e.g. the original fill-in-
+   *  the-blank sentence template ("我服務的是____的____。") — so the student
+   *  sees exactly what shape of answer is expected without the label itself
+   *  having to spell that out and become unwieldy. */
+  description?: string;
   type: CanonicalQuestionType;
   options?: { id: string; label: string; otherInputKey?: string }[];
   required: boolean;
@@ -24,6 +29,7 @@ export function fieldsToCanonical(fields: AssignmentField[]): CanonicalQuestion[
   return fields.map((field) => ({
     id: field.key,
     label: field.prompt,
+    description: field.description,
     type: field.type === "checkboxes" ? (field.multiple ? "multi_choice" : "single_choice") : field.type === "textarea" ? "long_text" : "short_text",
     options: field.options?.map((option) => ({ id: option.key, label: option.label, otherInputKey: option.otherInputKey })),
     required: true,
