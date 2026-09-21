@@ -33,11 +33,21 @@ describe("getAssignmentFields", () => {
     ]);
   });
 
-  it("splits a line with several blanks into one field per blank instead of collapsing them", () => {
+  it("keeps a multi-blank sentence as ONE field with the template as its description, instead of splitting it into several near-duplicate questions", () => {
+    const md = ["### 步驟 4：套句", "", "我服務的是【＿＿＿＿＿＿＿＿＿＿＿＿】的【＿＿＿＿＿＿＿＿】。"].join("\n");
+    const fields = getAssignmentFields(md, "t");
+    expect(fields).toHaveLength(1);
+    expect(fields[0].type).toBe("text");
+    expect(fields[0].prompt).toContain("步驟 4：套句");
+    expect(fields[0].description).toBe("我服務的是【＿＿＿＿】的【＿＿＿＿】。");
+  });
+
+  it("falls back to the fill-in-the-blank sentence itself as the prompt when there is no useful heading/question above it", () => {
     const md = "我服務的是【＿＿＿＿＿＿＿＿＿＿＿＿】的【＿＿＿＿＿＿＿＿】。";
     const fields = getAssignmentFields(md, "t");
-    expect(fields).toHaveLength(2);
-    expect(fields.every((f) => f.type === "text")).toBe(true);
+    expect(fields).toHaveLength(1);
+    expect(fields[0].prompt).toBe("我服務的是【＿＿＿＿】的【＿＿＿＿】。");
+    expect(fields[0].description).toBeUndefined();
   });
 
   it("turns a checkbox option with a trailing blank (e.g. 其他：____) into an option plus a companion text field", () => {
@@ -153,7 +163,10 @@ describe("getAssignmentFields", () => {
     ].join("\n");
     const fields = getAssignmentFields(md, "stage-01-task-1");
     const branchFields = fields.filter((field) => field.dependsOn);
-    expect(branchFields).toHaveLength(6);
+    // Each branch's two-blank sentence ("我以前也____，後來我____。") is now
+    // kept as a single field instead of being split in two, so there is
+    // exactly one dependsOn field per branch rather than two.
+    expect(branchFields).toHaveLength(3);
     expect(new Set(branchFields.map((field) => field.dependsOn?.optionLabel))).toEqual(new Set(["經歷型", "方法型", "結果型"]));
   });
 
