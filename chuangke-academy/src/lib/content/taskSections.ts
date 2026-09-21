@@ -6,6 +6,11 @@ export type AssignmentOption = { key: string; label: string; otherInputKey?: str
 export type AssignmentField = {
   key: string;
   prompt: string;
+  /** Short, optional helper text shown under the prompt — e.g. the original
+   *  fill-in-the-blank sentence template ("我服務的是____的____。") so the
+   *  student knows exactly what shape of answer is expected without the
+   *  prompt itself having to spell that out and become unwieldy. */
+  description?: string;
   type: "text" | "textarea" | "checkboxes";
   options?: AssignmentOption[];
   multiple?: boolean;
@@ -206,12 +211,14 @@ function cellHasBlankMarker(cell: string) {
 function isCheckboxLine(line: string) {
   return CHECKBOX_PREFIX_RE.test(line);
 }
-/** A line that is *only* a numbered marker plus a blank, e.g. "1. ____".
- *  Several of these are typically stacked together (one field each); like a
- *  checkbox option line, one must never be picked up as the "context" label
- *  for one of its own siblings. */
+/** A line that is *only* a numbered marker plus a blank, e.g. "1. ____" or
+ *  "1. 「____」" (the blank optionally wrapped in a single pair of quote/
+ *  bracket marks, as used for "寫三句他會說的話" style questions). Several of
+ *  these are typically stacked together (one field each); like a checkbox
+ *  option line, one must never be picked up as the "context" label for one
+ *  of its own siblings. */
 function isBareNumberedBlankLine(line: string) {
-  return /^\s*\d+[.、)]\s*(?:＿{2,}|_{4,})\s*$/.test(line);
+  return /^\s*\d+[.、)]\s*[「『【"'(（]?(?:＿{2,}|_{4,})[」』】"'）)]?\s*$/.test(line);
 }
 function isHeadingLine(line: string) {
   return /^#{1,6}\s/.test(line.trim());
@@ -219,6 +226,38 @@ function isHeadingLine(line: string) {
 function isRuleLine(line: string) {
   return /^[-*_]{3,}\s*$/.test(line.trim());
 }
+/** Pick the cell that best describes a table row, for use as that row's
+ *  field prompt. A leading "#" row-counter column (containing just a bare
+ *  row number like "1", "2"...) is never descriptive enough to stand alone
+ *  as a prompt, so it's skipped in favour of a column explicitly headed
+ *  "題目"/"敘述"/etc., or otherwise the first cell that has real content and
+ *  isn't itself a bare checkbox answer cell. */
+/** rawHeaders are the header cells *before* cleanText — a bare "#" column
+ *  header is indistinguishable from a level-1 Markdown heading marker to
+ *  cleanText (both are just "#"), so it gets stripped down to "" there. The
+ *  raw text is needed here to still recognise it as the row-counter column. */
+function pickRowLabel(headers: string[], cells: string[], rawHeaders: string[]) {
+  const namedIndex = headers.findIndex((header) => /^(題目|敘述|項目|內容|說明|問題)$/.test(header));
+  const named = namedIndex >= 0 ? cleanText(cells[namedIndex] ?? "") : "";
+  if (named) return named;
+  for (let i = 0; i < cells.length; i += 1) {
+    const rawHeader = (rawHeaders[i] ?? "").trim();
+    const raw = (cells[i] ?? "").trim();
+    if (rawHeader === "#" || /^\d+$/.test(cleanText(raw))) continue;
+    if (raw === "☐" || raw === "☑") continue;
+    if (!raw || BLANK_RE.test(raw)) continue;
+    const value = cleanText(raw);
+    if (value) return value;
+  }
+  // Nothing descriptive was found anywhere in the row (e.g. a table that is
+  // just "# | (blank) | (blank)" for the student to fill in from scratch) —
+  // the row counter is at least a stable, human-readable identifier, unlike
+  // a made-up "第 N 列" based on the source file's line number.
+  const counterIndex = rawHeaders.findIndex((header) => header.trim() === "#");
+  const counter = counterIndex >= 0 ? cleanText(cells[counterIndex] ?? "") : "";
+  return counter;
+}
+
 function tableSectionLabel(lines: string[], cursor: number) {
   for (let index = cursor - 1; index >= 0; index -= 1) {
     const line = lines[index].trim();
@@ -245,55 +284,48 @@ function isFullyBoldLine(line: string) {
 function isStructuralBoundary(line: string) {
   return isHeadingLine(line) || isRuleLine(line) || isBlockquoteLine(line) || isTableRow(line) || isFullyBoldLine(line);
 }
-/** A single Chinese character is almost never a good, self-sufficient field
- *  label — it's either a connector ("的", "到"...) or a bare measure word
- *  ("月", "日", "字", "分"...) that reads fine in the original sentence but
- *  is far too generic to stand alone as a prompt (and, worse, becomes a
- *  near-useless search key when a teacher's filled-in file is imported: a
- *  single character like "月" matches almost any line in the document). Only
- *  two or more characters are treated as informative on their own. */
-function isInformativeLabel(label: string) {
-  return label.length >= 2;
-}
-
 /**
- * Split a line into one prompt per blank marker it contains. A single blank
- * keeps the previous "whole line as prompt" behaviour. Multiple blanks (e.g.
- * "我服務的是【____】的【____】。" or "年齡大約：__ 到 __ 歲") each get their own
- * field instead of being silently collapsed into one, which was the main
- * cause of assignments losing fill-in blanks.
+ * Build the prompt (and, where useful, a short description) for a line that
+ * contains one or more fill-in-the-blank markers.
+ *
+ * A sentence like "我服務的是【____】的【____】。" or "年齡大約：__ 到 __ 歲" is one
+ * question with one answer — the "who" and the "what kind of" (or the "from"
+ * and "to") only make sense together as a single completed sentence. This
+ * used to hand back one prompt per blank, which created two separate fields
+ * that read like unrelated questions (a bare "我服務的是" next to a near-
+ * duplicate "我服務的是____的____。（第 2 格）"), even though a teacher only
+ * ever needs one line to review. Multiple blanks on one line are now always
+ * kept together as a single field.
  */
-function blankFieldPrompts(line: string, fallbackContext: string): string[] {
-  // Strip markdown emphasis / blockquote markers on the *whole* line first.
-  // Slicing the raw line per-blank and cleaning each fragment independently
-  // would split a "**...____...____...**" bold span apart, leaving a stray
-  // "**" stuck to whichever fragment lost its matching partner.
+function buildBlankField(line: string, fallbackContext: string): { prompt: string; description?: string; multiline: boolean } {
+  // Strip markdown emphasis / blockquote markers on the *whole* line first,
+  // so a "**...____...____...**" bold span spanning several blanks doesn't
+  // get split apart with a stray "**" left on one side.
   const processed = stripEmphasis(line)
     .replace(/^\s*>+\s*/, "")
     .replace(/^\s*[-*]?\s*/, "")
     .replace(CHECKBOX_PREFIX_RE, "");
   const matches = [...processed.matchAll(BLANK_RE_G)];
-  if (matches.length === 0) return [];
-  const overallRaw = processed.replace(BLANK_RE_G, "＿＿＿＿").replace(/\s+/g, " ").trim();
-  const overall = hasRealContent(overallRaw) ? overallRaw : fallbackContext;
+  const template = processed.replace(BLANK_RE_G, "＿＿＿＿").replace(/\s+/g, " ").trim();
+  const templateHasContent = hasRealContent(template);
+  const multiline = line.length > 95;
 
-  if (matches.length === 1) return [overall];
+  if (matches.length <= 1) {
+    // A single blank: the sentence itself (e.g. "我的恐懼句是____。") is
+    // almost always specific enough to stand alone as the prompt.
+    return { prompt: templateHasContent ? template : fallbackContext, multiline };
+  }
 
-  const prompts: string[] = [];
-  let prevEnd = 0;
-  matches.forEach((match, i) => {
-    const start = match.index ?? 0;
-    const preceding = cleanText(processed.slice(prevEnd, start));
-    prevEnd = start + match[0].length;
-    prompts.push(isInformativeLabel(preceding) ? preceding : `${overall}（第 ${i + 1} 格）`);
-  });
-  // de-duplicate identical prompts (e.g. two blanks that both fell back to "overall")
-  const seen = new Map<string, number>();
-  return prompts.map((prompt) => {
-    const count = (seen.get(prompt) ?? 0) + 1;
-    seen.set(prompt, count);
-    return count > 1 ? `${prompt}（第 ${count} 次）` : prompt;
-  });
+  // Two or more blanks: prefer a real question/heading above the line as the
+  // short prompt, and show the fill-in-the-blank sentence itself as a
+  // description underneath — a teacher then sees *both* "what is this
+  // asking" and "exactly what shape the answer takes" without the two
+  // collapsing into confusingly similar standalone questions.
+  const contextIsUseful = fallbackContext !== "請完成這一題" && fallbackContext !== template;
+  if (contextIsUseful) {
+    return { prompt: fallbackContext, description: templateHasContent ? template : undefined, multiline };
+  }
+  return { prompt: templateHasContent ? template : fallbackContext, multiline };
 }
 
 /** Collect a run of "☐ label" lines starting at `start`, tolerating blank
@@ -385,11 +417,12 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
 
     // ---- Tables --------------------------------------------------------
     if (isTableRow(line) && cursor + 1 < lines.length && isSeparatorRow(lines[cursor + 1])) {
-      const headers = tableCells(line).map((cell) => cleanText(cell));
+      const rawHeaders = tableCells(line);
+      const headers = rawHeaders.map((cell) => cleanText(cell));
       cursor += 2;
       while (cursor < lines.length && isTableRow(lines[cursor])) {
         const cells = tableCells(lines[cursor]);
-        const rowLabel = cleanText(cells[0]) || cleanText(cells[1] ?? "") || `第 ${cursor} 列`;
+        const rowLabel = pickRowLabel(headers, cells, rawHeaders) || `第 ${cursor} 列`;
         const groupLabel = `${tableSectionLabel(lines, cursor - 2)}｜${headers.slice(1).join("／") || "表格作答"}`;
 
         // A row like "| 題目 | ☐ | ☐ |" under headers "是"/"否" is a
@@ -466,16 +499,19 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
       const contextLabel = meaningfulContext(lines, cursor);
       // A line that is *only* a numbered list marker plus a blank (e.g. the
       // "1. ____" / "2. ____" / "3. ____" pattern used for "把勾到的三題抄一次
-      // 這裡") has no real text of its own for blankFieldPrompts to use as a
-      // label. Falling through to the generic logic there previously treated
-      // the bare digit "1" as if it were meaningful content and used "1. "
-      // itself as the prompt, instead of the actual question above it (e.g.
-      // "我要問的三題是："). Detect this pattern up front and number the
-      // fallback context explicitly instead.
+      // 這裡") has no real text of its own to build a prompt/description from.
+      // Falling through to the generic logic below previously treated the
+      // bare digit "1" as if it were meaningful content and used "1. " itself
+      // as the prompt, instead of the actual question above it (e.g. "我要問
+      // 的三題是："). Detect this pattern up front and number the fallback
+      // context explicitly instead.
       const bareNumberedBlank = isBareNumberedBlankLine(line) ? line.match(/^\s*(\d+)[.、)]/) : null;
-      const prompts = bareNumberedBlank ? [`${contextLabel}（第 ${bareNumberedBlank[1]} 題）`] : blankFieldPrompts(line, contextLabel);
-      const type: AssignmentField["type"] = line.length > 95 ? "textarea" : "text";
-      prompts.forEach((prompt) => add({ prompt, type, group: contextLabel }));
+      if (bareNumberedBlank) {
+        add({ prompt: `${contextLabel}（第 ${bareNumberedBlank[1]} 題）`, type: "text", group: contextLabel });
+      } else {
+        const { prompt, description, multiline } = buildBlankField(line, contextLabel);
+        add({ prompt, description, type: multiline ? "textarea" : "text", group: contextLabel });
+      }
     }
   }
   return fields;
