@@ -62,6 +62,19 @@ describe("teacher assignment import", () => {
     }
   });
 
+  it("matches a field whose prompt ends in a '（抄任務 X）' style citation against an answer that (as expected) doesn't repeat the citation verbatim", () => {
+    // This is exactly the appendix ("抄成一頁系統藍圖") pattern: each line
+    // copies an earlier task's answer, and the prompt names *where* to copy
+    // it from — but a filled-in answer file naturally only repeats the bold
+    // label, never the "(copy from task X)" instruction itself.
+    const template = ["**我服務的是**（抄任務 1-A）", "", "＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿"].join("\n");
+    const fields = getAssignmentFields(template, "task");
+    expect(fields[0].prompt).toContain("（抄任務 1-A）");
+    const filled = ["**我服務的是**", "", "想多一份收入的上班族"].join("\n");
+    const answers = extractImportedAnswers(filled, fields);
+    expect(answers[fields[0].key]).toBe("想多一份收入的上班族");
+  });
+
   it("skips an unfilled template blank and keeps looking for a later, actually-filled occurrence of the same prompt", () => {
     const template = ["**今天是：** ＿＿ 月 ＿＿ 日", "", "**往後數 30 天，我的第一版上線日是：** ＿＿ 月 ＿＿ 日"].join("\n");
     const fields = getAssignmentFields(template, "task");
