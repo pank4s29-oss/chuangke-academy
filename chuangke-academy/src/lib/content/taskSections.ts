@@ -62,7 +62,6 @@ export function readTaskSections(stageKey: string): TaskSection[] {
 const BLANK_RE = /(＿{2,}|_{4,})/;
 const BLANK_RE_G = /(＿{2,}|_{4,})/g;
 const CHECKBOX_PREFIX_RE = /^\s*(?:[-*]\s*)?☐\s*/;
-const CONNECTOR_WORDS = new Set(["的", "和", "與", "及", "跟", "或", "到", "是", "了", "就", "才", "還", "也", "又", "即"]);
 
 function stripEmphasis(text: string) {
   return text
@@ -175,6 +174,7 @@ function meaningfulContext(lines: string[], index: number) {
     // a checkbox option line was already consumed as part of its own group;
     // it should never double as the "context" for a different field below it.
     if (isCheckboxLine(value)) continue;
+    if (isBareNumberedBlankLine(value)) continue;
     if (isAnswerPlaceholderLabel(value)) {
       if (answerLabel === null) answerLabel = value;
       continue;
@@ -205,6 +205,13 @@ function cellHasBlankMarker(cell: string) {
 }
 function isCheckboxLine(line: string) {
   return CHECKBOX_PREFIX_RE.test(line);
+}
+/** A line that is *only* a numbered marker plus a blank, e.g. "1. ____".
+ *  Several of these are typically stacked together (one field each); like a
+ *  checkbox option line, one must never be picked up as the "context" label
+ *  for one of its own siblings. */
+function isBareNumberedBlankLine(line: string) {
+  return /^\s*\d+[.、)]\s*(?:＿{2,}|_{4,})\s*$/.test(line);
 }
 function isHeadingLine(line: string) {
   return /^#{1,6}\s/.test(line.trim());
@@ -238,10 +245,15 @@ function isFullyBoldLine(line: string) {
 function isStructuralBoundary(line: string) {
   return isHeadingLine(line) || isRuleLine(line) || isBlockquoteLine(line) || isTableRow(line) || isFullyBoldLine(line);
 }
+/** A single Chinese character is almost never a good, self-sufficient field
+ *  label — it's either a connector ("的", "到"...) or a bare measure word
+ *  ("月", "日", "字", "分"...) that reads fine in the original sentence but
+ *  is far too generic to stand alone as a prompt (and, worse, becomes a
+ *  near-useless search key when a teacher's filled-in file is imported: a
+ *  single character like "月" matches almost any line in the document). Only
+ *  two or more characters are treated as informative on their own. */
 function isInformativeLabel(label: string) {
-  if (label.length >= 2) return true;
-  if (label.length === 1) return !CONNECTOR_WORDS.has(label);
-  return false;
+  return label.length >= 2;
 }
 
 /**
@@ -452,7 +464,16 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
     // ---- Fill-in-the-blank line(s) --------------------------------------
     if (BLANK_RE.test(line)) {
       const contextLabel = meaningfulContext(lines, cursor);
-      const prompts = blankFieldPrompts(line, contextLabel);
+      // A line that is *only* a numbered list marker plus a blank (e.g. the
+      // "1. ____" / "2. ____" / "3. ____" pattern used for "把勾到的三題抄一次
+      // 這裡") has no real text of its own for blankFieldPrompts to use as a
+      // label. Falling through to the generic logic there previously treated
+      // the bare digit "1" as if it were meaningful content and used "1. "
+      // itself as the prompt, instead of the actual question above it (e.g.
+      // "我要問的三題是："). Detect this pattern up front and number the
+      // fallback context explicitly instead.
+      const bareNumberedBlank = isBareNumberedBlankLine(line) ? line.match(/^\s*(\d+)[.、)]/) : null;
+      const prompts = bareNumberedBlank ? [`${contextLabel}（第 ${bareNumberedBlank[1]} 題）`] : blankFieldPrompts(line, contextLabel);
       const type: AssignmentField["type"] = line.length > 95 ? "textarea" : "text";
       prompts.forEach((prompt) => add({ prompt, type, group: contextLabel }));
     }
@@ -469,41 +490,7 @@ export function readTaskSectionsWithFields(stageKey: string): TaskWithFields[] {
   return readStageTasks(stageKey);
 }
 
-/** Convert a teacher-provided, human-filled Markdown/TXT file into the same
- * answer shape used by the student form. This intentionally stays conservative:
- * only checked options and non-empty table/text cells are imported. */
-export function extractImportedAnswers(source: string, fields: AssignmentField[]) {
-  const lines = source.split(/\r?\n/);
-  const answers: Record<string, string | string[]> = {};
-  const checked = (line: string) => /(?:☑|☒|\[[xX]\])/.test(line);
-  const optionLabel = (label: string) => label.replace(/\s+/g, " ").replace(/^\s*[A-D][.、]\s*/, "").replace(/\s*[☐☑☒].*$/, "").trim();
-  for (const field of fields) {
-    if (field.hiddenInGroup) continue;
-    if (field.type === "checkboxes") {
-      const selected = (field.options ?? []).filter((option) => lines.some((line) => checked(line) && line.includes(optionLabel(option.label)))).map((option) => option.key);
-      if (selected.length) answers[field.key] = field.multiple ? selected : [selected[0]];
-      continue;
-    }
-    if (field.layout === "table" && field.tableRow) {
-      const tableLine = lines.find((line) => isTableRow(line) && tableCells(line).some((cell) => cleanText(cell) === cleanText(field.tableRow!)));
-      if (tableLine) {
-        const cells = tableCells(tableLine);
-        const headerLines = lines.slice(0, lines.indexOf(tableLine)).filter((line) => isTableRow(line));
-        const headers = headerLines.length ? tableCells(headerLines[headerLines.length - 1]) : [];
-        const columnIndex = Math.max(0, headers.findIndex((header) => cleanText(header) === cleanText(field.tableColumn ?? "答案")));
-        const value = cells[columnIndex] ?? "";
-        if (value && !/^(＿＿+|_{4,})$/.test(value)) answers[field.key] = value.replace(/☐|☑|☒|\[[xX ]\]/g, "").trim();
-      }
-      continue;
-    }
-    const prompt = field.prompt.split("＿＿＿＿")[0].replace(/[：:]\s*$/, "").trim();
-    const lineIndex = lines.findIndex((line) => prompt && line.includes(prompt));
-    if (lineIndex >= 0) {
-      const sameLine = lines[lineIndex].split(/[：:＝=]/).slice(1).join("：").replace(/＿＿+|_{4,}/g, "").trim();
-      const nextLine = lines.slice(lineIndex + 1).find((line) => line.trim() && !isHeadingLine(line) && !isStructuralBoundary(line));
-      const value = sameLine || (nextLine ?? "").trim();
-      if (value && !/^(請填寫|你的答案|答案)$/.test(value)) answers[field.key] = value;
-    }
-  }
-  return answers;
-}
+// NOTE: teacher-file import lives in "./importAnswers" (extractImportedAnswers).
+// An older, unused copy used to be duplicated here — it was never imported by
+// the app or its tests (both use "./importAnswers"), so it was removed rather
+// than fixed twice; keeping two copies in sync was itself a bug risk.
