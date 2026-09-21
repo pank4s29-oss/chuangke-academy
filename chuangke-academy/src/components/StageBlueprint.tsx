@@ -2,16 +2,45 @@
 
 import { useMemo, useState } from "react";
 import type { TaskWithFields } from "@/lib/content/taskSections";
-import { buildStageBlueprint, buildStageBlueprintMarkdown } from "@/lib/content/blueprint";
+import { buildStageBlueprint, buildStageBlueprintMarkdown, type BlueprintSection } from "@/lib/content/blueprint";
 
-type Props = { stageTitle: string; tasks: TaskWithFields[]; answers: Record<string, string | string[]>; optionLabels: Record<string, string>; learnerName: string };
+type ReviewStatus = "pending" | "approved" | "needs_revision";
+const reviewStatusLabels: Record<ReviewStatus, string> = { pending: "待批改", approved: "已通過", needs_revision: "需要修改" };
+
+type Props = {
+  stageTitle: string;
+  tasks: TaskWithFields[];
+  answers: Record<string, string | string[]>;
+  optionLabels: Record<string, string>;
+  learnerName: string;
+  /** Optional grading context (review status / teacher feedback / consultant
+   *  advice) captured for the whole imported stage. When provided, it is
+   *  rendered as its own "本次批改結果" section at the top of the blueprint and
+   *  included in both the PDF/print view and the Markdown export, so a
+   *  teacher or consultant has a single, exportable report of the grading
+   *  result to bring into a conversation with the learner — not just the raw
+   *  answers. */
+  reviewStatus?: ReviewStatus;
+  teacherFeedback?: string;
+  consultantAdvice?: string;
+  gradedAt?: string | null;
+};
 
 function slugify(text: string) {
   return text.replace(/[\\/:*?"<>|\s]+/g, "-").replace(/^-+|-+$/g, "") || "blueprint";
 }
 
-export default function StageBlueprint({ stageTitle, tasks, answers, optionLabels, learnerName }: Props) {
-  const sections = useMemo(() => buildStageBlueprint(stageTitle, tasks, answers, optionLabels), [answers, optionLabels, stageTitle, tasks]);
+export default function StageBlueprint({ stageTitle, tasks, answers, optionLabels, learnerName, reviewStatus, teacherFeedback, consultantAdvice, gradedAt }: Props) {
+  const answerSections = useMemo(() => buildStageBlueprint(stageTitle, tasks, answers, optionLabels), [answers, optionLabels, stageTitle, tasks]);
+  const sections = useMemo(() => {
+    if (!reviewStatus) return answerSections;
+    const items: BlueprintSection["items"] = [{ label: "批改狀態", value: reviewStatusLabels[reviewStatus] }];
+    if (gradedAt) items.push({ label: "批改時間", value: new Date(gradedAt).toLocaleString("zh-TW", { hour12: false }) });
+    items.push({ label: "顧問建議（給下一次對談用）", value: consultantAdvice?.trim() || "尚未填寫" });
+    items.push({ label: "教師回饋", value: teacherFeedback?.trim() || "尚未填寫" });
+    const reviewSection: BlueprintSection = { title: `${stageTitle}｜本次批改結果`, items };
+    return [reviewSection, ...answerSections];
+  }, [answerSections, consultantAdvice, gradedAt, reviewStatus, stageTitle, teacherFeedback]);
   const [exportStatus, setExportStatus] = useState("");
 
   // PDF export deliberately reuses the browser's own print-to-PDF flow
