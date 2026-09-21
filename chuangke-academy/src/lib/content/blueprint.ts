@@ -82,3 +82,30 @@ export function buildStageBlueprint(stageTitle: string, tasks: TaskWithFields[],
 
   return taskSections.concat([{ title: `${stageTitle}｜顧問建議摘要`, items: buildAdvisorInsights(stageTitle, tasks, answers) }]);
 }
+
+/**
+ * Render the blueprint as a plain Markdown document a consultant/teacher can
+ * download, paste into notes, or attach to an email — a lighter-weight
+ * alternative to the print/PDF flow for quick sharing. Multi-line values
+ * (e.g. the advisor's "待補欄位" list) are rendered as a small sub-list under
+ * their label rather than escaped onto one line, so the export stays legible
+ * when opened as plain text.
+ */
+export function buildStageBlueprintMarkdown(stageTitle: string, learnerName: string, sections: BlueprintSection[]) {
+  const generatedAt = new Date().toLocaleString("zh-TW", { hour12: false });
+  const lines: string[] = [`# ${stageTitle}｜${learnerName || "（未命名學員）"}`, "", `> 匯出時間：${generatedAt}`, ""];
+  sections.forEach((section) => {
+    lines.push(`## ${section.title}`, "");
+    section.items.forEach((item) => {
+      const valueLines = item.value.split("\n").filter((line) => line.length > 0);
+      if (valueLines.length <= 1) {
+        lines.push(`- **${item.label}**：${valueLines[0] ?? ""}`);
+      } else {
+        lines.push(`- **${item.label}**：`);
+        valueLines.forEach((line) => lines.push(`  - ${line}`));
+      }
+    });
+    lines.push("");
+  });
+  return lines.join("\n").trim() + "\n";
+}
