@@ -180,6 +180,14 @@ function meaningfulContext(lines: string[], index: number) {
     // it should never double as the "context" for a different field below it.
     if (isCheckboxLine(value)) continue;
     if (isBareNumberedBlankLine(value)) continue;
+    // A line that itself contains a blank marker (e.g. "今天是：____") is
+    // another field's own question, not a description of *this* one — using
+    // it as context previously meant a date field like "往後數 30 天，我的第
+    // 一版上線日是" showed the *previous* field's text ("今天是：____") as its
+    // prompt instead of its own, with the real question relegated to a
+    // parenthetical description underneath. Skip past it just like a
+    // checkbox option line, rather than borrowing a sibling question's text.
+    if (BLANK_RE.test(value)) continue;
     if (isAnswerPlaceholderLabel(value)) {
       if (answerLabel === null) answerLabel = value;
       continue;
@@ -488,7 +496,14 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
     const inlineOptions = [...line.matchAll(/☐\s*([^☐]+)/g)].map((match) => match[1].trim()).filter(Boolean);
     if (inlineOptions.length >= 2) {
       const before = cleanText(line.replace(/☐\s*[^☐]+/g, ""));
-      const contextLabel = before || meaningfulContext(lines, cursor);
+      // A short inline label like "主要在" or "二選一" reads fine sitting right
+      // above its own options, but on its own in a teacher's answer summary
+      // (where the options aren't necessarily shown alongside it) it doesn't
+      // say enough — so it's paired with the nearest real question/heading
+      // above it rather than shown bare. Longer inline labels (e.g. "性別偏
+      // 向") already carry enough meaning by themselves and are left as-is.
+      const surrounding = !before || before.length < 4 ? meaningfulContext(lines, cursor).replace(BLANK_RE_G, "＿＿＿＿").replace(/\s+/g, " ").trim() : "";
+      const contextLabel = before && surrounding ? `${surrounding}｜${before}` : before || surrounding;
       const singleSelect = detectSingleSelect(lines, cursor, cursor);
       addCheckboxGroup(inlineOptions, contextLabel, singleSelect);
       continue;
@@ -514,6 +529,21 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
       }
     }
   }
+  // When two or more fields in the same task ended up with the exact same
+  // fallback prompt (typically because they all fell back to the same
+  // enclosing section heading, e.g. two date blanks both under "## 5-A　先
+  // 訂上線日"), number them so they no longer read as duplicates of each
+  // other — the same way multiple blanks on one line already get "（第 N
+  // 次）" appended below.
+  const promptCounts = new Map<string, number>();
+  fields.forEach((field) => promptCounts.set(field.prompt, (promptCounts.get(field.prompt) ?? 0) + 1));
+  const promptSeen = new Map<string, number>();
+  fields.forEach((field) => {
+    if ((promptCounts.get(field.prompt) ?? 0) <= 1) return;
+    const seen = (promptSeen.get(field.prompt) ?? 0) + 1;
+    promptSeen.set(field.prompt, seen);
+    field.prompt = `${field.prompt}（第 ${seen} 小題）`;
+  });
   return fields;
 }
 
