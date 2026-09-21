@@ -262,7 +262,9 @@ function pickRowLabel(headers: string[], cells: string[], rawHeaders: string[]) 
   // the row counter is at least a stable, human-readable identifier, unlike
   // a made-up "第 N 列" based on the source file's line number.
   const counterIndex = rawHeaders.findIndex((header) => header.trim() === "#");
-  const counter = counterIndex >= 0 ? cleanText(cells[counterIndex] ?? "") : "";
+  const detectedIndex = counterIndex >= 0 ? counterIndex : cells.findIndex((cell) => /^\d+$/.test(cleanText(cell)));
+  const counter = detectedIndex >= 0 ? cleanText(cells[detectedIndex] ?? "") : "";
+  if (counter && detectedIndex === 0 && headers[0] && headers[0] !== "#") return `${headers[0]} ${counter}`;
   return counter;
 }
 

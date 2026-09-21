@@ -97,16 +97,27 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
     if (!profile) { setAllowed(false); setStatus("找不到此登入帳號的 profiles 記錄，請執行 profile bootstrap migration"); return; }
     if (profile.role !== "teacher") { setAllowed(false); setStatus(`目前角色為 ${profile.role ?? "未設定"}，請將 public.profiles.role 更新為 teacher`); return; }
     setAllowed(true);
-    const [{ data: submissionRows, error }, { data: profileRows }, { data: workspaceRows }] = await Promise.all([
-      supabase.from("submissions").select("id,user_id,learner_name,workspace_id,stage_key,task_key,status,review_status,answer_json,teacher_feedback,consultant_advice,submitted_at,updated_at,imported_file_id").order("updated_at", { ascending: false }),
+    const initialSubmissionResult = await supabase.from("submissions").select("id,user_id,learner_name,workspace_id,stage_key,task_key,status,review_status,answer_json,teacher_feedback,consultant_advice,submitted_at,updated_at,imported_file_id").order("updated_at", { ascending: false });
+    const [{ data: profileRows }, { data: workspaceRows, error: workspaceError }] = await Promise.all([
       supabase.from("profiles").select("id,display_name,role"),
       supabase.from("assignment_workspaces").select("id,name"),
     ]);
-    if (error) { setStatus(`載入失敗：${error.message}`); return; }
+    let legacySchema = false;
+    let submissionRows = initialSubmissionResult.data as unknown[] | null;
+    let submissionError = initialSubmissionResult.error;
+    if (submissionError?.code === "42703" || /workspace_id.*does not exist/i.test(submissionError?.message ?? "")) {
+      legacySchema = true;
+      const legacyResult = await supabase.from("submissions").select("id,user_id,learner_name,stage_key,task_key,status,review_status,answer_json,teacher_feedback,consultant_advice,submitted_at,updated_at,imported_file_id").order("updated_at", { ascending: false });
+      submissionRows = legacyResult.data as unknown[] | null;
+      submissionError = legacyResult.error;
+    }
+    if (submissionError) { setStatus(`載入失敗：${submissionError.message}`); return; }
+    if (workspaceError) setStatus("教師後台已載入，但 Supabase 尚未套用作業工作區 migration；請執行 202609210001_assignment_workspaces.sql");
+    else if (legacySchema) setStatus("教師後台已載入舊資料；請執行作業工作區 migration 以啟用多份作業");
     setSubmissions((submissionRows ?? []) as Submission[]);
     setProfiles(Object.fromEntries(((profileRows ?? []) as Profile[]).map((item) => [item.id, item])));
     setWorkspaceNames(Object.fromEntries(((workspaceRows ?? []) as { id: string; name: string }[]).map((item) => [item.id, item.name])));
-    setStatus(`共 ${submissionRows?.length ?? 0} 份提交`);
+    if (!workspaceError && !legacySchema) setStatus(`共 ${submissionRows?.length ?? 0} 份提交`);
   }, [supabase]);
 
   useEffect(() => { void load(); }, [load]);

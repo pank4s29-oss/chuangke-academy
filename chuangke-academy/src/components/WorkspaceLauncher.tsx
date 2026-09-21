@@ -27,7 +27,8 @@ export default function WorkspaceLauncher({ courseKey, courseTitle, stageOptions
       const { data, error } = await supabase.from("assignment_workspaces").select("id,name,course_key,updated_at,created_at").eq("course_key", courseKey).order("updated_at", { ascending: false });
       if (alive) {
         setWorkspaces((data ?? []) as Workspace[]);
-        if (error) setMessage(`載入作業清單失敗：${error.message}`);
+        if (error?.code === "42P01" || /assignment_workspaces.*(does not exist|找不到)/i.test(error?.message ?? "")) setMessage("Supabase 尚未建立作業工作區資料表，請先執行 202609210001_assignment_workspaces.sql");
+        else if (error) setMessage(`載入作業清單失敗：${error.message}`);
         setLoading(false);
       }
     }
@@ -43,7 +44,7 @@ export default function WorkspaceLauncher({ courseKey, courseTitle, stageOptions
     setCreating(true); setMessage("");
     const { data, error } = await supabase.from("assignment_workspaces").insert({ owner_id: userId, course_key: courseKey, name: trimmed }).select("id,name,course_key,updated_at,created_at").single();
     setCreating(false);
-    if (error) { setMessage(`建立失敗：${error.message}`); return; }
+    if (error) { setMessage(error.code === "42P01" ? "Supabase 尚未套用作業工作區 migration，請先執行 202609210001_assignment_workspaces.sql" : `建立失敗：${error.message}`); return; }
     if (data) { setWorkspaces((current) => [data as Workspace, ...current]); setName(""); setMessage("作業已建立，請點選它開始作答"); }
   }
 

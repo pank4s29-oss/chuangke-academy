@@ -86,13 +86,21 @@ function findByDescription(lines: string[], description: string) {
   return "";
 }
 function findTableCell(lines: string[], field: AssignmentField) {
+  const rowMatches = (cell: string, row: string) => {
+    const actual = cleanText(cell);
+    const expected = cleanText(row);
+    if (actual === expected) return true;
+    const numbered = expected.match(/^(競品|人選)\s*(\d+)$/);
+    return Boolean(numbered && new RegExp(`^${numbered[2]}(?:\\s|$)`).test(actual));
+  };
+  const isSeparator = (line: string) => isTableRow(line) && tableCells(line).every((cell) => /^:?-{3,}:?$/.test(cell));
   for (let index = 0; index < lines.length - 1; index += 1) {
-    if (!isTableRow(lines[index]) || !isTableRow(lines[index + 1]) || !/^\s*\|?\s*:?-{3,}/.test(lines[index + 1])) continue;
+    if (!isTableRow(lines[index]) || !isSeparator(lines[index + 1])) continue;
     const headers = tableCells(lines[index]);
     let cursor = index + 2;
     while (cursor < lines.length && isTableRow(lines[cursor])) {
       const cells = tableCells(lines[cursor]);
-      if (cleanText(cells[0] ?? "") === cleanText(field.tableRow ?? "")) {
+      if (rowMatches(cells[0] ?? "", field.tableRow ?? "")) {
         const columnIndex = headers.findIndex((header) => cleanText(header) === cleanText(field.tableColumn ?? "答案"));
         if (columnIndex >= 0) return cells[columnIndex] ?? "";
         const fallbackIndex = Math.max(0, headers.findIndex((header) => cleanText(header) === "答案"));
