@@ -75,6 +75,12 @@ describe("getAssignmentFields", () => {
     expect(fields[0].options?.map((o) => o.label)).toEqual(["有", "不到 10 句", "有，但我改寫過"]);
   });
 
+  it("numbers a stack of bare '1. ____' / '2. ____' lines against the question above them, instead of using the digit itself as the label", () => {
+    const md = ["**我要問的三題是：**", "", "1. ＿＿＿＿＿＿＿＿", "2. ＿＿＿＿＿＿＿＿", "3. ＿＿＿＿＿＿＿＿"].join("\n");
+    const fields = getAssignmentFields(md, "t");
+    expect(fields.map((f) => f.prompt)).toEqual(["我要問的三題是（第 1 題）", "我要問的三題是（第 2 題）", "我要問的三題是（第 3 題）"]);
+  });
+
   it("still creates one field for a plain single blank (baseline behaviour)", () => {
     const md = "你的答案：\n\n＿＿＿＿＿＿＿＿＿＿＿＿";
     const fields = getAssignmentFields(md, "t");
