@@ -23,6 +23,12 @@ function fieldIsComplete(field: AssignmentField, value: Answers[string]) {
   return String(value ?? "").trim().length > 0;
 }
 
+function fieldIsActive(field: AssignmentField, answers: Answers) {
+  if (!field.dependsOn) return true;
+  const value = answers[field.dependsOn.fieldKey];
+  return Array.isArray(value) ? value.includes(field.dependsOn.optionKey) : value === field.dependsOn.optionKey;
+}
+
 function Field({ field, value, answers, onChange, onOtherChange, showError }: { field: AssignmentField; value: Answers[string]; answers: Answers; onChange: (value: string | string[]) => void; onOtherChange: (key: string, value: string) => void; showError?: boolean }) {
   const question = fieldsToCanonical([field])[0];
   return <QuestionRenderer question={question} value={value ?? ""} otherValues={answers} onOtherChange={onOtherChange} onChange={onChange} showError={showError} />;
@@ -61,10 +67,10 @@ export default function TaskFlow({ stage, courseKey, tasks }: Props) {
     return () => { alive = false; };
   }, [stage.key, supabase]);
 
-  const currentFields = task?.fields.filter((field) => !field.hiddenInGroup) ?? [];
+  const currentFields = task?.fields.filter((field) => !field.hiddenInGroup && fieldIsActive(field, answers)) ?? [];
   const answered = currentFields.filter((field) => fieldIsComplete(field, answers[field.key])).length;
-  const totalAnswered = tasks.reduce((sum, item) => sum + item.fields.filter((field) => !field.hiddenInGroup && fieldIsComplete(field, answers[field.key])).length, 0);
-  const totalFields = tasks.reduce((sum, item) => sum + item.fields.filter((field) => !field.hiddenInGroup).length, 0);
+  const totalAnswered = tasks.reduce((sum, item) => sum + item.fields.filter((field) => !field.hiddenInGroup && fieldIsActive(field, answers) && fieldIsComplete(field, answers[field.key])).length, 0);
+  const totalFields = tasks.reduce((sum, item) => sum + item.fields.filter((field) => !field.hiddenInGroup && fieldIsActive(field, answers)).length, 0);
   const percent = totalFields ? Math.round((totalAnswered / totalFields) * 100) : 0;
 
   function updateAnswer(key: string, value: string | string[]) {

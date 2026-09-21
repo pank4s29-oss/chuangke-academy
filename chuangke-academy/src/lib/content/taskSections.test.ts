@@ -128,4 +128,45 @@ describe("getAssignmentFields", () => {
     expect(fields).toHaveLength(1);
     expect(fields[0].prompt).not.toBe("請完成這一題");
   });
+
+  it("binds A/B/C sentence blanks to the selected branch option", () => {
+    const md = [
+      "**你最強的信任來源是？**",
+      "☐ A. 經歷型",
+      "☐ B. 方法型",
+      "☐ C. 結果型",
+      "",
+      "#### 如果你選 A（經歷型）",
+      "我以前也【＿＿＿＿】，後來我【＿＿＿＿】。",
+      "",
+      "#### 如果你選 B（方法型）",
+      "我有一套【＿＿＿＿】，專門解決【＿＿＿＿】。",
+      "",
+      "#### 如果你選 C（結果型）",
+      "我做過【＿＿＿＿】，達成【＿＿＿＿】。",
+    ].join("\n");
+    const fields = getAssignmentFields(md, "stage-01-task-1");
+    const branchFields = fields.filter((field) => field.dependsOn);
+    expect(branchFields).toHaveLength(6);
+    expect(new Set(branchFields.map((field) => field.dependsOn?.optionLabel))).toEqual(new Set(["經歷型", "方法型", "結果型"]));
+  });
+
+  it("keeps separate section tables as separate answer groups", () => {
+    const md = [
+      "## 任務 2-A：找原話",
+      "| # | 原話 |",
+      "|---|---|",
+      "| 1 | ＿＿＿＿ |",
+      "",
+      "## 任務 2-B：找競爭者",
+      "| # | 競爭者 |",
+      "|---|---|",
+      "| 1 | ＿＿＿＿ |",
+    ].join("\n");
+    const fields = getAssignmentFields(md, "stage-01-task-2");
+    const groups = new Set(fields.map((field) => field.group));
+    expect(groups.size).toBe(2);
+    expect([...groups].some((group) => group?.includes("找原話"))).toBe(true);
+    expect([...groups].some((group) => group?.includes("找競爭者"))).toBe(true);
+  });
 });

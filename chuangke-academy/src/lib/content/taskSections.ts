@@ -15,6 +15,7 @@ export type AssignmentField = {
   tableColumn?: string;
   hiddenInGroup?: boolean;
   otherFor?: string;
+  dependsOn?: { fieldKey: string; optionKey: string; optionLabel: string };
 };
 
 function readFirst(stageKey: string, matcher: (file: string) => boolean) {
@@ -326,8 +327,9 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
   const lines = assignment.split(/\r?\n/);
   const fields: AssignmentField[] = [];
   let index = 0;
+  let activeBranch: { fieldKey: string; optionKey: string; optionLabel: string } | undefined;
   const add = (field: Omit<AssignmentField, "key">) => {
-    fields.push({ ...field, key: `${taskKey}-answer-${index}` });
+    fields.push({ ...field, key: `${taskKey}-answer-${index}`, ...(activeBranch ? { dependsOn: activeBranch } : {}) });
     index += 1;
   };
 
@@ -355,6 +357,19 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
   for (let cursor = 0; cursor < lines.length; cursor += 1) {
     const line = lines[cursor];
     if (!line.trim()) continue;
+
+    if (isHeadingLine(line)) {
+      const branch = line.match(/如果你選\s*([A-Z])(?:（([^）]+)）|\(([^)]+)\))/);
+      if (branch) {
+        const letter = branch[1];
+        const label = cleanText(branch[2] ?? branch[3] ?? letter);
+        const sourceField = [...fields].reverse().find((field) => field.type === "checkboxes" && (field.options ?? []).some((option) => new RegExp(`^${letter}(?:[.、：:]|\\s|$)`, "i").test(option.label)));
+        const option = sourceField?.options?.find((candidate) => new RegExp(`^${letter}(?:[.、：:]|\\s|$)`, "i").test(candidate.label));
+        activeBranch = sourceField && option ? { fieldKey: sourceField.key, optionKey: option.key, optionLabel: label } : undefined;
+      } else {
+        activeBranch = undefined;
+      }
+    }
 
     // ---- Tables --------------------------------------------------------
     if (isTableRow(line) && cursor + 1 < lines.length && isSeparatorRow(lines[cursor + 1])) {
