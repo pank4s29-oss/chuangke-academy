@@ -73,7 +73,15 @@ export function extractImportedAnswers(source: string, fields: AssignmentField[]
       if (value && !/^(＿＿+|_{4,})$/.test(value)) answers[field.key] = value;
       continue;
     }
-    const prompt = field.prompt.split("＿＿＿＿")[0].replace(/[：:]\s*$/, "").trim();
+    const promptBase = field.prompt.split("＿＿＿＿")[0].replace(/[：:]\s*$/, "").trim();
+    // Trailing parenthetical instructions — "（抄任務 1-A）", "（只能勾一個）",
+    // "（第 2 格）" — are guidance for the student, not text a filled-in answer
+    // is expected to repeat verbatim. Searching for the prompt *including*
+    // one of these (as written) never matches a real answer file, which is
+    // why appendix/"抄前面任務答案" style fields — whose whole prompt is
+    // something like "我服務的是（抄任務 1-A）" — used to come back empty even
+    // when the earlier task's answer was clearly filled in.
+    const prompt = promptBase.replace(/[（(][^（）()]{0,24}[）)]\s*$/, "").trim() || promptBase;
     if (!prompt) continue;
     const blankMarker = /＿＿+|_{4,}/;
     // Match against the quote-stripped, emphasis-stripped line so a filled
