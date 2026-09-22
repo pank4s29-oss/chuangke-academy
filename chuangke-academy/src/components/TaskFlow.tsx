@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import type { Stage } from "@/lib/content/schema";
 import type { AssignmentField, TaskWithFields } from "@/lib/content/taskSections";
-import { isFieldActive } from "@/lib/content/taskSections";
+import { isFieldActive } from "@/lib/content/fieldState";
 import { fieldsToCanonical } from "@/lib/content/questions";
 import QuestionRenderer from "./QuestionRenderer";
 import AssignmentTable from "./AssignmentTable";
