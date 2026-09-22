@@ -53,7 +53,10 @@ export function buildRecallAnswers(stageKey: string, tasks: TaskWithFields[], sa
       ["stage-02-2-5-answer-12", ["stage-02-2-4-answer-14"]],
       ["stage-02-2-5-answer-31", ["stage-02-2-4-answer-13"]],
       ["stage-02-附錄-answer-0", ["stage-02-2-1-answer-30"]],
-      ["stage-02-附錄-answer-1", ["stage-02-2-2-answer-1"]],
+      // The appendix asks for the selected person's name and profile, not the
+      // earlier "person 1" setup sentence. Combine the three fields from the
+      // actual 2.2-A first portrait box when they have been filled.
+      ["stage-02-附錄-answer-1", ["stage-02-2-2-answer-7", "stage-02-2-2-answer-8", "stage-02-2-2-answer-9"]],
       ["stage-02-附錄-answer-5", ["stage-02-2-3-answer-25"]],
       ["stage-02-附錄-answer-6", ["stage-02-2-4-answer-14", "stage-02-2-4-answer-15"]],
       ["stage-02-附錄-answer-7", ["stage-02-2-5-answer-34"]],

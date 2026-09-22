@@ -209,4 +209,14 @@ describe("getAssignmentFields", () => {
     expect(task?.fields.filter((field) => field.group === "第 2 格：他的一天")).toHaveLength(3);
     expect(task?.fields.some((field) => field.group === "第 3 格：他現在卡在哪一件事")).toBe(true);
   });
+
+  it("marks stage 1 task 2 support questions as optional", () => {
+    const task = readStageTasks("stage-01").find((item) => item.key === "stage-01-2");
+    const optional = task?.fields.filter((field) => field.required === false) ?? [];
+    expect(optional.map((field) => field.prompt)).toEqual([
+      "我查的關鍵字是：＿＿＿＿（選填）",
+      "我放大過的範圍是：＿＿＿＿（選填）",
+      "我這一行的客人，通常是怎麼找到老師的？＿＿＿＿（選填）",
+    ]);
+  });
 });

@@ -8,5 +8,7 @@ type Props = { params: { workspaceId: string; courseKey: string; stageKey: strin
 export default function WorkspaceLearnPage({ params }: Props) {
   const stage = params.courseKey === course.key ? course.stages.find((item) => item.key === params.stageKey) : undefined;
   if (!stage) notFound();
-  return <TaskFlow stage={stage} courseKey={course.key} tasks={readTaskSectionsWithFields(stage.key)} workspaceId={params.workspaceId} />;
+  const stageIndex = course.stages.findIndex((item) => item.key === stage.key);
+  const nextStageKey = course.stages[stageIndex + 1]?.key;
+  return <TaskFlow stage={stage} courseKey={course.key} tasks={readTaskSectionsWithFields(stage.key)} workspaceId={params.workspaceId} nextStageKey={nextStageKey} />;
 }

@@ -20,6 +20,8 @@ export type AssignmentField = {
   tableColumn?: string;
   hiddenInGroup?: boolean;
   otherFor?: string;
+  /** Optional fields are displayed and editable but do not block submission. */
+  required?: boolean;
   dependsOn?: { fieldKey: string; optionKey: string; optionLabel: string };
 };
 
@@ -383,7 +385,8 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
   let index = 0;
   let activeBranch: { fieldKey: string; optionKey: string; optionLabel: string } | undefined;
   const add = (field: Omit<AssignmentField, "key">) => {
-    fields.push({ ...field, key: `${taskKey}-answer-${index}`, ...(activeBranch ? { dependsOn: activeBranch } : {}) });
+    const optional = taskKey === "stage-01-2" && /我查的關鍵字|我放大過的範圍|通常是怎麼找到老師/.test(field.prompt);
+    fields.push({ ...field, key: `${taskKey}-answer-${index}`, required: optional ? false : true, ...(activeBranch ? { dependsOn: activeBranch } : {}) });
     index += 1;
   };
 

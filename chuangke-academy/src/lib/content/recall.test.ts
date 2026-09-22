@@ -26,4 +26,21 @@ describe("跨階段作業回顧帶入", () => {
     }, { "stage-02-2-1-answer-1": "學員自己改過的新答案" });
     expect(result.answers["stage-02-2-1-answer-1"]).toBe("學員自己改過的新答案");
   });
+
+  it("會把附錄藍圖的同題答案自動帶入", () => {
+    const result = buildRecallAnswers("stage-01", tasks, {
+      "stage-01": {
+        "stage-01-1-answer-3": "我服務的是已花過錢的美睫師",
+        "stage-01-1-answer-11": "從接不到客人變成穩定接案",
+        "stage-01-1-answer-14": "我以前也接不到客人，後來建立流程",
+        "stage-01-2-answer-20": "總是接不到穩定客人",
+        "stage-01-4-answer-12": "只想要保證結果的人",
+        "stage-01-4-answer-15": "你現在每月有幾位新客？",
+        "stage-01-5-answer-0": "10 月 1 日",
+      },
+    }, {});
+    expect(result.answers["stage-01-附錄-answer-0"]).toBe("我服務的是已花過錢的美睫師");
+    expect(result.answers["stage-01-附錄-answer-3"]).toBe("總是接不到穩定客人");
+    expect(result.answers["stage-01-附錄-answer-5"]).toBe("你現在每月有幾位新客？");
+  });
 });
