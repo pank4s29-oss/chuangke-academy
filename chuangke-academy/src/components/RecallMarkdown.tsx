@@ -3,7 +3,8 @@
 import { useMemo, useState, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type { TaskWithFields } from "@/lib/content/taskSections";
+import type { AssignmentField, TaskWithFields } from "@/lib/content/taskSections";
+import { isFieldActive, stepOrdinal } from "@/lib/content/taskSections";
 import { fieldsToCanonical, answerDisplay } from "@/lib/content/questions";
 import { getQuestionNumbers } from "@/lib/content/questionNumbers";
 
@@ -12,9 +13,98 @@ type Answers = Record<string, Answer>;
 type SavedAnswersByStage = Record<string, Answers>;
 type Props = { markdown: string; tasks: TaskWithFields[]; answersByStage: SavedAnswersByStage };
 type RecallTarget = { code: string; stageKey: string; task: TaskWithFields; fieldKey?: string; questionNumber?: number };
+type SectionEntry = { stageKey: string; task: TaskWithFields; fields: AssignmentField[] };
 
 const RECALL_RE = /(?<![\w.])([12])\.(\d+(?:\.\d+)?)-([A-Z])\b/g;
 const REFERENCES = ["1.1-A", "1.1-B", "1.1-C", "1.1-D", "1.1-E", "1.2-A", "1.2-B", "1.2-C", "1.2-D", "1.2-E", "1.3-A", "1.3-B", "1.3-C", "1.3-D", "1.4-A", "1.4-B", "1.4-C", "1.4-D", "1.5-A", "1.5-B", "1.5-C", "1.5-D", "2.1-A", "2.1-B", "2.1-C", "2.2-A", "2.2-B", "2.2-C", "2.3-A", "2.3-B", "2.3-C", "2.3-D", "2.4-A", "2.4-B", "2.4-C", "2.4-D", "2.5-A", "2.5-B", "2.5-C", "2.5-D", "2.5-E"];
+
+// How many characters after a code like "1.1-B" to look at when deciding
+// *which* sub-question inside that lettered section the reference means
+// (e.g. "步驟 2", "第 4 格", "恐懼層"). Long enough to catch every qualifier
+// phrase actually used in the content, short enough to never reach into an
+// unrelated sentence.
+const QUALIFIER_WINDOW = 18;
+
+// A layer-table reference (2.1-A's 表面痛／真正要的結果／恐懼 rows) is often
+// worded as a nickname rather than the literal row label — "中間那層" for the
+// middle row, "恐懼那一層" / just "恐懼" for the bottom one — so map every
+// wording actually used in the content to the row label the parser records
+// on the field (`tableRow`). Longest/most specific alternatives first.
+const LAYER_KEYWORDS: Array<[string, string]> = [
+  ["真正要的結果", "真正要的結果"],
+  ["中間那層", "真正要的結果"],
+  ["表面痛", "表面痛"],
+  ["恐懼那一層", "恐懼"],
+  ["恐懼層", "恐懼"],
+  ["恐懼", "恐懼"],
+];
+
+type Qualifier = { kind: "step"; n: number } | { kind: "layer"; row: string };
+
+/** Reads the qualifier (if any) right after a "1.1-B"-style code, e.g. the
+ *  " 步驟 2 那句…" in "抄 1.1-B 步驟 2 那句「他會親口說的話」", or the
+ *  "恐懼層）" in "（抄 2.1-A 恐懼層）". Returns undefined when the following
+ *  text is just ordinary prose with no specific sub-question named. */
+function extractQualifier(tail: string): Qualifier | undefined {
+  const trimmed = tail.replace(/^[\s、，,的]+/, "");
+  const stepMatch = trimmed.match(/^(?:步驟|槓桿|第)\s*([0-9]+)\s*(?:格|項|問)?/);
+  if (stepMatch) return { kind: "step", n: Number(stepMatch[1]) };
+  for (const [keyword, row] of LAYER_KEYWORDS) {
+    if (trimmed.startsWith(keyword)) return { kind: "layer", row };
+  }
+  return undefined;
+}
+
+/** Narrows a section's fields down to the one(s) a reference + qualifier
+ *  actually names, instead of always handing back the section's first field
+ *  regardless of what the surrounding text says.
+ *
+ *  - A "步驟 N" / "槓桿 N" / "第 N 格" qualifier restricts to the fields filed
+ *    under that specific sub-heading (see `sourceStepKey` in taskSections.ts).
+ *  - A layer qualifier (表面痛／中間那層／恐懼層…) restricts to the matching
+ *    table row.
+ *  - With no qualifier — most references are just "1.1-B", not "1.1-B 步驟 2"
+ *    — the field the box is actually named for is almost always the *last*
+ *    one: earlier fields in the same lettered section are scaffolding
+ *    checkboxes (see 1-B's 步驟 1 "他半夜睡不著在想的事") that build up to a
+ *    single synthesized sentence at the end (1-B's 步驟 3 "我幫他解決的問題
+ *    是…"). Optional/supplementary fields (e.g. 2-E's "選填" keyword notes)
+ *    are excluded first so they never get picked over the section's real
+ *    question.
+ *  - When the resulting field is one of several mutually-exclusive branch
+ *    alternatives (e.g. 1-C's 經歷型／方法型／結果型 sentences, which all
+ *    `dependsOn` the same 切角 checkbox), every sibling in that branch group
+ *    is returned so the caller can pick whichever one the learner actually
+ *    selected once it knows the saved answers. */
+function pickCandidateFields(fields: AssignmentField[], qualifier: Qualifier | undefined): AssignmentField[] {
+  if (qualifier?.kind === "layer") {
+    const layered = fields.filter((field) => field.tableRow === qualifier.row);
+    if (layered.length) return layered;
+  }
+  let pool = fields;
+  if (qualifier?.kind === "step") {
+    const stepped = fields.filter((field) => stepOrdinal(field.sourceStepKey) === qualifier.n);
+    if (stepped.length) pool = stepped;
+  }
+  const required = pool.filter((field) => field.required !== false);
+  const finalPool = required.length ? required : pool;
+  const last = finalPool[finalPool.length - 1];
+  if (!last) return [];
+  if (last.dependsOn) {
+    const branchKey = last.dependsOn.fieldKey;
+    return finalPool.filter((field) => field.dependsOn?.fieldKey === branchKey);
+  }
+  return [last];
+}
+
+/** Among mutually-exclusive branch candidates, picks the one the learner
+ *  actually selected (same check the live assignment form uses to decide
+ *  which branch field to show). Falls back to the first candidate — usually
+ *  the most common branch — when nothing has been answered yet. */
+function resolveField(candidates: AssignmentField[], answers: Answers): AssignmentField | undefined {
+  if (candidates.length <= 1) return candidates[0];
+  return candidates.find((field) => isFieldActive(field, answers)) ?? candidates[0];
+}
 
 function normalizeLocalReferences(text: string, currentTaskKey?: string) {
   if (!currentTaskKey) return text;
@@ -33,7 +123,7 @@ export function referenceParts(code: string) {
   return { stageKey: `stage-0${match[1]}`, taskKey, sectionKey };
 }
 
-function textWithReferences(text: string, resolve: (code: string) => RecallTarget | undefined, onSelect: (target: RecallTarget) => void) {
+function textWithReferences(text: string, resolve: (code: string, tail: string) => RecallTarget | undefined, onSelect: (target: RecallTarget) => void) {
   const parts: ReactNode[] = [];
   let cursor = 0;
   RECALL_RE.lastIndex = 0;
@@ -41,7 +131,8 @@ function textWithReferences(text: string, resolve: (code: string) => RecallTarge
     const code = match[0];
     const start = match.index ?? 0;
     if (start > cursor) parts.push(text.slice(cursor, start));
-    const target = resolve(code);
+    const tail = text.slice(start + code.length, start + code.length + QUALIFIER_WINDOW);
+    const target = resolve(code, tail);
     parts.push(target ? <button key={`${code}-${start}`} type="button" onClick={() => onSelect(target)} className="mx-0.5 inline-flex items-center rounded-md bg-teal-50 px-1.5 py-0.5 text-[0.92em] font-bold text-teal-800 ring-1 ring-inset ring-teal-200 transition hover:bg-teal-100 focus:outline-none focus:ring-2 focus:ring-teal-500" title={`查看 ${code} 的作答`}>第 {target.questionNumber ?? "—"} 題</button> : code);
     cursor = start + code.length;
   }
@@ -49,7 +140,7 @@ function textWithReferences(text: string, resolve: (code: string) => RecallTarge
   return parts;
 }
 
-function renderChildren(children: ReactNode, resolve: (code: string) => RecallTarget | undefined, onSelect: (target: RecallTarget) => void): ReactNode {
+function renderChildren(children: ReactNode, resolve: (code: string, tail: string) => RecallTarget | undefined, onSelect: (target: RecallTarget) => void): ReactNode {
   if (typeof children === "string") return textWithReferences(children, resolve, onSelect);
   if (Array.isArray(children)) return children.map((child, index) => <span key={index}>{renderChildren(child, resolve, onSelect)}</span>);
   return children;
@@ -69,11 +160,16 @@ function AnswerDialog({ target, answers, onClose }: { target: RecallTarget; answ
   </div>;
 }
 
-function buildTargets(tasks: TaskWithFields[]) {
-  const map = new Map<string, RecallTarget>();
+/** Indexes every field belonging to each "1.1-B"-style section, keyed by
+ *  code, so a reference can be resolved against *all* of that section's
+ *  fields (see `pickCandidateFields`) instead of a single field baked in
+ *  ahead of time. This step is answer-independent and safe to memoize on
+ *  `tasks` alone; the actual field choice happens per-occurrence in
+ *  `resolveTarget`, once the qualifier text and saved answers are known. */
+function buildSectionIndex(tasks: TaskWithFields[]) {
+  const map = new Map<string, SectionEntry>();
   tasks.forEach((task) => {
-    const numbers = getQuestionNumbers(task.fields);
-    const bySection = new Map<string, typeof task.fields>();
+    const bySection = new Map<string, AssignmentField[]>();
     task.fields.filter((field) => !field.hiddenInGroup && field.sourceSectionKey).forEach((field) => {
       const list = bySection.get(field.sourceSectionKey!) ?? [];
       list.push(field);
@@ -82,23 +178,33 @@ function buildTargets(tasks: TaskWithFields[]) {
     REFERENCES.forEach((code) => {
       const parts = referenceParts(code);
       if (!parts || parts.taskKey !== task.key) return;
-      const field = bySection.get(parts.sectionKey)?.[0];
-      map.set(code, { code, stageKey: parts.stageKey, task, fieldKey: field?.key, questionNumber: field ? numbers[field.key] : undefined });
+      const fields = bySection.get(parts.sectionKey);
+      if (fields?.length) map.set(code, { stageKey: parts.stageKey, task, fields });
     });
   });
   return map;
 }
 
+function resolveTarget(code: string, tail: string, index: Map<string, SectionEntry>, answersByStage: SavedAnswersByStage): RecallTarget | undefined {
+  const entry = index.get(code);
+  if (!entry) return undefined;
+  const qualifier = extractQualifier(tail);
+  const candidates = pickCandidateFields(entry.fields, qualifier);
+  const field = resolveField(candidates, answersByStage[entry.stageKey] ?? {});
+  const numbers = getQuestionNumbers(entry.task.fields);
+  return { code, stageKey: entry.stageKey, task: entry.task, fieldKey: field?.key, questionNumber: field ? numbers[field.key] : undefined };
+}
+
 export function RecallText({ text, tasks, answersByStage, currentTaskKey, className }: { text: string; tasks: TaskWithFields[]; answersByStage: SavedAnswersByStage; currentTaskKey?: string; className?: string }) {
   const [selected, setSelected] = useState<RecallTarget>();
-  const targets = useMemo(() => buildTargets(tasks), [tasks]);
-  return <span className={className}>{textWithReferences(normalizeLocalReferences(text, currentTaskKey), (code) => targets.get(code), setSelected)}{selected && <AnswerDialog target={selected} answers={answersByStage[selected.stageKey] ?? {}} onClose={() => setSelected(undefined)} />}</span>;
+  const index = useMemo(() => buildSectionIndex(tasks), [tasks]);
+  return <span className={className}>{textWithReferences(normalizeLocalReferences(text, currentTaskKey), (code, tail) => resolveTarget(code, tail, index, answersByStage), setSelected)}{selected && <AnswerDialog target={selected} answers={answersByStage[selected.stageKey] ?? {}} onClose={() => setSelected(undefined)} />}</span>;
 }
 
 export default function RecallMarkdown({ markdown, tasks, answersByStage, currentTaskKey }: Props & { currentTaskKey?: string }) {
   const [selected, setSelected] = useState<RecallTarget>();
-  const targets = useMemo(() => buildTargets(tasks), [tasks]);
-  const resolve = (code: string) => targets.get(code);
+  const index = useMemo(() => buildSectionIndex(tasks), [tasks]);
+  const resolve = (code: string, tail: string) => resolveTarget(code, tail, index, answersByStage);
   const components = {
     p: ({ children }: { children?: ReactNode }) => <p>{renderChildren(children, resolve, setSelected)}</p>,
     li: ({ children }: { children?: ReactNode }) => <li>{renderChildren(children, resolve, setSelected)}</li>,
