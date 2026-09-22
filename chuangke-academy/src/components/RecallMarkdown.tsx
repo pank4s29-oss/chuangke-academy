@@ -4,7 +4,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { AssignmentField, TaskWithFields } from "@/lib/content/taskSections";
-import { isFieldActive, stepOrdinal } from "@/lib/content/taskSections";
+import { isFieldActive, stepOrdinal } from "@/lib/content/fieldState";
 import { fieldsToCanonical, answerDisplay } from "@/lib/content/questions";
 import { getQuestionNumbers } from "@/lib/content/questionNumbers";
 
