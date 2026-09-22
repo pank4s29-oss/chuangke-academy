@@ -14,10 +14,14 @@ export default function QuestionRenderer({ question, questionNumbers = {}, value
     const multiple = question.type === "multi_choice";
     return <fieldset className="mt-3 grid gap-2 sm:grid-cols-2"><legend className="sr-only">{recall(question.label)}</legend>{question.options?.map((option) => {
       const inputId = `${question.id}-${option.id}`;
-      return <div key={option.id} className={`flex items-start gap-3 rounded-xl border px-3 py-3 text-sm leading-6 transition ${selected.includes(option.id) ? "border-teal-300 bg-teal-50 text-teal-950" : "border-slate-200 bg-white text-slate-700 hover:border-teal-200"}`}>
-        <input id={inputId} className="mt-1 h-4 w-4 shrink-0 accent-teal-600" type={multiple ? "checkbox" : "radio"} name={question.id} checked={selected.includes(option.id)} onChange={(event) => { if (!multiple) onChange(event.currentTarget.checked ? option.id : ""); else onChange(event.currentTarget.checked ? [...selected, option.id] : selected.filter((item) => item !== option.id)); }} />
+      const isSelected = selected.includes(option.id);
+      return <div key={option.id} className={`flex items-start gap-3 rounded-xl border px-3 py-3 text-sm leading-6 transition ${isSelected ? "border-teal-300 bg-teal-50 text-teal-950" : "border-slate-200 bg-white text-slate-700 hover:border-teal-200"}`}>
+        <input id={inputId} className="peer sr-only" type={multiple ? "checkbox" : "radio"} name={question.id} checked={isSelected} onChange={(event) => { if (!multiple) onChange(event.currentTarget.checked ? option.id : ""); else onChange(event.currentTarget.checked ? [...selected, option.id] : selected.filter((item) => item !== option.id)); }} />
+        <span aria-hidden="true" className={`mt-1 flex h-4 w-4 shrink-0 items-center justify-center border-2 transition peer-focus-visible:ring-2 peer-focus-visible:ring-teal-400 peer-focus-visible:ring-offset-1 ${multiple ? "rounded-md" : "rounded-full"} ${isSelected ? "border-teal-600 bg-white" : "border-slate-300 bg-white"}`}>
+          {isSelected && (multiple ? <span className="text-[11px] font-black leading-none text-teal-600">✓</span> : <span className="h-2 w-2 rounded-full bg-teal-600" />)}
+        </span>
         <label htmlFor={inputId} className="min-w-0 flex-1 cursor-pointer">{recall(option.label)}</label>
-        {option.otherInputKey && selected.includes(option.id) && <input className="mt-2 w-full rounded-lg border border-teal-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-100" aria-label={`${option.label}補充內容`} placeholder="請填寫其他內容" value={String(otherValues[option.otherInputKey] ?? "")} onChange={(event) => onOtherChange?.(option.otherInputKey!, event.target.value)} />}
+        {option.otherInputKey && isSelected && <input className="mt-2 w-full rounded-lg border border-teal-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-100" aria-label={`${option.label}補充內容`} placeholder="請填寫其他內容" value={String(otherValues[option.otherInputKey] ?? "")} onChange={(event) => onOtherChange?.(option.otherInputKey!, event.target.value)} />}
       </div>;
     })}</fieldset>;
   }
