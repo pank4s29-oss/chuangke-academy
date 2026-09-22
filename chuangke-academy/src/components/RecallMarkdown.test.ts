@@ -26,6 +26,12 @@ describe("RecallMarkdown 跨題引用解析", () => {
     expect(field?.key).toBe("stage-01-1-answer-11");
   });
 
+  it("任務 1 完成標準的 1-A、1-B、1-C 會連到各自的最後合成句", () => {
+    expect(fieldFor(resolveTarget("1.1-A", "", index, {}))?.key).toBe("stage-01-1-answer-3");
+    expect(fieldFor(resolveTarget("1.1-B", "", index, {}))?.key).toBe("stage-01-1-answer-11");
+    expect(fieldFor(resolveTarget("1.1-C", "", index, {}))?.key).toBe("stage-01-1-answer-14");
+  });
+
   it('"翻回 1.2-E，你有沒有勾 D" 要指向 A–E 那一題本身，而不是後面「選填」的關鍵字欄位', () => {
     const target = resolveTarget("1.2-E", "，你有沒有勾 D", index, {});
     const field = fieldFor(target);
