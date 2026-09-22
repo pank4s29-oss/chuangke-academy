@@ -5,6 +5,7 @@ export type TaskSection = { key: string; title: string; lecture: string; assignm
 export type AssignmentOption = { key: string; label: string; otherInputKey?: string };
 export type AssignmentField = {
   key: string;
+  sourceSectionKey?: string;
   prompt: string;
   /** Short, optional helper text shown under the prompt — e.g. the original
    *  fill-in-the-blank sentence template ("我服務的是____的____。") so the
@@ -383,10 +384,11 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
   const lines = assignment.split(/\r?\n/);
   const fields: AssignmentField[] = [];
   let index = 0;
+  let sourceSectionKey: string | undefined;
   let activeBranch: { fieldKey: string; optionKey: string; optionLabel: string } | undefined;
   const add = (field: Omit<AssignmentField, "key">) => {
     const optional = taskKey === "stage-01-2" && /我查的關鍵字|我放大過的範圍|通常是怎麼找到老師/.test(field.prompt);
-    fields.push({ ...field, key: `${taskKey}-answer-${index}`, required: optional ? false : true, ...(activeBranch ? { dependsOn: activeBranch } : {}) });
+    fields.push({ ...field, key: `${taskKey}-answer-${index}`, sourceSectionKey, required: optional ? false : true, ...(activeBranch ? { dependsOn: activeBranch } : {}) });
     index += 1;
   };
 
@@ -416,6 +418,8 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
     if (!line.trim()) continue;
 
     if (isHeadingLine(line)) {
+      const section = line.match(/^##\s+([^\s：:]+)[\s：:]/);
+      if (section) sourceSectionKey = section[1];
       const branch = line.match(/如果你選\s*([A-Z])(?:（([^）]+)）|\(([^)]+)\))/);
       if (branch) {
         const letter = branch[1];

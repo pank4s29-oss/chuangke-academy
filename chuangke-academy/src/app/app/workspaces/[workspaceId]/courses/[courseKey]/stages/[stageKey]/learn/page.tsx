@@ -10,5 +10,7 @@ export default function WorkspaceLearnPage({ params }: Props) {
   if (!stage) notFound();
   const stageIndex = course.stages.findIndex((item) => item.key === stage.key);
   const nextStageKey = course.stages[stageIndex + 1]?.key;
-  return <TaskFlow stage={stage} courseKey={course.key} tasks={readTaskSectionsWithFields(stage.key)} workspaceId={params.workspaceId} nextStageKey={nextStageKey} />;
+  const tasks = readTaskSectionsWithFields(stage.key);
+  const referenceTasks = [...new Set(["stage-01", "stage-02", stage.key])].flatMap((key) => readTaskSectionsWithFields(key));
+  return <TaskFlow stage={stage} courseKey={course.key} tasks={tasks} referenceTasks={referenceTasks} workspaceId={params.workspaceId} nextStageKey={nextStageKey} />;
 }
