@@ -166,7 +166,7 @@ function AnswerDialog({ target, answers, onClose }: { target: RecallTarget; answ
  *  ahead of time. This step is answer-independent and safe to memoize on
  *  `tasks` alone; the actual field choice happens per-occurrence in
  *  `resolveTarget`, once the qualifier text and saved answers are known. */
-function buildSectionIndex(tasks: TaskWithFields[]) {
+export function buildSectionIndex(tasks: TaskWithFields[]) {
   const map = new Map<string, SectionEntry>();
   tasks.forEach((task) => {
     const bySection = new Map<string, AssignmentField[]>();
@@ -185,7 +185,7 @@ function buildSectionIndex(tasks: TaskWithFields[]) {
   return map;
 }
 
-function resolveTarget(code: string, tail: string, index: Map<string, SectionEntry>, answersByStage: SavedAnswersByStage): RecallTarget | undefined {
+export function resolveTarget(code: string, tail: string, index: Map<string, SectionEntry>, answersByStage: SavedAnswersByStage): RecallTarget | undefined {
   const entry = index.get(code);
   if (!entry) return undefined;
   const qualifier = extractQualifier(tail);
