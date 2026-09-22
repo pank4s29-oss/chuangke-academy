@@ -133,7 +133,7 @@ function textWithReferences(text: string, resolve: (code: string, tail: string) 
     if (start > cursor) parts.push(text.slice(cursor, start));
     const tail = text.slice(start + code.length, start + code.length + QUALIFIER_WINDOW);
     const target = resolve(code, tail);
-    parts.push(target ? <button key={`${code}-${start}`} type="button" onClick={() => onSelect(target)} className="mx-0.5 inline-flex items-center rounded-md bg-teal-50 px-1.5 py-0.5 text-[0.92em] font-bold text-teal-800 ring-1 ring-inset ring-teal-200 transition hover:bg-teal-100 focus:outline-none focus:ring-2 focus:ring-teal-500" title={`查看 ${code} 的作答`}>第 {target.questionNumber ?? "—"} 題</button> : code);
+    parts.push(target ? <button key={`${code}-${start}`} type="button" onMouseDown={(event) => event.preventDefault()} onClick={(event) => { event.preventDefault(); event.stopPropagation(); onSelect(target); }} className="mx-0.5 inline-flex items-center rounded-md bg-teal-50 px-1.5 py-0.5 text-[0.92em] font-bold text-teal-800 ring-1 ring-inset ring-teal-200 transition hover:bg-teal-100 focus:outline-none focus:ring-2 focus:ring-teal-500" title={`查看 ${code} 的作答`}>第 {target.questionNumber ?? "—"} 題</button> : code);
     cursor = start + code.length;
   }
   if (cursor < text.length) parts.push(text.slice(cursor));
