@@ -151,6 +151,18 @@ function isTemplateOrReferenceLine(value: string) {
   return /^\*\*(句型|參考)[:：]/.test(value);
 }
 
+/** A "**範例：**" (worked example) line illustrates one possible answer, it
+ *  does not ask the question. Unlike "句型"/"參考" (which spell out the shape
+ *  every answer must take, so they're deliberately preferred as context), an
+ *  example is specific to one scenario and reads oddly if shown as if it
+ *  were the prompt itself — e.g. a blank ending up labelled "範例： 先招生，
+ *  再造課。／先看懂題目，再動筆" instead of the actual instruction one line
+ *  further up ("把定位句壓成一句 15 字以內、可以直接當廣告標題的話"). Treated
+ *  as a last-resort fallback, the same way a bare "你的答案" label is. */
+function isExampleLine(value: string) {
+  return /^\*\*(範例|舉例)[:：]/.test(value);
+}
+
 /** Find the best line above `index` to describe what a field is asking for,
  *  scanning up to the enclosing block's boundary (a heading or a "---" rule)
  *  rather than a fixed number of lines, since a block's template/example
@@ -184,6 +196,7 @@ function meaningfulContext(lines: string[], index: number) {
 
   let aside: string | null = null;
   let answerLabel: string | null = null;
+  let example: string | null = null;
   for (const value of collected) {
     if (value.startsWith(">") || value.startsWith("|")) continue;
     // a checkbox option line was already consumed as part of its own group;
@@ -202,6 +215,10 @@ function meaningfulContext(lines: string[], index: number) {
       if (answerLabel === null) answerLabel = value;
       continue;
     }
+    if (isExampleLine(value)) {
+      if (example === null) example = value;
+      continue;
+    }
     if (isParentheticalAside(value)) {
       if (aside === null) aside = value;
       continue;
@@ -209,6 +226,7 @@ function meaningfulContext(lines: string[], index: number) {
     return cleanText(value) || "請完成這一題";
   }
   if (headingFallback) return cleanText(headingFallback) || "請完成這一題";
+  if (example) return cleanText(example) || "請完成這一題";
   if (aside) return cleanText(aside) || "請完成這一題";
   if (answerLabel) return cleanText(answerLabel) || "請完成這一題";
   return "請完成這一題";
