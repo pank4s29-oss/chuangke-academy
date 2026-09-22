@@ -6,6 +6,13 @@ export type AssignmentOption = { key: string; label: string; otherInputKey?: str
 export type AssignmentField = {
   key: string;
   sourceSectionKey?: string;
+  /** Cleaned text of the nearest preceding sub-heading (### / #### ) inside
+   *  the current "## N.N-X" section, e.g. "步驟 2：把它寫成「他會親口說的一句話」"
+   *  or "第 4 格：他試過什麼？為什麼沒用". Lets a cross-reference like "抄 1.1-B
+   *  步驟 2" or "2.2-A 第 4 格" resolve to the specific sub-question it names
+   *  instead of always landing on the first field of the whole lettered
+   *  section. Reset to undefined whenever a new "##" section starts. */
+  sourceStepKey?: string;
   prompt: string;
   /** Short, optional helper text shown under the prompt — e.g. the original
    *  fill-in-the-blank sentence template ("我服務的是____的____。") so the
@@ -374,6 +381,29 @@ function collectCheckboxOptions(lines: string[], start: number) {
   return { options, end: cursor };
 }
 
+/** Extracts the leading ordinal from a sub-heading such as "步驟 2：…",
+ *  "槓桿 2：…" or "第 4 格：…" so a qualifier following a cross-reference code
+ *  (e.g. "1.1-B 步驟 2", "2.2-A 第 4 格") can be matched back to the field(s)
+ *  filed under that specific sub-heading, instead of the section's first
+ *  field regardless of which step the text actually points at. */
+export function stepOrdinal(headingText?: string): number | null {
+  if (!headingText) return null;
+  const match = headingText.match(/^(?:步驟|槓桿|第)\s*([0-9]+)\s*(?:格|項|問)?/);
+  return match ? Number(match[1]) : null;
+}
+
+/** Whether `field` should currently be shown/counted, given `answers` for its
+ *  own stage — i.e. its `dependsOn` branch (if any) is the one selected.
+ *  Fields with no `dependsOn` are always active. This is the single source of
+ *  truth for branch visibility; both the live assignment form (TaskFlow) and
+ *  the cross-reference review popup (RecallMarkdown) must agree on which of
+ *  several mutually-exclusive branch fields is "the" answer for a section. */
+export function isFieldActive(field: Pick<AssignmentField, "dependsOn">, answers: Record<string, string | string[] | undefined>) {
+  if (!field.dependsOn) return true;
+  const value = answers[field.dependsOn.fieldKey];
+  return Array.isArray(value) ? value.includes(field.dependsOn.optionKey) : value === field.dependsOn.optionKey;
+}
+
 function detectSingleSelect(lines: string[], start: number, end: number) {
   const windowText = lines.slice(Math.max(0, start - 6), Math.min(lines.length, end + 1)).join(" ");
   if (/可複選/.test(windowText)) return false;
@@ -385,10 +415,11 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
   const fields: AssignmentField[] = [];
   let index = 0;
   let sourceSectionKey: string | undefined;
+  let sourceStepKey: string | undefined;
   let activeBranch: { fieldKey: string; optionKey: string; optionLabel: string } | undefined;
   const add = (field: Omit<AssignmentField, "key">) => {
     const optional = taskKey === "stage-01-2" && /我查的關鍵字|我放大過的範圍|通常是怎麼找到老師/.test(field.prompt);
-    fields.push({ ...field, key: `${taskKey}-answer-${index}`, sourceSectionKey, required: optional ? false : true, ...(activeBranch ? { dependsOn: activeBranch } : {}) });
+    fields.push({ ...field, key: `${taskKey}-answer-${index}`, sourceSectionKey, sourceStepKey, required: optional ? false : true, ...(activeBranch ? { dependsOn: activeBranch } : {}) });
     index += 1;
   };
 
@@ -419,7 +450,9 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
 
     if (isHeadingLine(line)) {
       const section = line.match(/^##\s+([^\s：:]+)[\s：:]/);
-      if (section) sourceSectionKey = section[1];
+      if (section) { sourceSectionKey = section[1]; sourceStepKey = undefined; }
+      const step = line.match(/^#{3,4}\s+(.+)$/);
+      if (step) sourceStepKey = cleanText(step[1]);
       const branch = line.match(/如果你選\s*([A-Z])(?:（([^）]+)）|\(([^)]+)\))/);
       if (branch) {
         const letter = branch[1];
