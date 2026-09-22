@@ -16,6 +16,15 @@ type RecallTarget = { code: string; stageKey: string; task: TaskWithFields; fiel
 const RECALL_RE = /(?<![\w.])([12])\.(\d+(?:\.\d+)?)-([A-Z])\b/g;
 const REFERENCES = ["1.1-A", "1.1-B", "1.1-C", "1.1-D", "1.1-E", "1.2-A", "1.2-B", "1.2-C", "1.2-D", "1.2-E", "1.3-A", "1.3-B", "1.3-C", "1.3-D", "1.4-A", "1.4-B", "1.4-C", "1.4-D", "1.5-A", "1.5-B", "1.5-C", "1.5-D", "2.1-A", "2.1-B", "2.1-C", "2.2-A", "2.2-B", "2.2-C", "2.3-A", "2.3-B", "2.3-C", "2.3-D", "2.4-A", "2.4-B", "2.4-C", "2.4-D", "2.5-A", "2.5-B", "2.5-C", "2.5-D", "2.5-E"];
 
+function normalizeLocalReferences(text: string, currentTaskKey?: string) {
+  if (!currentTaskKey) return text;
+  const match = currentTaskKey.match(/^stage-(01|02)-(.+)$/);
+  if (!match) return text;
+  const taskNumber = match[1] === "01" ? match[2].split("-").at(-1) : match[2].replace(/-/g, ".");
+  const stageNumber = match[1] === "01" ? "1" : "2";
+  return text.replace(/(?<![\w.])([1-5]-[A-Z])\b/g, (_full, local: string) => `${stageNumber}.${taskNumber}-${local.split("-")[1]}`);
+}
+
 export function referenceParts(code: string) {
   const match = code.match(/^([12])\.(\d+(?:\.\d+)?)-([A-Z])$/);
   if (!match) return null;
@@ -60,27 +69,35 @@ function AnswerDialog({ target, answers, onClose }: { target: RecallTarget; answ
   </div>;
 }
 
-export default function RecallMarkdown({ markdown, tasks, answersByStage }: Props) {
-  const [selected, setSelected] = useState<RecallTarget>();
-  const targets = useMemo(() => {
-    const map = new Map<string, RecallTarget>();
-    tasks.forEach((task) => {
-      const numbers = getQuestionNumbers(task.fields);
-      const bySection = new Map<string, typeof task.fields>();
-      task.fields.filter((field) => !field.hiddenInGroup && field.sourceSectionKey).forEach((field) => {
-        const list = bySection.get(field.sourceSectionKey!) ?? [];
-        list.push(field);
-        bySection.set(field.sourceSectionKey!, list);
-      });
-      REFERENCES.forEach((code) => {
-        const parts = referenceParts(code);
-        if (!parts || parts.taskKey !== task.key) return;
-        const field = bySection.get(parts.sectionKey)?.[0];
-        map.set(code, { code, stageKey: parts.stageKey, task, fieldKey: field?.key, questionNumber: field ? numbers[field.key] : undefined });
-      });
+function buildTargets(tasks: TaskWithFields[]) {
+  const map = new Map<string, RecallTarget>();
+  tasks.forEach((task) => {
+    const numbers = getQuestionNumbers(task.fields);
+    const bySection = new Map<string, typeof task.fields>();
+    task.fields.filter((field) => !field.hiddenInGroup && field.sourceSectionKey).forEach((field) => {
+      const list = bySection.get(field.sourceSectionKey!) ?? [];
+      list.push(field);
+      bySection.set(field.sourceSectionKey!, list);
     });
-    return map;
-  }, [tasks]);
+    REFERENCES.forEach((code) => {
+      const parts = referenceParts(code);
+      if (!parts || parts.taskKey !== task.key) return;
+      const field = bySection.get(parts.sectionKey)?.[0];
+      map.set(code, { code, stageKey: parts.stageKey, task, fieldKey: field?.key, questionNumber: field ? numbers[field.key] : undefined });
+    });
+  });
+  return map;
+}
+
+export function RecallText({ text, tasks, answersByStage, currentTaskKey, className }: { text: string; tasks: TaskWithFields[]; answersByStage: SavedAnswersByStage; currentTaskKey?: string; className?: string }) {
+  const [selected, setSelected] = useState<RecallTarget>();
+  const targets = useMemo(() => buildTargets(tasks), [tasks]);
+  return <span className={className}>{textWithReferences(normalizeLocalReferences(text, currentTaskKey), (code) => targets.get(code), setSelected)}{selected && <AnswerDialog target={selected} answers={answersByStage[selected.stageKey] ?? {}} onClose={() => setSelected(undefined)} />}</span>;
+}
+
+export default function RecallMarkdown({ markdown, tasks, answersByStage, currentTaskKey }: Props & { currentTaskKey?: string }) {
+  const [selected, setSelected] = useState<RecallTarget>();
+  const targets = useMemo(() => buildTargets(tasks), [tasks]);
   const resolve = (code: string) => targets.get(code);
   const components = {
     p: ({ children }: { children?: ReactNode }) => <p>{renderChildren(children, resolve, setSelected)}</p>,
@@ -89,5 +106,5 @@ export default function RecallMarkdown({ markdown, tasks, answersByStage }: Prop
     strong: ({ children }: { children?: ReactNode }) => <strong>{renderChildren(children, resolve, setSelected)}</strong>,
     em: ({ children }: { children?: ReactNode }) => <em>{renderChildren(children, resolve, setSelected)}</em>,
   };
-  return <><ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>{markdown}</ReactMarkdown>{selected && <AnswerDialog target={selected} answers={answersByStage[selected.stageKey] ?? {}} onClose={() => setSelected(undefined)} />}</>;
+  return <><ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>{normalizeLocalReferences(markdown, currentTaskKey)}</ReactMarkdown>{selected && <AnswerDialog target={selected} answers={answersByStage[selected.stageKey] ?? {}} onClose={() => setSelected(undefined)} />}</>;
 }
