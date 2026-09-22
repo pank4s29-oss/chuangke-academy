@@ -32,6 +32,7 @@ export type AssignmentField = {
   required?: boolean;
   dependsOn?: { fieldKey: string; optionKey: string; optionLabel: string };
 };
+export type QuestionOverride = { stage_key: string; task_key: string; field_key: string; prompt?: string | null; description?: string | null; options?: AssignmentOption[] | null };
 
 function readFirst(stageKey: string, matcher: (file: string) => boolean) {
   const directory = path.join(process.cwd(), "content", "source", stageKey);
@@ -118,6 +119,7 @@ function cleanText(raw: string) {
   // 【】 only ever wrap fill-in-the-blank slots in this content, never real
   // words, so any leftover (unbalanced, mid-string) bracket is just noise.
   text = text.replace(/[【】]/g, "");
+  text = text.replace(/^題目\s*[:：]\s*/, "");
   text = text.replace(/^[:：，,。.、]+/, "").replace(/[:：，,。.、]+$/, "");
   return text.replace(/\s+/g, " ").trim();
 }
@@ -149,6 +151,10 @@ function isAnswerPlaceholderLabel(value: string) {
  *  present in the same block, prefer it over anything else. */
 function isTemplateOrReferenceLine(value: string) {
   return /^\*\*(句型|參考)[:：]/.test(value);
+}
+
+function isQuestionLine(value: string) {
+  return /^\*\*題目[:：]/.test(value);
 }
 
 /** A "**範例：**" (worked example) line illustrates one possible answer, it
@@ -191,6 +197,8 @@ function meaningfulContext(lines: string[], index: number) {
     collected.push(value);
   }
 
+  const questionLine = collected.find(isQuestionLine);
+  if (questionLine) return cleanText(questionLine) || "請完成這一題";
   const templateLine = collected.find(isTemplateOrReferenceLine);
   if (templateLine) return cleanText(templateLine) || "請完成這一題";
 
@@ -597,6 +605,19 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
       actualBelief.dependsOn = { fieldKey: branchChoice.key, optionKey: secondOption.key, optionLabel: secondOption.label };
     }
   }
+  // Stage 1 task 1 intentionally presents 1-B as three visible steps inside
+  // one large question. Keep the three answer controls separate (so each
+  // saved answer remains addressable) but render them under one shared group
+  // heading, instead of making the learner feel they have started three new
+  // questions.
+  if (taskKey === "stage-01-1") {
+    fields.filter((field) => field.sourceSectionKey === "1-B" && field.type === "checkboxes" && field.sourceStepKey?.startsWith("我解決什麼問題｜步驟 2")).forEach((field) => {
+      field.group = "我解決什麼問題｜步驟 2：把它寫成「他會親口說的一句話」";
+    });
+    const sentenceField = fields.find((field) => field.sourceSectionKey === "1-B" && field.prompt === "把三格串起來");
+    const sentenceNote = assignment.match(/\*\*備註｜句型：\*\*\s*([^\n]+)/)?.[1]?.trim();
+    if (sentenceField && sentenceNote) sentenceField.description = sentenceNote;
+  }
   // When two or more fields in the same task ended up with the exact same
   // fallback prompt (typically because they all fell back to the same
   // enclosing section heading, e.g. two date blanks both under "## 5-A　先
@@ -617,6 +638,25 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
 
 export function readStageTasks(stageKey: string) {
   return readTaskSections(stageKey).map((task) => ({ ...task, fields: getAssignmentFields(task.assignment, task.key) }));
+}
+
+/** Apply teacher copy without changing stable answer keys, section references,
+ * dependencies, or the original Markdown-backed task metadata. */
+export function applyQuestionOverrides(tasks: TaskWithFields[], overrides: QuestionOverride[]) {
+  const byField = new Map(overrides.map((item) => [item.field_key, item]));
+  return tasks.map((task) => ({
+    ...task,
+    fields: task.fields.map((field) => {
+      const override = byField.get(field.key);
+      if (!override) return field;
+      return {
+        ...field,
+        ...(override.prompt != null ? { prompt: override.prompt } : {}),
+        ...(override.description != null ? { description: override.description } : {}),
+        ...(override.options != null ? { options: override.options } : {}),
+      };
+    }),
+  }));
 }
 
 export type TaskWithFields = TaskSection & { fields: AssignmentField[] };

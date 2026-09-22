@@ -17,7 +17,8 @@ describe("RecallMarkdown 跨題引用解析", () => {
     const target = resolveTarget("1.1-B", "步驟 2 那句「他會親口說的話」", index, {});
     const field = fieldFor(target);
     expect(field?.key).toBe("stage-01-1-answer-10");
-    expect(field?.prompt).toContain("①＋②＋③");
+    expect(field?.prompt).toContain("把三格串起來");
+    expect(field?.description).toContain("①＋②＋③");
   });
 
   it('沒有限定詞的 "1.1-B" 落回該小節最後一格（步驟 3 的合成句），而不是第一格的勾選題', () => {

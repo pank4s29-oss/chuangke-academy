@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getAssignmentFields, readStageTasks } from "./taskSections";
+import { applyQuestionOverrides, getAssignmentFields, readStageTasks } from "./taskSections";
 
 describe("getAssignmentFields", () => {
   it("keeps every option in a checkbox group even when each option has its own description line", () => {
@@ -112,6 +112,24 @@ describe("getAssignmentFields", () => {
     expect(fields).toHaveLength(1);
     expect(fields[0].prompt).not.toBe("你的答案");
     expect(fields[0].prompt).toContain("參考");
+  });
+
+  it("uses the requested Stage 1 task 1 prompts and groups the three Step 2 controls", () => {
+    const task = readStageTasks("stage-01").find((item) => item.key === "stage-01-1")!;
+    const fields = task.fields.filter((field) => !field.hiddenInGroup);
+    expect(fields[2]?.prompt).toContain("寫出被服務的身分");
+    expect(fields[3]?.prompt).toContain("把上面兩格套進句子");
+    const stepTwo = fields.filter((field) => field.sourceSectionKey === "1-B" && field.type === "checkboxes" && field.sourceStepKey?.startsWith("我解決什麼問題｜步驟 2"));
+    expect(stepTwo).toHaveLength(3);
+    expect(new Set(stepTwo.map((field) => field.group))).toEqual(new Set(["我解決什麼問題｜步驟 2：把它寫成「他會親口說的一句話」"]));
+  });
+
+  it("applies teacher copy without changing stable answer keys", () => {
+    const task = readStageTasks("stage-01").filter((item) => item.key === "stage-01-1");
+    const field = task[0].fields.find((item) => item.key === "stage-01-1-answer-2")!;
+    const updated = applyQuestionOverrides(task, [{ stage_key: "stage-01", task_key: task[0].key, field_key: field.key, prompt: "自訂身分題", description: "教師補充", options: null }]);
+    expect(updated[0].fields.find((item) => item.key === field.key)?.prompt).toBe("自訂身分題");
+    expect(updated[0].fields.find((item) => item.key === field.key)?.key).toBe(field.key);
   });
 
   it("prefers a 句型 (template) line over a nearer but less useful line when both are in range", () => {

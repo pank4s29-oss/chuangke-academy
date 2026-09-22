@@ -16,7 +16,7 @@ import type { AssignmentField } from "./taskSections";
  *  field regardless of which step the text actually points at. */
 export function stepOrdinal(headingText?: string): number | null {
   if (!headingText) return null;
-  const match = headingText.match(/^(?:步驟|槓桿|第)\s*([0-9]+)\s*(?:格|項|問)?/);
+  const match = headingText.match(/(?:步驟|槓桿|第)\s*([0-9]+)\s*(?:格|項|問)?/);
   return match ? Number(match[1]) : null;
 }
 

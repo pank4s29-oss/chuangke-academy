@@ -7,6 +7,7 @@ import StageBlueprint from "./StageBlueprint";
 import AssignmentTable from "./AssignmentTable";
 import type { AssignmentField, TaskWithFields } from "@/lib/content/taskSections";
 import AssignmentFileImport from "./AssignmentFileImport";
+import QuestionContentEditor from "./QuestionContentEditor";
 
 type ReviewStatus = "pending" | "approved" | "needs_revision";
 type Submission = {
@@ -276,6 +277,7 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
           </div>
         </div>
       </header>
+      <div className="mx-auto max-w-7xl px-5 lg:px-8"><QuestionContentEditor stageTitles={stageTitles} stageTasks={stageTasks} /></div>
       <div className="mx-auto grid max-w-7xl gap-6 px-5 py-8 lg:grid-cols-[330px_1fr] lg:px-8">
         <aside className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
           <div className="flex flex-wrap gap-2">
