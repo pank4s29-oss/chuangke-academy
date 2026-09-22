@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import type { Stage } from "@/lib/content/schema";
 import type { AssignmentField, TaskWithFields } from "@/lib/content/taskSections";
+import { isFieldActive } from "@/lib/content/taskSections";
 import { fieldsToCanonical } from "@/lib/content/questions";
 import QuestionRenderer from "./QuestionRenderer";
 import AssignmentTable from "./AssignmentTable";
@@ -24,11 +25,7 @@ function fieldIsComplete(field: AssignmentField, value: Answers[string]) {
   return String(value ?? "").trim().length > 0;
 }
 
-function fieldIsActive(field: AssignmentField, answers: Answers) {
-  if (!field.dependsOn) return true;
-  const value = answers[field.dependsOn.fieldKey];
-  return Array.isArray(value) ? value.includes(field.dependsOn.optionKey) : value === field.dependsOn.optionKey;
-}
+const fieldIsActive = isFieldActive;
 
 function Field({ field, value, answers, onChange, onOtherChange, showError }: { field: AssignmentField; value: Answers[string]; answers: Answers; onChange: (value: string | string[]) => void; onOtherChange: (key: string, value: string) => void; showError?: boolean }) {
   const question = fieldsToCanonical([field])[0];
