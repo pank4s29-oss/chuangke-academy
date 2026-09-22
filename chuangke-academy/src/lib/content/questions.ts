@@ -32,7 +32,7 @@ export function fieldsToCanonical(fields: AssignmentField[]): CanonicalQuestion[
     description: field.description,
     type: field.type === "checkboxes" ? (field.multiple ? "multi_choice" : "single_choice") : field.type === "textarea" ? "long_text" : "short_text",
     options: field.options?.map((option) => ({ id: option.key, label: option.label, otherInputKey: option.otherInputKey })),
-    required: true,
+    required: field.required !== false,
     source: field.group?.includes("表格") ? "table" : "legacy",
     group: field.group,
   }));

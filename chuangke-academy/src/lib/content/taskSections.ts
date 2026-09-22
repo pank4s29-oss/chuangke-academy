@@ -539,6 +539,26 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
       }
     }
   }
+  // 2.1-A is a guided comparison with two valid paths. The first path asks
+  // for the original sentence only; the second path asks for the before/after
+  // comparison instead. Model that relationship explicitly so inactive
+  // questions disappear from the form and never count as incomplete.
+  if (taskKey === "stage-02-2-1") {
+    const branchChoice = fields.find((field) => field.prompt.includes("抄 1.1-B 步驟 2 那句") && field.type === "checkboxes");
+    const copiedSentence = fields.find((field) => field.prompt.includes("抄 1.1-B 步驟 2 那句") && field.type !== "checkboxes");
+    const originalBelief = fields.find((field) => field.prompt.startsWith("我原本以為他卡在"));
+    const actualBelief = fields.find((field) => field.prompt.startsWith("實際上他一直在講的是"));
+    const firstOption = branchChoice?.options?.[0];
+    const secondOption = branchChoice?.options?.[1];
+    if (branchChoice && copiedSentence && originalBelief && actualBelief && firstOption && secondOption) {
+      branchChoice.multiple = false;
+      branchChoice.prompt = "我以為學員會說的";
+      branchChoice.group = "第 1 格：我以為學員會說的";
+      copiedSentence.dependsOn = { fieldKey: branchChoice.key, optionKey: firstOption.key, optionLabel: firstOption.label };
+      originalBelief.dependsOn = { fieldKey: branchChoice.key, optionKey: secondOption.key, optionLabel: secondOption.label };
+      actualBelief.dependsOn = { fieldKey: branchChoice.key, optionKey: secondOption.key, optionLabel: secondOption.label };
+    }
+  }
   // When two or more fields in the same task ended up with the exact same
   // fallback prompt (typically because they all fell back to the same
   // enclosing section heading, e.g. two date blanks both under "## 5-A　先

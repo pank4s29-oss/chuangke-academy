@@ -9,8 +9,13 @@ const sample = fs.readFileSync(path.join(process.cwd(), "src/lib/content/fixture
 describe("階段二霧眉範例校準", () => {
   it("2.1 依照原文先顯示開始前題目，再顯示分類與競品表格", () => {
     const fields = readStageTasks("stage-02")[0].fields.filter((field) => !field.hiddenInGroup);
-    expect(fields[0].prompt).toContain("抄 1.1-B 步驟 2");
+    expect(fields[0].prompt).toBe("我以為學員會說的");
+    expect(fields[0].multiple).toBe(false);
     expect(fields[1].prompt).toContain("抄 1.1-B 步驟 2");
+    expect(fields[1].dependsOn?.optionLabel).toContain("最早寫的那一版");
+    expect(fields[2].dependsOn?.optionLabel).toContain("已經改掉了");
+    expect(fields[3].dependsOn?.optionLabel).toContain("已經改掉了");
+    expect(fields[0].group).toContain("我以為學員會說的");
     expect(fields.findIndex((field) => field.group?.startsWith("2.1-B"))).toBeGreaterThan(fields.findIndex((field) => field.prompt.startsWith("恐懼那一格")));
   });
 
