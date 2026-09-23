@@ -7,11 +7,12 @@ import type { AssignmentField, TaskWithFields } from "@/lib/content/taskSections
 import { isFieldActive, stepOrdinal } from "@/lib/content/fieldState";
 import { fieldsToCanonical, answerDisplay } from "@/lib/content/questions";
 import { getQuestionNumbers } from "@/lib/content/questionNumbers";
+import type { RecallTargetOverride } from "@/lib/content/recallOverrides";
 
 type Answer = string | string[];
 type Answers = Record<string, Answer>;
 type SavedAnswersByStage = Record<string, Answers>;
-type Props = { markdown: string; tasks: TaskWithFields[]; answersByStage: SavedAnswersByStage };
+type Props = { markdown: string; tasks: TaskWithFields[]; answersByStage: SavedAnswersByStage; recallOverrides?: RecallTargetOverride[] };
 type RecallTarget = { code: string; stageKey: string; task: TaskWithFields; fieldKey?: string; questionNumber?: number };
 type SectionEntry = { stageKey: string; task: TaskWithFields; fields: AssignmentField[] };
 
@@ -185,7 +186,16 @@ export function buildSectionIndex(tasks: TaskWithFields[]) {
   return map;
 }
 
-export function resolveTarget(code: string, tail: string, index: Map<string, SectionEntry>, answersByStage: SavedAnswersByStage): RecallTarget | undefined {
+export function resolveTarget(code: string, tail: string, index: Map<string, SectionEntry>, answersByStage: SavedAnswersByStage, recallOverrides: RecallTargetOverride[] = []): RecallTarget | undefined {
+  const custom = recallOverrides.find((item) => item.source_code === code);
+  if (custom) {
+    const customTask = [...index.values()].find((entry) => entry.stageKey === custom.target_stage_key && entry.task.key === custom.target_task_key)?.task;
+    const customField = customTask?.fields.find((field) => field.key === custom.target_field_key);
+    if (customTask && customField) {
+      const numbers = getQuestionNumbers(customTask.fields);
+      return { code, stageKey: custom.target_stage_key, task: customTask, fieldKey: customField.key, questionNumber: numbers[customField.key] };
+    }
+  }
   const entry = index.get(code);
   if (!entry) return undefined;
   const qualifier = extractQualifier(tail);
@@ -195,16 +205,16 @@ export function resolveTarget(code: string, tail: string, index: Map<string, Sec
   return { code, stageKey: entry.stageKey, task: entry.task, fieldKey: field?.key, questionNumber: field ? numbers[field.key] : undefined };
 }
 
-export function RecallText({ text, tasks, answersByStage, currentTaskKey, className }: { text: string; tasks: TaskWithFields[]; answersByStage: SavedAnswersByStage; currentTaskKey?: string; className?: string }) {
+export function RecallText({ text, tasks, answersByStage, currentTaskKey, className, recallOverrides = [] }: { text: string; tasks: TaskWithFields[]; answersByStage: SavedAnswersByStage; currentTaskKey?: string; className?: string; recallOverrides?: RecallTargetOverride[] }) {
   const [selected, setSelected] = useState<RecallTarget>();
   const index = useMemo(() => buildSectionIndex(tasks), [tasks]);
-  return <span className={className}>{textWithReferences(normalizeLocalReferences(text, currentTaskKey), (code, tail) => resolveTarget(code, tail, index, answersByStage), setSelected)}{selected && <AnswerDialog target={selected} answers={answersByStage[selected.stageKey] ?? {}} onClose={() => setSelected(undefined)} />}</span>;
+  return <span className={className}>{textWithReferences(normalizeLocalReferences(text, currentTaskKey), (code, tail) => resolveTarget(code, tail, index, answersByStage, recallOverrides), setSelected)}{selected && <AnswerDialog target={selected} answers={answersByStage[selected.stageKey] ?? {}} onClose={() => setSelected(undefined)} />}</span>;
 }
 
-export default function RecallMarkdown({ markdown, tasks, answersByStage, currentTaskKey }: Props & { currentTaskKey?: string }) {
+export default function RecallMarkdown({ markdown, tasks, answersByStage, currentTaskKey, recallOverrides = [] }: Props & { currentTaskKey?: string }) {
   const [selected, setSelected] = useState<RecallTarget>();
   const index = useMemo(() => buildSectionIndex(tasks), [tasks]);
-  const resolve = (code: string, tail: string) => resolveTarget(code, tail, index, answersByStage);
+  const resolve = (code: string, tail: string) => resolveTarget(code, tail, index, answersByStage, recallOverrides);
   const components = {
     p: ({ children }: { children?: ReactNode }) => <p>{renderChildren(children, resolve, setSelected)}</p>,
     li: ({ children }: { children?: ReactNode }) => <li>{renderChildren(children, resolve, setSelected)}</li>,

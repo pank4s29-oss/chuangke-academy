@@ -3,12 +3,13 @@
 import type { CanonicalQuestion } from "@/lib/content/questions";
 import type { TaskWithFields } from "@/lib/content/taskSections";
 import { RecallText } from "./RecallMarkdown";
+import type { RecallTargetOverride } from "@/lib/content/recallOverrides";
 
-type Props = { question: CanonicalQuestion; questionNumbers?: Record<string, number>; value: string | string[]; onChange: (value: string | string[]) => void; otherValues?: Record<string, string | string[]>; onOtherChange?: (key: string, value: string) => void; showError?: boolean; recallTasks?: TaskWithFields[]; answersByStage?: Record<string, Record<string, string | string[]>>; currentTaskKey?: string };
+type Props = { question: CanonicalQuestion; questionNumbers?: Record<string, number>; value: string | string[]; onChange: (value: string | string[]) => void; otherValues?: Record<string, string | string[]>; onOtherChange?: (key: string, value: string) => void; showError?: boolean; recallTasks?: TaskWithFields[]; answersByStage?: Record<string, Record<string, string | string[]>>; currentTaskKey?: string; recallOverrides?: RecallTargetOverride[] };
 const inputClass = "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] leading-7 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:ring-4 focus:ring-teal-100";
 
-export default function QuestionRenderer({ question, questionNumbers = {}, value, onChange, otherValues = {}, onOtherChange, showError, recallTasks = [], answersByStage = {}, currentTaskKey }: Props) {
-  const recall = (text: string) => recallTasks.length ? <RecallText text={text} tasks={recallTasks} answersByStage={answersByStage} currentTaskKey={currentTaskKey} /> : text;
+export default function QuestionRenderer({ question, questionNumbers = {}, value, onChange, otherValues = {}, onOtherChange, showError, recallTasks = [], answersByStage = {}, currentTaskKey, recallOverrides = [] }: Props) {
+  const recall = (text: string) => recallTasks.length ? <RecallText text={text} tasks={recallTasks} answersByStage={answersByStage} currentTaskKey={currentTaskKey} recallOverrides={recallOverrides} /> : text;
   if (question.type === "single_choice" || question.type === "multi_choice") {
     const selected = Array.isArray(value) ? value : value ? [value] : [];
     const multiple = question.type === "multi_choice";
