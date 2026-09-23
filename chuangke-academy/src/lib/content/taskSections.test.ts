@@ -132,7 +132,13 @@ describe("getAssignmentFields", () => {
     expect(updated[0].fields.find((item) => item.key === field.key)?.key).toBe(field.key);
   });
 
-  it("prefers a 句型 (template) line over a nearer but less useful line when both are in range", () => {
+  it("prefers a 句型 (template) line for the blank it actually describes, but never borrows it for a checkbox on the other side of that blank", () => {
+    // Real content this is modelled on (階段二 2.1-C): a "句型"-labelled
+    // sentence template, the blank it describes, and then — *after* that
+    // blank — an unrelated checkbox ("☐ 我走的是篩選型…"). The checkbox used
+    // to reach straight past its own sibling's blank line to reuse that
+    // sibling's "句型" as if it were its own context, which read as if the
+    // checkbox itself were asking the student to fill in a sentence.
     const md = [
       "**句型：** 我只做【1.4-B 的相反】的【你這一行在做的事】。",
       "",
@@ -145,8 +151,10 @@ describe("getAssignmentFields", () => {
       "☐ 我走的是篩選型，這一格先標暫定",
     ].join("\n");
     const fields = getAssignmentFields(md, "t");
+    const sentenceField = fields.find((f) => f.type === "text");
     const checkboxField = fields.find((f) => f.type === "checkboxes");
-    expect(checkboxField?.prompt).toContain("句型");
+    expect(sentenceField?.prompt).toContain("句型");
+    expect(checkboxField?.prompt).not.toContain("句型");
   });
 
   it("does not treat a '---' divider between sub-parts of the same block as a hard boundary", () => {
