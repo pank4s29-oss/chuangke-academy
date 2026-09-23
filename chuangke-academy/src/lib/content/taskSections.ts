@@ -454,10 +454,54 @@ function collectCheckboxOptions(lines: string[], start: number) {
 // comment for why that separation matters for "use client" components.
 export { stepOrdinal, isFieldActive } from "./fieldState";
 
-function detectSingleSelect(lines: string[], start: number, end: number) {
-  const windowText = lines.slice(Math.max(0, start - 6), Math.min(lines.length, end + 1)).join(" ");
-  if (/可複選/.test(windowText)) return false;
-  return /只能勾一個|只能選一個|單選|勾一個/.test(windowText);
+/** How far above a checkbox block to look for a shared "勾一個"/"可複選"-style
+ *  instruction. Several fields in one task can share a single cue stated once
+ *  at the top of their enclosing step (e.g. "步驟 1：...各勾一個頻率" governs
+ *  three separate "① ② ③" inline-checkbox questions below it) — a fixed
+ *  short lookback used to see only the first of them and silently lose the
+ *  cue for the rest. Scanning up to the enclosing heading/rule boundary (the
+ *  same boundary `meaningfulContext` stops at), capped at a generous line
+ *  count as a safety net, fixes that without pulling in an unrelated cue
+ *  from a completely different, more distant step. */
+function singleSelectCueWindow(lines: string[], start: number, end: number) {
+  const collected: string[] = [];
+  for (let i = start - 1; i >= 0 && start - i <= 40; i -= 1) {
+    const value = lines[i].trim();
+    if (!value) continue;
+    if (isRuleLine(value)) continue;
+    collected.unshift(value);
+    // Include the boundary heading's own text (a cue like "（只能勾一個）"
+    // is very often stated right inside the heading that introduces the
+    // block, e.g. "### ...在想的那件事（只能勾一個）") but stop climbing
+    // past it — anything above belongs to a different, unrelated step.
+    if (isHeadingLine(value)) break;
+  }
+  collected.push(...lines.slice(start, Math.min(lines.length, end + 1)));
+  return collected.join(" ");
+}
+
+/** Whether an option pair reads as a mutually-exclusive either/or rather
+ *  than two independent criteria someone might both satisfy — e.g.
+ *  "有句子 / 空的", "抄得走 / 抄不走", "有 → ... / 沒有 → ...". This content
+ *  never states an explicit single-select cue for these (there is no
+ *  "二選一" written next to "恐懼那一格是空的嗎？"), so without this check
+ *  they fell back to the generic multi-select default and let someone tick
+ *  both halves of a contradiction. A two-option group is treated as
+ *  exclusive by default; the few two-option *checklists* in this content
+ *  (e.g. "真實性檢查（兩題都要打勾才能用）") always say so explicitly
+ *  ("都要打勾"/"都要勾"), which is checked separately as a force-multi cue
+ *  before this ever runs. A pair where one side is an open-ended "其他"
+ *  (other) option is left out of this default — "其他" is a supplementary
+ *  catch-all a person can tick alongside a real option, not its opposite. */
+function looksMutuallyExclusive(options: string[]) {
+  return options.length === 2 && !options.some((option) => /^其他/.test(option.trim()));
+}
+
+function detectSingleSelect(lines: string[], start: number, end: number, options: string[]) {
+  const windowText = singleSelectCueWindow(lines, start, end);
+  if (/可複選|都要打勾|都要勾/.test(windowText)) return false;
+  if (/只能勾一個|只能選一個|單選|勾一個|二選一|三選一|選一個|選一種/.test(windowText)) return true;
+  return looksMutuallyExclusive(options);
 }
 
 export function getAssignmentFields(assignment: string, taskKey: string): AssignmentField[] {
@@ -579,7 +623,7 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
       const { options, end } = collectCheckboxOptions(lines, start);
       cursor = end - 1;
       const contextLabel = meaningfulContext(lines, start);
-      const singleSelect = detectSingleSelect(lines, start, end);
+      const singleSelect = detectSingleSelect(lines, start, end, options);
       addCheckboxGroup(options, contextLabel, singleSelect);
       continue;
     }
@@ -601,7 +645,7 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
       const contextLabel = taskKey === "stage-02-2-2" && before.includes("二選一")
         ? before
         : before && surrounding ? `${surrounding}｜${before}` : before || surrounding;
-      const singleSelect = detectSingleSelect(lines, cursor, cursor);
+      const singleSelect = detectSingleSelect(lines, cursor, cursor, inlineOptions);
       addCheckboxGroup(inlineOptions, contextLabel, singleSelect);
       continue;
     }
