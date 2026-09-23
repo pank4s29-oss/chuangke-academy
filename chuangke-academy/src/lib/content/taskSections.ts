@@ -169,6 +169,19 @@ function isExampleLine(value: string) {
   return /^\*\*(範例|舉例)[:：]/.test(value);
 }
 
+/** A bullet list item that maps one scenario to another with an arrow (e.g.
+ *  "- 不收想兩個月瘦十公斤的人 → 我只做【願意先從吃開始調】的【體態教學】") is a
+ *  worked example under a "**範例：**" label, one line per made-up scenario —
+ *  not a description of any real field. Only the label line itself matched
+ *  `isExampleLine`; its own bullets read as perfectly ordinary sentences and
+ *  used to be picked up as a field's context/prompt whenever they happened to
+ *  be the nearest surviving candidate (e.g. a checkbox asking the learner to
+ *  self-assess their own sentence ended up captioned with an unrelated
+ *  "不收想每天當沖的人 → ..." example instead of "唸一次你寫的前半格"). */
+function isExampleBulletLine(value: string) {
+  return /^[-*]\s.*→/.test(value);
+}
+
 /** Find the best line above `index` to describe what a field is asking for,
  *  scanning up to the enclosing block's boundary (a heading or a "---" rule)
  *  rather than a fixed number of lines, since a block's template/example
@@ -197,19 +210,46 @@ function meaningfulContext(lines: string[], index: number) {
     collected.push(value);
   }
 
-  const questionLine = collected.find(isQuestionLine);
+  // "**題目：**"/"**句型：**"/"**參考：**" lines are deliberately given first
+  // pick of the context, since they spell out the question/shape far more
+  // usefully than whatever plain sentence happens to sit closest — checked
+  // in that priority order (a "題目" label always wins over a "句型" line even
+  // when the "句型" line happens to sit closer to the blank; stage-01 1-A's
+  // "步驟 4" box has "**題目：** 把上面兩格套進句子。" *before* its own
+  // "**句型：**" line, so distance alone can't decide between them).
+  //
+  // But neither priority may reach *past* a sibling field's own boundary —
+  // its blank marker, or a checkbox option line — since those unambiguously
+  // mark "this is a different, already-consumed question": a "句型"/"題目"
+  // line beyond one belongs to *that* field, not this one. Without this
+  // stop, a checkbox like "☐ 很具體，講得出是哪一件事" sitting right under a
+  // finished blank sentence used to reach straight past that sentence and
+  // its own "你的答案" label to reuse the *sentence's* template as the
+  // checkbox's own context too, even though a much closer, more relevant
+  // line ("唸一次你寫的前半格。") was sitting right above it. So both
+  // priority checks are scoped to the segment before the first such boundary.
+  const boundaryIndex = collected.findIndex((value) => BLANK_RE.test(value) || isCheckboxLine(value));
+  const localSegment = boundaryIndex === -1 ? collected : collected.slice(0, boundaryIndex);
+  const questionLine = localSegment.find(isQuestionLine);
   if (questionLine) return cleanText(questionLine) || "請完成這一題";
-  const templateLine = collected.find(isTemplateOrReferenceLine);
+  const templateLine = localSegment.find(isTemplateOrReferenceLine);
   if (templateLine) return cleanText(templateLine) || "請完成這一題";
 
   let aside: string | null = null;
   let answerLabel: string | null = null;
   let example: string | null = null;
+  // Once the scan has skipped past a sibling field's own blank marker or
+  // checkbox option (see below), a "**題目：**"/"**句型：**"/"**參考：**" line
+  // found *beyond* that point belongs to that sibling, not to the field
+  // being described here — the same reasoning as the priority pass above,
+  // just reached through the "keep looking past this" path instead of
+  // stopping outright, so both passes agree on where a sibling's boundary is.
+  let crossedSiblingBoundary = false;
   for (const value of collected) {
     if (value.startsWith(">") || value.startsWith("|")) continue;
     // a checkbox option line was already consumed as part of its own group;
     // it should never double as the "context" for a different field below it.
-    if (isCheckboxLine(value)) continue;
+    if (isCheckboxLine(value)) { crossedSiblingBoundary = true; continue; }
     if (isBareNumberedBlankLine(value)) continue;
     // A line that itself contains a blank marker (e.g. "今天是：____") is
     // another field's own question, not a description of *this* one — using
@@ -218,12 +258,12 @@ function meaningfulContext(lines: string[], index: number) {
     // prompt instead of its own, with the real question relegated to a
     // parenthetical description underneath. Skip past it just like a
     // checkbox option line, rather than borrowing a sibling question's text.
-    if (BLANK_RE.test(value)) continue;
+    if (BLANK_RE.test(value)) { crossedSiblingBoundary = true; continue; }
     if (isAnswerPlaceholderLabel(value)) {
       if (answerLabel === null) answerLabel = value;
       continue;
     }
-    if (isExampleLine(value)) {
+    if (isExampleLine(value) || isExampleBulletLine(value)) {
       if (example === null) example = value;
       continue;
     }
@@ -231,6 +271,7 @@ function meaningfulContext(lines: string[], index: number) {
       if (aside === null) aside = value;
       continue;
     }
+    if (crossedSiblingBoundary && (isQuestionLine(value) || isTemplateOrReferenceLine(value))) continue;
     return cleanText(value) || "請完成這一題";
   }
   if (headingFallback) return cleanText(headingFallback) || "請完成這一題";
