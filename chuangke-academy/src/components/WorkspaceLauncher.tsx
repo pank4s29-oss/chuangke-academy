@@ -48,6 +48,14 @@ export default function WorkspaceLauncher({ courseKey, courseTitle, stageOptions
     if (data) { setWorkspaces((current) => [data as Workspace, ...current]); setName(""); setMessage("作業已建立，請點選它開始作答"); }
   }
 
+  async function deleteWorkspace(workspace: Workspace) {
+    if (!window.confirm(`確定刪除「${workspace.name}」嗎？這份作業的階段答案與進度也會一併刪除。`)) return;
+    const { error } = await supabase.from("assignment_workspaces").delete().eq("id", workspace.id).eq("owner_id", userId);
+    if (error) { setMessage(`刪除失敗：${error.message}`); return; }
+    setWorkspaces((current) => current.filter((item) => item.id !== workspace.id));
+    setMessage(`已刪除「${workspace.name}」`);
+  }
+
   if (!userId && !loading) return <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6 text-sm leading-7 text-amber-950"><strong className="block text-base">請先登入再開始建立作業</strong><p className="mt-2">登入後，每一份作業都會有自己的名稱與進度，不會再和之前匯入的作業混在一起。</p><Link href="/auth/login" className="mt-4 inline-flex rounded-xl bg-teal-700 px-4 py-2.5 font-semibold text-white">前往登入</Link></div>;
 
   return <section className="mt-8 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70 lg:p-8">
@@ -58,7 +66,7 @@ export default function WorkspaceLauncher({ courseKey, courseTitle, stageOptions
     <form onSubmit={createWorkspace} className="mt-6 flex flex-col gap-3 rounded-2xl bg-slate-50 p-4 sm:flex-row"><label className="sr-only" htmlFor={`workspace-name-${courseKey}`}>新作業名稱</label><input id={`workspace-name-${courseKey}`} value={name} onChange={(event) => setName(event.target.value)} className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100" placeholder="例如：美業老師－霧眉教學第一版" maxLength={120} /><button disabled={creating} className="rounded-xl bg-teal-700 px-5 py-3 text-sm font-semibold text-white disabled:opacity-50">{creating ? "建立中…" : "建立新作業"}</button></form>
     {message && <p className="mt-3 text-sm font-medium text-teal-800">{message}</p>}
     <div className="mt-6 grid gap-3 md:grid-cols-2">
-      {loading ? <p className="text-sm text-slate-500">載入作業清單…</p> : workspaces.map((workspace) => <article key={workspace.id} className="rounded-2xl border border-slate-200 p-4 transition hover:border-teal-300 hover:bg-teal-50/40"><div className="flex items-start justify-between gap-3"><strong className="leading-6 text-slate-800">{workspace.name}</strong><span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-[11px] text-slate-500">作業</span></div><p className="mt-2 text-xs text-slate-500">最後更新：{new Date(workspace.updated_at).toLocaleString("zh-TW")}</p><div className="mt-3 flex flex-wrap gap-2">{stageOptions.map((stage) => <Link key={stage.key} href={`/app/workspaces/${workspace.id}/courses/${courseKey}/stages/${stage.key}/learn`} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-semibold text-white hover:bg-teal-800">{stage.title.split("：")[0]}：開始／繼續</Link>)}</div></article>)}
+      {loading ? <p className="text-sm text-slate-500">載入作業清單…</p> : workspaces.map((workspace) => <article key={workspace.id} className="rounded-2xl border border-slate-200 p-4 transition hover:border-teal-300 hover:bg-teal-50/40"><div className="flex items-start justify-between gap-3"><strong className="leading-6 text-slate-800">{workspace.name}</strong><span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-[11px] text-slate-500">作業</span></div><p className="mt-2 text-xs text-slate-500">最後更新：{new Date(workspace.updated_at).toLocaleString("zh-TW")}</p><div className="mt-3 flex flex-wrap gap-2">{stageOptions.map((stage) => <Link key={stage.key} href={`/app/workspaces/${workspace.id}/courses/${courseKey}/stages/${stage.key}/learn`} className="rounded-xl bg-teal-700 px-3 py-2 text-xs font-semibold text-white hover:bg-teal-800">{stage.title.split("：")[0]}：開始／繼續</Link>)}<button type="button" onClick={() => void deleteWorkspace(workspace)} className="rounded-xl border border-rose-200 bg-white px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-50">刪除作業</button></div></article>)}
       {!loading && workspaces.length === 0 && <div className="rounded-2xl border border-dashed border-slate-300 p-5 text-sm leading-7 text-slate-500 md:col-span-2">目前還沒有作業。請先在上方輸入名稱建立第一份，系統就不會再自動載入之前匯入的美業老師作業。</div>}
     </div>
   </section>;

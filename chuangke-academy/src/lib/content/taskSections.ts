@@ -52,6 +52,12 @@ function sections(source: string, pattern: RegExp) {
 export function readTaskSections(stageKey: string): TaskSection[] {
   const lecture = readFirst(stageKey, (file) => file.includes("講義"));
   const assignment = readFirst(stageKey, (file) => file.includes("作業"));
+  return readTaskSectionsFromSources(stageKey, assignment, lecture);
+}
+
+/** Same parser used by the filesystem source, but accepts an Admin-published
+ * assignment body so the website does not have to wait for a new deployment. */
+export function readTaskSectionsFromSources(stageKey: string, assignment: string, lecture = ""): TaskSection[] {
   const lectureSections = sections(lecture, /^#\s+((?:\d+\.\d+)|(?:任務\s*\d+(?:\.\d+)?))\s*[:：]?\s*(.+)$/gm);
   // 附錄 (appendix) sections were previously dropped entirely because the old
   // pattern only matched "任務 N" headings. They now parse like any other task.
@@ -747,6 +753,10 @@ export function applyQuestionOverrides(tasks: TaskWithFields[], overrides: Quest
 export type TaskWithFields = TaskSection & { fields: AssignmentField[] };
 export function readTaskSectionsWithFields(stageKey: string): TaskWithFields[] {
   return readStageTasks(stageKey);
+}
+
+export function readTaskSectionsWithFieldsFromSources(stageKey: string, assignment: string, lecture = ""): TaskWithFields[] {
+  return readTaskSectionsFromSources(stageKey, assignment, lecture).map((task) => ({ ...task, fields: getAssignmentFields(task.assignment, task.key) }));
 }
 
 // NOTE: teacher-file import lives in "./importAnswers" (extractImportedAnswers).

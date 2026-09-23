@@ -113,14 +113,14 @@
 
 ## Epic 10｜Admin
 
-- [ ] T10.1 Admin authorization
-- [ ] T10.2 Content list
-- [ ] T10.3 Import screen
-- [ ] T10.4 Draft preview
-- [ ] T10.5 Validation report
-- [ ] T10.6 Publish
-- [ ] T10.7 Version history
-- [ ] T10.8 Import warnings
+- [x] T10.1 Admin authorization
+- [x] T10.2 Content list
+- [x] T10.3 Import screen
+- [x] T10.4 Draft preview
+- [x] T10.5 Validation report
+- [x] T10.6 Publish
+- [x] T10.7 Version history
+- [x] T10.8 Import warnings
 
 ## Epic 11｜QA
 
