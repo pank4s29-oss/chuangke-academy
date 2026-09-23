@@ -14,7 +14,10 @@ export default async function WorkspaceLearnPage({ params }: Props) {
   const nextStageKey = course.stages[stageIndex + 1]?.key;
   const supabase = createClient();
   const overrideResult = await supabase.from("question_overrides").select("stage_key,task_key,field_key,prompt,description,options,field_type,multiple,sort_order").in("stage_key", ["stage-01", "stage-02"]);
-  const recallOverrideResult = await supabase.from("recall_target_overrides").select("source_code,target_stage_key,target_task_key,target_field_key,updated_by,updated_at");
+  const [{ data: recallSettings }, { data: recallTargets }] = await Promise.all([
+    supabase.from("recall_settings").select("stage_key,task_key,field_key,enabled,updated_by,updated_at"),
+    supabase.from("recall_targets").select("stage_key,task_key,field_key,target_stage_key,target_task_key,target_field_key,position,updated_by,updated_at").order("position"),
+  ]);
   const overrides = overrideResult.data ?? [];
   async function loadTasks(key: string) {
     const baseline = readTaskSectionsWithFields(key);
@@ -26,5 +29,5 @@ export default async function WorkspaceLearnPage({ params }: Props) {
   }
   const tasks = applyQuestionOverrides(await loadTasks(stage.key), overrides);
   const referenceTasks = (await Promise.all([...new Set(["stage-01", "stage-02", stage.key])].map(loadTasks))).flatMap((items) => applyQuestionOverrides(items, overrides));
-  return <TaskFlow stage={stage} courseKey={course.key} tasks={tasks} referenceTasks={referenceTasks} recallOverrides={recallOverrideResult.data ?? []} workspaceId={params.workspaceId} nextStageKey={nextStageKey} />;
+  return <TaskFlow stage={stage} courseKey={course.key} tasks={tasks} referenceTasks={referenceTasks} recallSettings={recallSettings ?? []} recallTargets={recallTargets ?? []} workspaceId={params.workspaceId} nextStageKey={nextStageKey} />;
 }

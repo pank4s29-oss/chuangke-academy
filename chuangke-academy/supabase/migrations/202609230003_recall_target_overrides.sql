@@ -1,6 +1,6 @@
 create table if not exists public.recall_target_overrides (
   id uuid primary key default gen_random_uuid(),
-  source_code text primary key,
+  source_code text not null unique,
   target_stage_key text not null,
   target_task_key text not null,
   target_field_key text not null,

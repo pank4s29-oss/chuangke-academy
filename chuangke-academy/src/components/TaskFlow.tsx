@@ -137,7 +137,7 @@ export default function TaskFlow({ stage, courseKey, tasks, referenceTasks, reca
     }
     void load();
     return () => { alive = false; };
-  }, [stage.key, supabase, tasks, courseKey, workspaceId]);
+  }, [stage.key, supabase, tasks, courseKey, workspaceId, recallConfigMap]);
 
   // Re-applies the teacher's "回顧" auto-fill whenever the recall config
   // changes (e.g. a teacher just turned it on) without re-fetching answers.
