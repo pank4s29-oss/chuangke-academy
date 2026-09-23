@@ -60,24 +60,32 @@ export default function TaskFlow({ stage, courseKey, tasks, referenceTasks, reca
   useEffect(() => {
     let alive = true;
     const applyLatest = async () => {
-      const [{ data }, { data: recallData }] = await Promise.all([
+      const [{ data, error }, { data: recallData, error: recallError }] = await Promise.all([
         supabase.from("question_overrides").select("stage_key,task_key,field_key,prompt,description,options,field_type,multiple,sort_order").in("stage_key", ["stage-01", "stage-02"]),
         supabase.from("recall_target_overrides").select("source_code,target_stage_key,target_task_key,target_field_key,updated_by,updated_at"),
       ]);
-      if (!alive || !data) return;
+      if (!alive) return;
+      if (error) { console.error("Unable to sync question overrides", error); return; }
       const overrides = data as QuestionOverride[];
       // Always start from the server-rendered baseline. Applying to the
       // already-overridden array would leave deleted overrides and stale order.
-      setLiveTasks(applyQuestionOverrides(tasks, overrides));
+      const nextTasks = applyQuestionOverrides(tasks, overrides);
+      setLiveTasks(nextTasks);
       setLiveReferenceTasks(applyQuestionOverrides(referenceTasks ?? tasks, overrides));
-      if (recallData) setLiveRecallOverrides(recallData as RecallTargetOverride[]);
+      if (!recallError && recallData) setLiveRecallOverrides(recallData as RecallTargetOverride[]);
+      setActive((current) => Math.min(current, Math.max(0, nextTasks.length - 1)));
     };
     void applyLatest();
     const polling = window.setInterval(() => { void applyLatest(); }, 2000);
+    const onFocus = () => { void applyLatest(); };
+    const onVisibility = () => { if (document.visibilityState === "visible") void applyLatest(); };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
     const channel = supabase.channel(`question-overrides-${stage.key}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "question_overrides" }, () => { void applyLatest(); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "recall_target_overrides" }, () => { void applyLatest(); })
       .subscribe();
-    return () => { alive = false; window.clearInterval(polling); void supabase.removeChannel(channel); };
+    return () => { alive = false; window.clearInterval(polling); window.removeEventListener("focus", onFocus); document.removeEventListener("visibilitychange", onVisibility); void supabase.removeChannel(channel); };
   }, [stage.key, supabase, tasks, referenceTasks, recallOverrides]);
 
   useEffect(() => {
