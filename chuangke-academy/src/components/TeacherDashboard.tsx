@@ -147,7 +147,7 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
     let alive = true;
     const applyLatest = async () => {
       const [{ data, error }, { data: settingsData, error: settingsError }, { data: targetsData, error: targetsError }] = await Promise.all([
-        supabase.from("question_overrides").select("stage_key,task_key,field_key,prompt,description,options,field_type,multiple,sort_order"),
+        supabase.from("question_overrides").select("stage_key,task_key,field_key,prompt,description,options,field_type,multiple,sort_order,is_deleted,is_custom,table_key,table_title,table_row,table_column"),
         supabase.from("recall_settings").select("stage_key,task_key,field_key,enabled,updated_by,updated_at"),
         supabase.from("recall_targets").select("stage_key,task_key,field_key,target_stage_key,target_task_key,target_field_key,position,updated_by,updated_at"),
       ]);

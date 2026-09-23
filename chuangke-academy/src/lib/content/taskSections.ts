@@ -25,6 +25,8 @@ export type AssignmentField = {
   multiple?: boolean;
   group?: string;
   layout?: "table";
+  tableKey?: string;
+  tableTitle?: string;
   tableRow?: string;
   tableColumn?: string;
   hiddenInGroup?: boolean;
@@ -518,6 +520,7 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
   let sourceSectionKey: string | undefined;
   let sourceStepKey: string | undefined;
   let activeBranch: { fieldKey: string; optionKey: string; optionLabel: string } | undefined;
+  let tableIndex = 0;
   const add = (field: Omit<AssignmentField, "key">) => {
     const optional = taskKey === "stage-01-2" && /我查的關鍵字|我放大過的範圍|通常是怎麼找到老師/.test(field.prompt);
     fields.push({ ...field, key: `${taskKey}-answer-${index}`, sourceSectionKey, sourceStepKey, required: optional ? false : true, ...(activeBranch ? { dependsOn: activeBranch } : {}) });
@@ -528,7 +531,7 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
   // Any option whose label still contains a blank marker (e.g. "其他：____")
   // is trimmed down to a clean option label AND spawns a companion free-text
   // field, so "其他" style options are no longer silently dropped.
-  const addCheckboxGroup = (rawOptions: string[], contextLabel: string, singleSelect: boolean, tableMeta?: { row: string; column: string; group?: string }) => {
+  const addCheckboxGroup = (rawOptions: string[], contextLabel: string, singleSelect: boolean, tableMeta?: { key: string; title: string; row: string; column: string; group?: string }) => {
     const fieldIndex = index;
     const cleanOptions: AssignmentOption[] = [];
     const companions: string[] = [];
@@ -541,8 +544,8 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
       if (hasBlankMarker) companions.push(label);
     });
     if (cleanOptions.length === 0) return;
-    add({ prompt: contextLabel || "請完成這一題", type: "checkboxes", options: cleanOptions, multiple: !singleSelect, group: tableMeta?.group ?? contextLabel, layout: tableMeta ? "table" : undefined, tableRow: tableMeta?.row, tableColumn: tableMeta?.column });
-    companions.forEach((label, companionIndex) => add({ prompt: `${contextLabel ? `${contextLabel}｜` : ""}${label}（請補充說明）`, type: "text", group: tableMeta?.group ?? contextLabel, hiddenInGroup: true, otherFor: `${taskKey}-answer-${fieldIndex}`, layout: tableMeta ? "table" : undefined, tableRow: tableMeta?.row, tableColumn: tableMeta?.column }));
+    add({ prompt: contextLabel || "請完成這一題", type: "checkboxes", options: cleanOptions, multiple: !singleSelect, group: tableMeta?.group ?? contextLabel, layout: tableMeta ? "table" : undefined, tableKey: tableMeta?.key, tableTitle: tableMeta?.title, tableRow: tableMeta?.row, tableColumn: tableMeta?.column });
+    companions.forEach((label, companionIndex) => add({ prompt: `${contextLabel ? `${contextLabel}｜` : ""}${label}（請補充說明）`, type: "text", group: tableMeta?.group ?? contextLabel, hiddenInGroup: true, otherFor: `${taskKey}-answer-${fieldIndex}`, layout: tableMeta ? "table" : undefined, tableKey: tableMeta?.key, tableTitle: tableMeta?.title, tableRow: tableMeta?.row, tableColumn: tableMeta?.column }));
   };
 
   for (let cursor = 0; cursor < lines.length; cursor += 1) {
@@ -570,11 +573,13 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
     if (isTableRow(line) && cursor + 1 < lines.length && isSeparatorRow(lines[cursor + 1])) {
       const rawHeaders = tableCells(line);
       const headers = rawHeaders.map((cell) => cleanText(cell));
+      const tableTitle = tableSectionLabel(lines, cursor);
+      const tableKey = `${taskKey}-table-${tableIndex++}`;
       cursor += 2;
       while (cursor < lines.length && isTableRow(lines[cursor])) {
         const cells = tableCells(lines[cursor]);
         const rowLabel = pickRowLabel(headers, cells, rawHeaders) || `第 ${cursor} 列`;
-        const groupLabel = `${tableSectionLabel(lines, cursor - 2)}｜${headers.slice(1).join("／") || "表格作答"}`;
+        const groupLabel = `${tableTitle}｜${headers.slice(1).join("／") || "表格作答"}`;
 
         // A row like "| 題目 | ☐ | ☐ |" under headers "是"/"否" is a
         // single-select choice between the bare-checkbox columns. These used
@@ -588,7 +593,7 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
             key: `${taskKey}-option-${index}-${i}`,
             label: headers[i] || `選項 ${i}`,
           }));
-            add({ prompt: rowLabel, type: "checkboxes", options, multiple: false, group: groupLabel, layout: "table", tableRow: rowLabel, tableColumn: "選擇" });
+            add({ prompt: rowLabel, type: "checkboxes", options, multiple: false, group: groupLabel, layout: "table", tableKey, tableTitle, tableRow: rowLabel, tableColumn: "選擇" });
           cursor += 1;
           continue;
         }
@@ -598,18 +603,18 @@ export function getAssignmentFields(assignment: string, taskKey: string): Assign
           const trimmed = cell.trim();
           const header = headers[cellIndex] || "答案";
           if (!trimmed) {
-            add({ prompt: `${rowLabel}｜${header}`, type: "text", group: groupLabel, layout: "table", tableRow: rowLabel, tableColumn: header });
+            add({ prompt: `${rowLabel}｜${header}`, type: "text", group: groupLabel, layout: "table", tableKey, tableTitle, tableRow: rowLabel, tableColumn: header });
             return;
           }
           if (trimmed.includes("☐")) {
             // Multiple options packed into one cell, e.g.
             // "☐ 有　☐ 不到 10 句　☐ 有，但我改寫過" — previously dropped entirely.
             const opts = [...trimmed.matchAll(/☐\s*([^☐]+)/g)].map((m) => m[1].trim()).filter(Boolean);
-            if (opts.length) addCheckboxGroup(opts, `${rowLabel}｜${header}`, true, { row: rowLabel, column: header, group: groupLabel });
+            if (opts.length) addCheckboxGroup(opts, `${rowLabel}｜${header}`, true, { key: tableKey, title: tableTitle, row: rowLabel, column: header, group: groupLabel });
             return;
           }
           if (cellHasBlankMarker(trimmed)) {
-            add({ prompt: `${rowLabel}｜${header}`, type: trimmed.length > 28 || header.includes("原話") || header.includes("內容") ? "textarea" : "text", group: groupLabel, layout: "table", tableRow: rowLabel, tableColumn: header });
+            add({ prompt: `${rowLabel}｜${header}`, type: trimmed.length > 28 || header.includes("原話") || header.includes("內容") ? "textarea" : "text", group: groupLabel, layout: "table", tableKey, tableTitle, tableRow: rowLabel, tableColumn: header });
           }
         });
         cursor += 1;
