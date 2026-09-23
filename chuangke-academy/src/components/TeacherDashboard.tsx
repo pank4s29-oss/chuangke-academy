@@ -8,6 +8,9 @@ import AssignmentTable from "./AssignmentTable";
 import type { AssignmentField, TaskWithFields } from "@/lib/content/taskSections";
 import AssignmentFileImport from "./AssignmentFileImport";
 import QuestionContentEditor from "./QuestionContentEditor";
+import { applyQuestionOverrides, type QuestionOverride } from "@/lib/content/overrides";
+import { buildRecallAnswers } from "@/lib/content/recall";
+import { buildRecallConfigMap, applyRecallConfigAnswers, type RecallSetting, type RecallTargetRow } from "@/lib/content/recallSettings";
 
 type ReviewStatus = "pending" | "approved" | "needs_revision";
 type Submission = {
@@ -90,6 +93,18 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
   const [status, setStatus] = useState("載入中…");
   const [view, setView] = useState<"answers" | "blueprint">("answers");
   const [importStage, setImportStage] = useState(Object.keys(stageTasks)[0] ?? "stage-01");
+  // req 1: the question editor (QuestionContentEditor, rendered further down
+  // on this same page) writes teacher edits into `question_overrides`, but
+  // this dashboard was still handing the AssignmentTable / StageBlueprint
+  // views the raw, un-overridden `stageTasks` prop straight from the
+  // server — so a teacher who just fixed a typo or swapped an option list
+  // never saw the fix reflected here, only the student ever did. Mirror the
+  // same override-application + poll/realtime-sync pattern TaskFlow already
+  // uses for the student page so both surfaces read from the same source of
+  // truth.
+  const [overrides, setOverrides] = useState<QuestionOverride[]>([]);
+  const [recallSettings, setRecallSettings] = useState<RecallSetting[]>([]);
+  const [recallTargets, setRecallTargets] = useState<RecallTargetRow[]>([]);
 
   const load = useCallback(async () => {
     const { data: auth } = await supabase.auth.getUser();
@@ -122,6 +137,50 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
   }, [supabase]);
 
   useEffect(() => { void load(); }, [load]);
+
+  // req 1 (continued): keep question overrides / recall settings live on
+  // this dashboard, the same way TaskFlow keeps them live for the student —
+  // via an initial fetch, short polling, and a Realtime subscription so a
+  // question edit shows up here (and in the blueprint) within ~2 seconds
+  // without a full page reload.
+  useEffect(() => {
+    let alive = true;
+    const applyLatest = async () => {
+      const [{ data, error }, { data: settingsData, error: settingsError }, { data: targetsData, error: targetsError }] = await Promise.all([
+        supabase.from("question_overrides").select("stage_key,task_key,field_key,prompt,description,options,field_type,multiple,sort_order"),
+        supabase.from("recall_settings").select("stage_key,task_key,field_key,enabled,updated_by,updated_at"),
+        supabase.from("recall_targets").select("stage_key,task_key,field_key,target_stage_key,target_task_key,target_field_key,position,updated_by,updated_at"),
+      ]);
+      if (!alive) return;
+      if (!error && data) setOverrides(data as QuestionOverride[]);
+      if (!settingsError && settingsData) setRecallSettings(settingsData as RecallSetting[]);
+      if (!targetsError && targetsData) setRecallTargets(targetsData as RecallTargetRow[]);
+    };
+    void applyLatest();
+    const polling = window.setInterval(() => { void applyLatest(); }, 2000);
+    const onFocus = () => { void applyLatest(); };
+    window.addEventListener("focus", onFocus);
+    const channel = supabase.channel("teacher-dashboard-question-overrides")
+      .on("postgres_changes", { event: "*", schema: "public", table: "question_overrides" }, () => { void applyLatest(); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "recall_settings" }, () => { void applyLatest(); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "recall_targets" }, () => { void applyLatest(); })
+      .subscribe();
+    return () => { alive = false; window.clearInterval(polling); window.removeEventListener("focus", onFocus); void supabase.removeChannel(channel); };
+  }, [supabase]);
+
+  // The effective, override-applied question set every view below should
+  // read from — never the raw `stageTasks` prop directly.
+  const effectiveStageTasks = useMemo(() => Object.fromEntries(Object.entries(stageTasks).map(([key, tasksForStage]) => [key, applyQuestionOverrides(tasksForStage, overrides)])), [stageTasks, overrides]);
+  // Overridden option lists can introduce brand-new option keys (see
+  // QuestionContentEditor's optionsFromText), so the option-label lookup the
+  // blueprint uses to render a checkbox answer must be rebuilt from the
+  // overridden fields too, not just the original server-computed map.
+  const effectiveOptionLabels = useMemo(() => {
+    const merged = { ...optionLabels };
+    Object.values(effectiveStageTasks).forEach((tasksForStage) => tasksForStage.forEach((task) => task.fields.forEach((field) => (field.options ?? []).forEach((option) => { merged[option.key] = option.label; }))));
+    return merged;
+  }, [optionLabels, effectiveStageTasks]);
+  const recallConfigMap = useMemo(() => buildRecallConfigMap(recallSettings, recallTargets), [recallSettings, recallTargets]);
 
   function learnerLabelFor(item: Submission) {
     if (item.workspace_id && workspaceNames[item.workspace_id]) return workspaceNames[item.workspace_id];
@@ -172,8 +231,34 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
 
   const visibleGroups = groups.filter((group) => (filter === "all" || group.reviewStatus === filter) && (learnerFilter === "all" || group.learnerKey === learnerFilter));
   const selected = groups.find((group) => group.key === selectedKey) ?? null;
-  const importTasks = stageTasks[importStage] ?? [];
-  const stageTasksForSelected = selected ? (stageTasks[selected.stageKey] ?? []) : [];
+  const importTasks = effectiveStageTasks[importStage] ?? [];
+  const stageTasksForSelected = useMemo(() => selected ? (effectiveStageTasks[selected.stageKey] ?? []) : [], [selected, effectiveStageTasks]);
+
+  // req 3: recall answers already given for "the same question" elsewhere —
+  // across this learner's other stages, not just the one currently open —
+  // so the final blueprint doesn't show a field as blank when the learner
+  // already answered the equivalent question. Reuses exactly the same two
+  // recall mechanisms the student-facing page already applies (the
+  // curriculum's hardcoded stage-to-stage pairs, plus whatever the teacher
+  // configured per-question via the recall settings in the question
+  // editor), so the blueprint and the student's own view never disagree.
+  const savedAnswersByStageForSelected = useMemo(() => {
+    if (!selected) return {};
+    const byStage: Record<string, Record<string, unknown>> = {};
+    submissions.filter((item) => learnerKeyOf(item) === selected.learnerKey).forEach((item) => {
+      byStage[item.stage_key] = { ...(byStage[item.stage_key] ?? {}), ...item.answer_json };
+    });
+    return byStage;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [submissions, selected?.learnerKey]);
+  const blueprintAnswers = useMemo(() => {
+    const current = answerDraft as Record<string, string | string[]>;
+    if (!selected) return current;
+    const savedByStage = { ...savedAnswersByStageForSelected, [selected.stageKey]: current } as Record<string, Record<string, string | string[]>>;
+    const withHardcodedRecall = buildRecallAnswers(selected.stageKey, stageTasksForSelected, savedByStage, current);
+    const withConfiguredRecall = applyRecallConfigAnswers(recallConfigMap, savedByStage, withHardcodedRecall.answers);
+    return withConfiguredRecall.answers;
+  }, [selected, savedAnswersByStageForSelected, answerDraft, stageTasksForSelected, recallConfigMap]);
 
   function openGroup(group: SubmissionGroup) {
     setSelectedKey(group.key);
@@ -349,8 +434,8 @@ export default function TeacherDashboard({ optionLabels, stageTitles, stageTasks
                   <StageBlueprint
                     stageTitle={stageTitles[selected.stageKey] ?? selected.stageKey}
                     tasks={stageTasksForSelected}
-                    answers={answerDraft as Record<string, string | string[]>}
-                    optionLabels={optionLabels}
+                    answers={blueprintAnswers}
+                    optionLabels={effectiveOptionLabels}
                     learnerName={learnerName || selected.learnerLabel}
                     reviewStatus={selected.reviewStatus}
                     teacherFeedback={feedback}
