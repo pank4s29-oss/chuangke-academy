@@ -50,6 +50,11 @@ export default function QuestionContentEditor({ stageTitles, stageTasks }: Props
     const current = draftFor(task, field, index);
     setDrafts((items) => ({ ...items, [field.key]: { ...current, ...patch } }));
   }
+  async function getEditorUserId() {
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) { setStatus("保存失敗：目前登入狀態已失效，請重新登入教師帳號。"); return null; }
+    return data.user.id;
+  }
   async function move(task: TaskWithFields, field: AssignmentField, direction: -1 | 1, index: number) {
     const current = draftFor(task, field, index);
     const next = Math.max(0, index + direction);
@@ -58,9 +63,11 @@ export default function QuestionContentEditor({ stageTitles, stageTasks }: Props
     const siblingDraft = draftFor(task, sibling, next);
     const currentNext = { ...current, sort_order: next };
     const siblingNext = { ...siblingDraft, sort_order: index };
+    const updatedBy = await getEditorUserId();
+    if (!updatedBy) return;
     setDrafts((items) => ({ ...items, [field.key]: currentNext, [sibling.key]: siblingNext }));
     setSaving(true); setStatus("保存題目順序中…");
-    const [first, second] = await Promise.all([currentNext, siblingNext].map((payload) => supabase.from("question_overrides").upsert({ ...payload, updated_at: new Date().toISOString() }, { onConflict: "stage_key,task_key,field_key" })));
+    const [first, second] = await Promise.all([currentNext, siblingNext].map((payload) => supabase.from("question_overrides").upsert({ ...payload, updated_by: updatedBy, updated_at: new Date().toISOString() }, { onConflict: "stage_key,task_key,field_key" })));
     setSaving(false);
     if (first.error || second.error) { setStatus(`順序保存失敗：${first.error?.message ?? second.error?.message}`); return; }
     setRows((items) => ({ ...items, [field.key]: currentNext, [sibling.key]: siblingNext }));
@@ -68,8 +75,10 @@ export default function QuestionContentEditor({ stageTitles, stageTasks }: Props
   }
   async function save(field: AssignmentField, task: TaskWithFields, index: number) {
     const draft = draftFor(task, field, index);
+    const updatedBy = await getEditorUserId();
+    if (!updatedBy) return;
     setSaving(true); setStatus("保存中…");
-    const payload = { ...draft, updated_at: new Date().toISOString(), multiple: draft.field_type === "checkboxes" ? true : draft.field_type === "single_choice" ? false : null };
+    const payload = { ...draft, updated_by: updatedBy, updated_at: new Date().toISOString(), multiple: draft.field_type === "checkboxes" ? true : draft.field_type === "single_choice" ? false : null };
     const { error } = await supabase.from("question_overrides").upsert(payload, { onConflict: "stage_key,task_key,field_key" });
     setSaving(false);
     if (error) { setStatus(`保存失敗：${error.message}`); return; }
