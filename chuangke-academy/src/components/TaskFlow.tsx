@@ -58,18 +58,21 @@ export default function TaskFlow({ stage, courseKey, tasks, referenceTasks, work
   useEffect(() => {
     let alive = true;
     const applyLatest = async () => {
-      const { data } = await supabase.from("question_overrides").select("stage_key,task_key,field_key,prompt,description,options").in("stage_key", ["stage-01", "stage-02"]);
+      const { data } = await supabase.from("question_overrides").select("stage_key,task_key,field_key,prompt,description,options,field_type,multiple,sort_order").in("stage_key", ["stage-01", "stage-02"]);
       if (!alive || !data) return;
       const overrides = data as QuestionOverride[];
-      setLiveTasks((current) => applyQuestionOverrides(current, overrides));
-      setLiveReferenceTasks((current) => applyQuestionOverrides(current, overrides));
+      // Always start from the server-rendered baseline. Applying to the
+      // already-overridden array would leave deleted overrides and stale order.
+      setLiveTasks(applyQuestionOverrides(tasks, overrides));
+      setLiveReferenceTasks(applyQuestionOverrides(referenceTasks ?? tasks, overrides));
     };
     void applyLatest();
+    const polling = window.setInterval(() => { void applyLatest(); }, 2000);
     const channel = supabase.channel(`question-overrides-${stage.key}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "question_overrides" }, () => { void applyLatest(); })
       .subscribe();
-    return () => { alive = false; void supabase.removeChannel(channel); };
-  }, [stage.key, supabase]);
+    return () => { alive = false; window.clearInterval(polling); void supabase.removeChannel(channel); };
+  }, [stage.key, supabase, tasks, referenceTasks]);
 
   useEffect(() => {
     const saved = window.localStorage.getItem(storageKey(stage.key, workspaceId));
@@ -101,7 +104,7 @@ export default function TaskFlow({ stage, courseKey, tasks, referenceTasks, work
       if (alive) setSavedAnswersByStage(savedByStage);
       if (alive) setAnswers((current) => {
         const merged = { ...(savedByStage[stage.key] ?? {}), ...current };
-        const recalled = buildRecallAnswers(stage.key, liveTasks, savedByStage, merged);
+        const recalled = buildRecallAnswers(stage.key, tasks, savedByStage, merged);
         if (recalled.count > 0) setRecallStatus(`已自動帶入 ${recalled.count} 個前置回顧答案；你仍可修改。`);
         return recalled.answers;
       });
@@ -110,7 +113,7 @@ export default function TaskFlow({ stage, courseKey, tasks, referenceTasks, work
     }
     void load();
     return () => { alive = false; };
-  }, [stage.key, supabase, liveTasks, courseKey, workspaceId]);
+  }, [stage.key, supabase, tasks, courseKey, workspaceId]);
 
   const currentFields = task?.fields.filter((field) => !field.hiddenInGroup && fieldIsActive(field, answers)) ?? [];
   const requiredFields = currentFields.filter((field) => field.required !== false);

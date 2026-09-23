@@ -13,7 +13,7 @@ export default async function WorkspaceLearnPage({ params }: Props) {
   const stageIndex = course.stages.findIndex((item) => item.key === stage.key);
   const nextStageKey = course.stages[stageIndex + 1]?.key;
   const supabase = createClient();
-  const overrideResult = await supabase.from("question_overrides").select("stage_key,task_key,field_key,prompt,description,options").in("stage_key", ["stage-01", "stage-02"]);
+  const overrideResult = await supabase.from("question_overrides").select("stage_key,task_key,field_key,prompt,description,options,field_type,multiple,sort_order").in("stage_key", ["stage-01", "stage-02"]);
   const overrides = overrideResult.data ?? [];
   async function loadTasks(key: string) {
     const baseline = readTaskSectionsWithFields(key);

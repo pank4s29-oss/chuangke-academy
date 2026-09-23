@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { applyQuestionOverrides as applyQuestionOverridesClientSafe } from "./overrides";
 
 export type TaskSection = { key: string; title: string; lecture: string; assignment: string };
 export type AssignmentOption = { key: string; label: string; otherInputKey?: string };
@@ -734,20 +735,7 @@ export function readStageTasks(stageKey: string) {
 /** Apply teacher copy without changing stable answer keys, section references,
  * dependencies, or the original Markdown-backed task metadata. */
 export function applyQuestionOverrides(tasks: TaskWithFields[], overrides: QuestionOverride[]) {
-  const byField = new Map(overrides.map((item) => [item.field_key, item]));
-  return tasks.map((task) => ({
-    ...task,
-    fields: task.fields.map((field) => {
-      const override = byField.get(field.key);
-      if (!override) return field;
-      return {
-        ...field,
-        ...(override.prompt != null ? { prompt: override.prompt } : {}),
-        ...(override.description != null ? { description: override.description } : {}),
-        ...(override.options != null ? { options: override.options } : {}),
-      };
-    }),
-  }));
+  return applyQuestionOverridesClientSafe(tasks, overrides);
 }
 
 export type TaskWithFields = TaskSection & { fields: AssignmentField[] };
