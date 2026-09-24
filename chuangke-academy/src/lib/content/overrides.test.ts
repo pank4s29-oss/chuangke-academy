@@ -42,6 +42,7 @@ describe("applyQuestionOverrides", () => {
     const result = applyQuestionOverrides(tableTasks, overrides)[0].fields;
     expect(result[0].tableTitle).toBe("教師改過的表格標題");
     expect(result[0].group).toBe("教師改過的表格標題");
-    expect(result[1].tableTitle).toBe("原標題");
+    expect(result[1].tableTitle).toBe("教師改過的表格標題");
+    expect(result[1].group).toBe("教師改過的表格標題");
   });
 });

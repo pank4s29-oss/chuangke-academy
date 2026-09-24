@@ -21,6 +21,10 @@ export type QuestionOverride = {
 /** Applies only learner-facing copy. Stable field keys and branching metadata remain untouched. */
 export function applyQuestionOverrides(tasks: TaskWithFields[], overrides: QuestionOverride[]) {
   const byField = new Map(overrides.map((item) => [item.field_key, item]));
+  const tableTitles = new Map<string, string>();
+  overrides.forEach((item) => {
+    if (item.table_key && item.table_title?.trim()) tableTitles.set(item.table_key, item.table_title.trim());
+  });
   const customByTask = new Map<string, QuestionOverride[]>();
   overrides.filter((item) => item.is_custom && !item.is_deleted).forEach((item) => {
     const list = customByTask.get(item.task_key) ?? [];
@@ -40,14 +44,19 @@ export function applyQuestionOverrides(tasks: TaskWithFields[], overrides: Quest
       group: item.table_key ? (item.table_title ?? "表格作答") : undefined,
       layout: item.table_key ? "table" as const : undefined,
       tableKey: item.table_key ?? undefined,
-      tableTitle: item.table_title ?? undefined,
+      tableTitle: item.table_title ?? (item.table_key ? tableTitles.get(item.table_key) : undefined) ?? undefined,
       tableRow: item.table_row ?? undefined,
       tableColumn: item.table_column ?? undefined,
       __sortOrder: item.sort_order ?? task.fields.length,
     } as AssignmentField)),].map((field: AssignmentField, originalIndex) => {
       const override = byField.get(field.key);
       if (override?.is_deleted) return null;
-      if (!override) return field;
+      if (!override) {
+        const tableTitle = field.tableKey ? tableTitles.get(field.tableKey) : undefined;
+        return tableTitle ? { ...field, tableTitle, group: tableTitle } : field;
+      }
+      const tableKey = override.table_key ?? field.tableKey;
+      const tableTitle = (tableKey ? tableTitles.get(tableKey) : undefined) ?? override.table_title ?? field.tableTitle;
       return {
         ...field,
         ...(override.prompt != null ? { prompt: override.prompt } : {}),
@@ -58,8 +67,8 @@ export function applyQuestionOverrides(tasks: TaskWithFields[], overrides: Quest
         ...(override.field_type === "text" ? { type: "text" as const, multiple: undefined } : {}),
         ...(override.field_type === "textarea" ? { type: "textarea" as const, multiple: undefined } : {}),
         ...((override.multiple != null && (override.field_type === "checkboxes" || override.field_type === "single_choice")) ? { multiple: override.multiple } : {}),
-        ...(override.table_key != null ? { tableKey: override.table_key } : {}),
-        ...(override.table_title != null ? { tableTitle: override.table_title, group: override.table_title } : {}),
+        ...(tableKey != null ? { tableKey } : {}),
+        ...(tableTitle != null ? { tableTitle, group: tableTitle } : {}),
         ...(override.table_row != null ? { tableRow: override.table_row } : {}),
         ...(override.table_column != null ? { tableColumn: override.table_column } : {}),
         __sortOrder: override.sort_order ?? originalIndex,
