@@ -148,8 +148,8 @@ export default function FlowRunner({ spec, lectures, stageKey, courseKey, worksp
     <div className="flow-root" ref={rootRef}>
       <header className="flow-top">
         <div className="flow-top-row">
-          <Link href={learnHref} className="flow-link">← 回到一般作答畫面</Link>
-          <span className={`flow-sync flow-sync-${sync}`} role="status">{SYNC_TEXT[sync]}{sync === "error" && <button type="button" className="flow-link" onClick={() => void persist()}>重試</button>}</span>
+          <div className="flow-brand" aria-label="創客學院課程工作單"><strong>創客學院</strong><span aria-hidden="true">｜</span><span>{spec.title}</span></div>
+          <div className="flow-top-actions"><Link href={learnHref} className="flow-link">回到一般作答</Link><span className={`flow-sync flow-sync-${sync}`} role="status">{SYNC_TEXT[sync]}{sync === "error" && <button type="button" className="flow-link" onClick={() => void persist()}>重試</button>}</span></div>
         </div>
         <nav className="flow-parts" aria-label="進度">
           {flow.parts.map((p, i) => {
