@@ -8,6 +8,7 @@ flows:
       - { id: open, label: 開場, pageIds: [p.open] }
       - { id: three, label: 三句話, pageIds: [p.t1.a, p.t1.b, p.t1.c] }
       - { id: current, label: 現況, pageIds: [p.t3] }
+      - { id: validation, label: 市場查證, pageIds: [p.t2.a, p.t2.b, p.t2.c, p.t2.d, p.t2.e] }
       - { id: blueprint, label: 藍圖, pageIds: [p.blueprint] }
     pages:
       - id: p.open
@@ -61,6 +62,52 @@ flows:
           - { type: choice, key: stage1.t3.close, label: 成交, options: [{ id: none, label: 目前沒有 }, { id: quote, label: 報價 }, { id: process, label: 有成交流程 }] }
           - { type: choice, key: stage1.t3.deliver, label: 交付, options: [{ id: none, label: 目前沒有 }, { id: process, label: 有交付流程 }] }
           - { type: sentence, key: stage1.t3.gaps, derive: stage1.t3.gaps }
+      - id: p.t2.a
+        part: validation
+        title: 蒐集 10 句客人原話
+        description: 先把你在社群、留言或對談中看到的原句記下來，不要急著改寫。
+        sourceRef: { file: 作業, heading: 2-A }
+        blocks:
+          - { type: textarea, key: stage1.t2.a.quotes, label: 10 句原話, placeholder: 一句一行，保留客人原本的說法 }
+          - { type: text, key: stage1.t2.a.repeated, label: 重複最多次的抱怨, placeholder: 哪個問題出現最多次？ }
+          - { type: tip, label: 判斷提醒, prompt: 先記錄原話，再做你的解讀；不要用自己的專業詞替客人說話。 }
+      - id: p.t2.b
+        part: validation
+        title: 找出 3 個正在花錢的競爭者
+        description: 用同一組條件記錄競爭者，之後才能比較解法與訊息。
+        sourceRef: { file: 作業, heading: 2-B }
+        blocks:
+          - type: matrix
+            key: stage1.t2.b.competitors
+            label: 競爭者觀察表
+            rows: [{ id: one, label: 競爭者 1 }, { id: two, label: 競爭者 2 }, { id: three, label: 競爭者 3 }]
+            columns: [{ id: name, label: 名稱／連結 }, { id: offer, label: 他賣什麼 }, { id: date, label: 開始刊登日期 }, { id: proof, label: 你看到的證據 }]
+      - id: p.t2.c
+        part: validation
+        title: 找出現有解法的 3 個破口
+        description: 不只列出缺點，要寫出客人因此付出的代價。
+        sourceRef: { file: 作業, heading: 2-C }
+        blocks:
+          - type: matrix
+            key: stage1.t2.c.gaps
+            label: 解法破口表
+            rows: [{ id: one, label: 破口 1 }, { id: two, label: 破口 2 }, { id: three, label: 破口 3 }]
+            columns: [{ id: solution, label: 現有解法 }, { id: gap, label: 哪裡不夠 }, { id: cost, label: 客人付出的代價 }]
+      - id: p.t2.d
+        part: validation
+        title: 檢查你有沒有真的去查
+        description: 完成查證後逐項勾選，避免只靠想像做決策。
+        sourceRef: { file: 作業, heading: 2-D }
+        blocks:
+          - { type: checklist, key: stage1.t2.d.checks, label: 查證完成檢查, multiple: true, options: [{ id: quotes, label: 我記下了 10 句原話 }, { id: competitors, label: 我找到 3 個正在花錢的競爭者 }, { id: gaps, label: 我寫出 3 個現有解法破口 }, { id: evidence, label: 每一格都有可回頭看的證據 }] }
+          - { type: score, label: 查證完成度, derive: stage1.t2.d.score }
+      - id: p.t2.e
+        part: validation
+        title: 查完之後，回頭看一眼任務一
+        description: 把市場原話帶回你的服務對象與問題句，必要時直接修改。
+        sourceRef: { file: 作業, heading: 2-E }
+        blocks:
+          - { type: textarea, key: stage1.t2.e.revision, label: 我現在要修正的任務一答案, placeholder: 寫下你會改哪裡，以及為什麼。 }
       - id: p.blueprint
         part: blueprint
         title: 你的第一版系統藍圖
@@ -115,6 +162,12 @@ flows:
         blocks:
           - { type: blueprint, key: blueprint, label: 藍圖輸出 }
 questions:
+  stage1.t2.a.quotes: { id: stage1.t2.a.quotes, label: 10 句客人原話, type: textarea, legacyKeys: [] }
+  stage1.t2.a.repeated: { id: stage1.t2.a.repeated, label: 重複最多次的抱怨, type: text, legacyKeys: [] }
+  stage1.t2.b.competitors: { id: stage1.t2.b.competitors, label: 競爭者觀察表, type: matrix, legacyKeys: [] }
+  stage1.t2.c.gaps: { id: stage1.t2.c.gaps, label: 解法破口表, type: matrix, legacyKeys: [] }
+  stage1.t2.d.checks: { id: stage1.t2.d.checks, label: 查證完成檢查, type: checklist, legacyKeys: [] }
+  stage1.t2.e.revision: { id: stage1.t2.e.revision, label: 修正任務一答案, type: textarea, legacyKeys: [] }
   stage1.open.name: { id: stage1.open.name, label: 你的名字, type: text, legacyKeys: [] }
   stage1.t1.a.stage: { id: stage1.t1.a.stage, label: 客人目前狀態, type: choice, legacyKeys: [stage-01-1-answer-0] }
   stage1.t1.a.identity: { id: stage1.t1.a.identity, label: 被服務的身分, type: text, legacyKeys: [stage-01-1-answer-1] }
@@ -133,6 +186,11 @@ questions:
   stage1.t3.close: { id: stage1.t3.close, label: 成交, type: choice, legacyKeys: [] }
   stage1.t3.deliver: { id: stage1.t3.deliver, label: 交付, type: choice, legacyKeys: [] }
 derived:
+  stage1.t2.d.score:
+    id: stage1.t2.d.score
+    op: countItems
+    inputs: [stage1.t2.d.checks]
+    origin: source-derived
   stage1.t1.a.sentence:
     id: stage1.t1.a.sentence
     op: template

@@ -2,10 +2,12 @@ import { z } from "zod";
 
 export const sourceRefSchema = z.object({ file: z.string(), heading: z.string().optional(), step: z.string().optional() });
 export const optionSchema = z.object({ id: z.string(), label: z.string(), hint: z.string().optional(), other: z.boolean().optional() });
+export const tableItemSchema = z.object({ id: z.string(), label: z.string() });
 export const blockSchema = z.object({
-  type: z.enum(["heading", "prose", "lecture", "choice", "text", "textarea", "sentence", "check", "callout", "blueprint"]),
+  type: z.enum(["heading", "prose", "lecture", "choice", "text", "textarea", "sentence", "check", "callout", "blueprint", "matrix", "matrixDynamic", "likert", "score", "date", "schedule", "checklist", "tip"]),
   key: z.string().optional(), label: z.string().optional(), prompt: z.string().optional(), description: z.string().optional(),
   options: z.array(optionSchema).optional(), multiple: z.boolean().optional(), max: z.number().optional(),
+  rows: z.array(tableItemSchema).optional(), columns: z.array(tableItemSchema).optional(),
   derive: z.string().optional(), placeholder: z.string().optional(), sourceRef: sourceRefSchema.optional(),
 });
 export const pageSchema = z.object({ id: z.string(), part: z.string(), title: z.string(), description: z.string().optional(), sourceRef: sourceRefSchema.optional(), requiredToAdvance: z.boolean().default(false), blocks: z.array(blockSchema) });
@@ -17,6 +19,7 @@ export type FlowDocument = z.infer<typeof flowDocumentSchema>;
 export type Flow = z.infer<typeof flowSchema>;
 export type FlowPage = z.infer<typeof pageSchema>;
 export type FlowBlock = z.infer<typeof blockSchema>;
-export type Answers = Record<string, string | string[] | number | boolean | undefined>;
+export type AnswerValue = string | string[] | number | boolean | Record<string, string> | undefined;
+export type Answers = Record<string, AnswerValue>;
 
 export function parseFlowDocument(value: unknown) { return flowDocumentSchema.parse(value); }

@@ -12,7 +12,7 @@ Flow 是由 `content/source/stage-XX/flow.yaml` 驅動的通用頁面流程。Ma
 
 ## 第一版 block
 
-`heading`、`prose`、`lecture`、`choice`、`text`、`textarea`、`sentence`、`check`、`callout`、`blueprint`。未被第一版使用的 `matrix`、`schedule` 等能力保留在後續 Phase，不另建 Stage 專屬元件。
+`heading`、`prose`、`lecture`、`choice`、`text`、`textarea`、`sentence`、`check`、`callout`、`blueprint`、`matrix`、`matrixDynamic`、`likert`、`score`、`date`、`schedule`、`checklist`、`tip`。表格欄位以 `rows`／`columns` 宣告，輸入 key 由 block key、row id、column id 穩定組合，不在 React 中寫死教材欄位。
 
 ## 儲存契約
 

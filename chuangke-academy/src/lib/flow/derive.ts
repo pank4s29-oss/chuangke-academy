@@ -1,6 +1,6 @@
 import type { Answers, FlowDocument } from "./schema";
 
-const text = (value: unknown) => Array.isArray(value) ? value.join("、") : String(value ?? "");
+const text = (value: unknown) => Array.isArray(value) ? value.join("、") : (value && typeof value === "object" ? Object.values(value).join("、") : String(value ?? ""));
 const clean = (value: unknown) => text(value).replace(/\s/g, "");
 export function deriveValue(op: string, inputs: string[], answers: Answers, args: Record<string, unknown> = {}) {
   const values = inputs.map((key) => answers[key]);
@@ -9,6 +9,7 @@ export function deriveValue(op: string, inputs: string[], answers: Answers, args
     case "joinNonEmpty": return values.map(text).filter(Boolean).join(String(args.separator ?? "，")) + (values.some(Boolean) ? String(args.end ?? "") : "");
     case "firstNonEmpty": return values.map(text).find(Boolean) ?? "";
     case "countEquals": return values.filter((value) => text(value) === String(args.equals ?? "是")).length;
+    case "countItems": return values.flatMap((value) => Array.isArray(value) ? value : value ? [value] : []).length;
     case "charCount": { const value = clean(values[0]); const max = Number(args.max ?? 0); return { value, count: value.length, ok: !max || value.length <= max }; }
     case "regexAbsent": { const value = text(values[0]); const regex = new RegExp(String(args.pattern ?? "學會")); return { value, ok: !regex.test(value) }; }
     case "mapJoin": return values.flatMap((value) => Array.isArray(value) ? value : [value]).map((item) => String((args.map as Record<string, string> | undefined)?.[String(item)] ?? item)).filter(Boolean).join(String(args.separator ?? "、"));

@@ -6,13 +6,14 @@ export type SubmissionRow = { stage_key: string; task_key: string; answer_json: 
 export function taskKeyForPage(pageId: string) {
   if (pageId === "p.open") return "stage-01-open";
   if (pageId.startsWith("p.t1.")) return "stage-01-1";
+  if (pageId.startsWith("p.t2.")) return "stage-01-2";
   if (pageId === "p.t3") return "stage-01-3";
   if (pageId === "p.blueprint") return "stage-01-appendix";
   return "stage-01-flow";
 }
 
 function isAnswer(value: unknown): value is Answers[string] {
-  return typeof value === "string" || typeof value === "number" || typeof value === "boolean" || Array.isArray(value);
+  return typeof value === "string" || typeof value === "number" || typeof value === "boolean" || Array.isArray(value) || (typeof value === "object" && value !== null);
 }
 
 export function parseStoredState(raw: string | null): FlowStorageState | null {
@@ -40,7 +41,7 @@ export function mergeSubmissionAnswers(document: FlowDocument, rows: SubmissionR
 
 export function scopedAnswers(document: FlowDocument, answers: Answers, pageId: string) {
   const taskKey = taskKeyForPage(pageId);
-  const prefix = pageId.startsWith("p.t1.") ? "stage1.t1." : pageId === "p.t3" ? "stage1.t3." : pageId === "p.open" ? "stage1.open." : "";
+  const prefix = pageId.startsWith("p.t1.") ? "stage1.t1." : pageId.startsWith("p.t2.") ? "stage1.t2." : pageId === "p.t3" ? "stage1.t3." : pageId === "p.open" ? "stage1.open." : "";
   const scoped: Answers = {};
   for (const [key, value] of Object.entries(answers)) if (!key.startsWith("_flow") && (!prefix || key.startsWith(prefix))) scoped[key] = value;
   for (const [legacyKey, semanticKey] of Object.entries(document.legacyKeyMap)) if (semanticKey in scoped && answers[legacyKey] !== undefined) scoped[legacyKey] = answers[legacyKey];
