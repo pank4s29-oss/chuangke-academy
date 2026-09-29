@@ -54,6 +54,21 @@ flows:
       - label: 附錄｜一頁定位藍圖
         pages:
           - p.app.stage02
+  consult_session:
+    label: 諮詢對談版（由具體客人開始）
+    parts:
+      - label: 客人畫像
+        pages: [p.t22.lecture, p.t22.22a, p.t22.22b, p.t22.22c, p.t22.summary]
+      - label: 市場拆解
+        pages: [p.t21.lecture, p.t21.21a, p.t21.21b, p.t21.21c, p.t21.summary]
+      - label: 定位句
+        pages: [p.t23.lecture, p.t23.23a, p.t23.23b, p.t23.23c, p.t23.23d, p.t23.summary]
+      - label: 產品與價格
+        pages: [p.t24.lecture, p.t24.24a, p.t24.24b, p.t24.24c, p.t24.24d, p.t24.summary]
+      - label: 成交方案
+        pages: [p.t25.lecture, p.t25.25a, p.t25.25b, p.t25.25c, p.t25.25d, p.t25.25e, p.t25.summary]
+      - label: 一頁定位藍圖
+        pages: [p.app.stage02]
 pages:
   p.t21.lecture:
     title: 任務 2.1｜把市場拆開來看｜先讀講義

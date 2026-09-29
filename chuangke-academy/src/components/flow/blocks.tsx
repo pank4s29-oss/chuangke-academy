@@ -23,7 +23,7 @@ function Field({ label, hint, children }: { label?: string; hint?: string; child
   return <div className="flow-field">{label && <div className="flow-label">{label}</div>}{hint && <div className="flow-hint">{hint}</div>}{children}</div>;
 }
 
-function Choice({ c, q, compact }: { c: Ctx; q: string; compact?: boolean }) {
+function Choice({ c, q, compact, columns = 1 }: { c: Ctx; q: string; compact?: boolean; columns?: number }) {
   const def = c.spec.questions[q];
   const multi = def.kind === "multi";
   const cur = arr(c.eng.value(q));
@@ -35,7 +35,7 @@ function Choice({ c, q, compact }: { c: Ctx; q: string; compact?: boolean }) {
     <div className="flow-field">
       {!compact && <div className="flow-label">{def.label}</div>}
       {!compact && multi && def.max && <div className="flow-hint">最多選 {def.max} 個（已選 {cur.length}）</div>}
-      <div className="flow-opts" role={multi ? "group" : "radiogroup"} aria-label={def.label}>
+      <div className={`flow-opts flow-opts-${columns}`} role={multi ? "group" : "radiogroup"} aria-label={def.label}>
         {def.options?.map((o) => {
           const on = cur.includes(o.id);
           return (
@@ -138,7 +138,7 @@ export function BlockView({ b, c, index }: { b: BlockT; c: Ctx; index: number })
     case "callout": return <div className={`flow-callout flow-callout-${b.tone}`}><Md>{b.text}</Md></div>;
     case "details": return <details className="flow-details"><summary>{b.summary}</summary><Md>{b.text}</Md></details>;
     case "lecture": return <Md>{c.lectures[`${c.pageId}#${index}`] ?? ""}</Md>;
-    case "choice": return <Choice c={c} q={b.q} />;
+    case "choice": return <Choice c={c} q={b.q} columns={b.columns} />;
     case "pickerGroup": return <div className="flow-picker">{b.items.map((it) => <div key={it.q}><div className="flow-label">{it.title}</div><Choice c={c} q={it.q} compact /></div>)}</div>;
     case "text": case "number": case "date": case "textarea": return <TextInput c={c} b={b} />;
     case "sentence": return <Sentence c={c} b={b} />;

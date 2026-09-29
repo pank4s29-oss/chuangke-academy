@@ -16,6 +16,26 @@ type Sync = "loading" | "saved" | "saving" | "error" | "local" | "dirty";
 
 const SYNC_TEXT: Record<Sync, string> = { loading: "載入中…", saved: "已同步", saving: "儲存中…", error: "尚未同步（按「重試」）", local: "未登入：只存在這個瀏覽器", dirty: "有變更，儲存中…" };
 
+function bridgeStageOneAnswers(stageKey: string, raw: RawAnswers): { raw: RawAnswers; count: number } {
+  if (stageKey !== "stage-02") return { raw, count: 0 };
+  const mappings: Record<string, string> = {
+    "stage2.t21.q1": "stage1.t1.b.quote",
+    "stage2.t21.q4": "stage1.t2.a.top",
+    "stage2.t22.q1": "stage1.t1.a.identity",
+    "stage2.t22.q13": "stage1.t1.b.sentence",
+    "stage2.t23.q13": "stage1.t1.a.identity",
+    "stage2.t23.q25": "stage1.t1.c.sentence_a",
+    "stage2.t24.q14": "stage1.t1.a.sentence",
+    "stage2.t25.q31": "stage1.t1.b.to",
+  };
+  let count = 0;
+  const next = { ...raw };
+  for (const [target, source] of Object.entries(mappings)) {
+    if (next[target] === undefined && raw[source] !== undefined && raw[source] !== "") { next[target] = raw[source]; count++; }
+  }
+  return { raw: next, count };
+}
+
 export default function FlowRunner({ spec, lectures, stageKey, courseKey, workspaceId, learnHref, nextHref }: Props) {
   const supabase = useMemo(() => createClient(), []);
   const flowIds = Object.keys(spec.flows);
@@ -24,6 +44,7 @@ export default function FlowRunner({ spec, lectures, stageKey, courseKey, worksp
   const [pageId, setPageId] = useState<string>("");
   const [sync, setSync] = useState<Sync>("loading");
   const [ready, setReady] = useState(false);
+  const [prefilled, setPrefilled] = useState(0);
   const [userId, setUserId] = useState<string | null>(null);
   const rows = useRef<Record<string, Row>>({});
   const lastSaved = useRef<Record<string, string>>({});
@@ -48,6 +69,9 @@ export default function FlowRunner({ spec, lectures, stageKey, courseKey, worksp
       let raw: RawAnswers = {};
       try { const l = window.localStorage.getItem(`chuangke-draft-${workspaceId}-${stageKey}`); if (l) raw = { ...raw, ...JSON.parse(l) }; } catch { /* ignore */ }
       try { const l = window.localStorage.getItem(localKey); if (l) raw = { ...raw, ...JSON.parse(l) }; } catch { /* ignore */ }
+      if (stageKey === "stage-02") {
+        try { const l = window.localStorage.getItem(`chuangke-flow-${workspaceId}-stage-01`); if (l) raw = { ...raw, ...JSON.parse(l) }; } catch { /* ignore */ }
+      }
       const { data: auth } = await supabase.auth.getUser();
       const uid = auth.user?.id ?? null;
       if (!alive) return;
@@ -59,13 +83,15 @@ export default function FlowRunner({ spec, lectures, stageKey, courseKey, worksp
         raw = { ...raw, ...mergeRows((data ?? []) as Row[]) };
         for (const [t, r] of Object.entries(rows.current)) lastSaved.current[t] = JSON.stringify(r.answer_json ?? {});
       }
-      const { state, meta } = loadState(spec, raw);
+      const bridged = bridgeStageOneAnswers(stageKey, raw);
+      const { state, meta } = loadState(spec, bridged.raw);
       if (!alive) return;
       setSt(state);
       const mode = meta.mode && spec.flows[meta.mode] ? meta.mode : flowIds[0];
       setFlowId(mode);
       const first = flowPages(spec.flows[mode])[0];
       setPageId(meta.page && flowPages(spec.flows[mode]).includes(meta.page) ? meta.page : first);
+      setPrefilled(bridged.count);
       setSync(uid ? "saved" : "local");
       setReady(true);
     })();
@@ -159,6 +185,7 @@ export default function FlowRunner({ spec, lectures, stageKey, courseKey, worksp
             return <button type="button" key={p.label} className={`flow-part${i === partIndex ? " is-current" : ""}`} onClick={() => ids[0] && setPageId(ids[0])} aria-current={i === partIndex} title={`${reached}/${ids.length}`}><span className="flow-part-bar"><span style={{ width: `${pct}%` }} /></span><span className="flow-part-name">{p.label}</span></button>;
           })}
         </nav>
+        {prefilled > 0 && stageKey === "stage-02" && <div className="flow-prefill" role="status">已從階段一帶入 {prefilled} 個可修改答案；請逐格確認後再繼續。</div>}
         {flowIds.length > 1 && <div className="flow-modes" role="group" aria-label="流程版本">{flowIds.map((id) => <button type="button" key={id} className="flow-chip" aria-pressed={id === flowId} onClick={() => switchFlow(id)}>{spec.flows[id].label}</button>)}</div>}
       </header>
       <main className="flow-shell">
