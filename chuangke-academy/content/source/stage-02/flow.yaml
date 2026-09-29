@@ -1,0 +1,3114 @@
+schemaVersion: 1
+stage: stage-02
+title: 階段二：賣爆賺錢的商業定位
+tasks:
+  t21: stage-02-2-1
+  t22: stage-02-2-2
+  t23: stage-02-2-3
+  t24: stage-02-2-4
+  t25: stage-02-2-5
+  app: stage-02-附錄
+flows:
+  self_study:
+    label: 自己完成
+    parts:
+      - label: 任務 2.1｜把市場拆開來看
+        pages:
+          - p.t21.lecture
+          - p.t21.21a
+          - p.t21.21b
+          - p.t21.21c
+          - p.t21.summary
+      - label: 任務 2.2｜把客人縮成一個人
+        pages:
+          - p.t22.lecture
+          - p.t22.22a
+          - p.t22.22b
+          - p.t22.22c
+          - p.t22.summary
+      - label: 任務 2.3｜寫出你的定位句
+        pages:
+          - p.t23.lecture
+          - p.t23.23a
+          - p.t23.23b
+          - p.t23.23c
+          - p.t23.23d
+          - p.t23.summary
+      - label: 任務 2.4｜訂出產品與價格
+        pages:
+          - p.t24.lecture
+          - p.t24.24a
+          - p.t24.24b
+          - p.t24.24c
+          - p.t24.24d
+          - p.t24.summary
+      - label: 任務 2.5｜組出你的成交方案
+        pages:
+          - p.t25.lecture
+          - p.t25.25a
+          - p.t25.25b
+          - p.t25.25c
+          - p.t25.25d
+          - p.t25.25e
+          - p.t25.summary
+      - label: 附錄｜一頁定位藍圖
+        pages:
+          - p.app.stage02
+pages:
+  p.t21.lecture:
+    title: 任務 2.1｜把市場拆開來看｜先讀講義
+    lectureChapter: 2.1 市場調查與市場分析
+    blocks: []
+  p.t21.21a:
+    title: 任務 2.1｜把市場拆開來看｜2.1-A
+    task: stage-02-2-1
+    sourceRef:
+      file: 作業
+      heading: 2.1-A
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t21.q0
+        columns: 1
+      - type: text
+        q: stage2.t21.q1
+      - type: text
+        q: stage2.t21.q2
+      - type: text
+        q: stage2.t21.q3
+      - type: text
+        q: stage2.t21.q4
+      - type: choice
+        q: stage2.t21.q5
+        columns: 1
+      - type: text
+        q: stage2.t21.q6
+      - type: text
+        q: stage2.t21.q7
+      - type: text
+        q: stage2.t21.q8
+      - type: choice
+        q: stage2.t21.q9
+        columns: 1
+      - type: text
+        q: stage2.t21.q10
+  p.t21.21b:
+    title: 任務 2.1｜把市場拆開來看｜2.1-B
+    task: stage-02-2-1
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: text
+        q: stage2.t21.q11
+      - type: text
+        q: stage2.t21.q12
+      - type: text
+        q: stage2.t21.q13
+      - type: text
+        q: stage2.t21.q14
+      - type: text
+        q: stage2.t21.q15
+      - type: text
+        q: stage2.t21.q16
+      - type: text
+        q: stage2.t21.q17
+      - type: text
+        q: stage2.t21.q18
+      - type: text
+        q: stage2.t21.q19
+      - type: text
+        q: stage2.t21.q20
+      - type: text
+        q: stage2.t21.q21
+      - type: text
+        q: stage2.t21.q22
+      - type: text
+        q: stage2.t21.q23
+      - type: text
+        q: stage2.t21.q24
+      - type: text
+        q: stage2.t21.q25
+  p.t21.21c:
+    title: 任務 2.1｜把市場拆開來看｜2.1-C
+    task: stage-02-2-1
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: text
+        q: stage2.t21.q26
+      - type: text
+        q: stage2.t21.q27
+      - type: text
+        q: stage2.t21.q28
+      - type: text
+        q: stage2.t21.q29
+      - type: text
+        q: stage2.t21.q30
+      - type: text
+        q: stage2.t21.q31
+      - type: choice
+        q: stage2.t21.q32
+        columns: 1
+      - type: choice
+        q: stage2.t21.q33
+        columns: 1
+      - type: text
+        q: stage2.t21.q34
+      - type: choice
+        q: stage2.t21.q35
+        columns: 1
+      - type: text
+        q: stage2.t21.q36
+      - type: text
+        q: stage2.t21.q37
+      - type: text
+        q: stage2.t21.q38
+      - type: text
+        q: stage2.t21.q39
+      - type: choice
+        q: stage2.t21.q40
+        columns: 1
+  p.t21.summary:
+    title: 任務 2.1｜把市場拆開來看｜任務
+    task: stage-02-2-1
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t21.q41
+        columns: 1
+  p.t22.lecture:
+    title: 任務 2.2｜把客人縮成一個人｜先讀講義
+    lectureChapter: 2.2 受眾與用戶畫像的選擇
+    blocks: []
+  p.t22.22a:
+    title: 任務 2.2｜把客人縮成一個人｜2.2-A
+    task: stage-02-2-2
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t22.q0
+        columns: 1
+      - type: text
+        q: stage2.t22.q1
+      - type: text
+        q: stage2.t22.q2
+      - type: choice
+        q: stage2.t22.q3
+        columns: 1
+      - type: choice
+        q: stage2.t22.q4
+        columns: 1
+      - type: choice
+        q: stage2.t22.q5
+        columns: 1
+      - type: choice
+        q: stage2.t22.q6
+        columns: 1
+      - type: text
+        q: stage2.t22.q7
+      - type: text
+        q: stage2.t22.q8
+      - type: text
+        q: stage2.t22.q9
+      - type: text
+        q: stage2.t22.q10
+      - type: text
+        q: stage2.t22.q11
+      - type: text
+        q: stage2.t22.q12
+      - type: text
+        q: stage2.t22.q13
+      - type: choice
+        q: stage2.t22.q14
+        columns: 1
+      - type: text
+        q: stage2.t22.q16
+      - type: choice
+        q: stage2.t22.q17
+        columns: 1
+      - type: choice
+        q: stage2.t22.q18
+        columns: 1
+      - type: text
+        q: stage2.t22.q19
+      - type: choice
+        q: stage2.t22.q20
+        columns: 1
+      - type: choice
+        q: stage2.t22.q21
+        columns: 1
+      - type: choice
+        q: stage2.t22.q23
+        columns: 1
+  p.t22.22b:
+    title: 任務 2.2｜把客人縮成一個人｜2.2-B
+    task: stage-02-2-2
+    sourceRef:
+      file: 作業
+      heading: 2.2-B
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: text
+        q: stage2.t22.q25
+      - type: text
+        q: stage2.t22.q26
+  p.t22.22c:
+    title: 任務 2.2｜把客人縮成一個人｜2.2-C
+    task: stage-02-2-2
+    sourceRef:
+      file: 作業
+      heading: 2.2-C
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: text
+        q: stage2.t22.q27
+      - type: text
+        q: stage2.t22.q28
+      - type: text
+        q: stage2.t22.q29
+  p.t22.summary:
+    title: 任務 2.2｜把客人縮成一個人｜任務
+    task: stage-02-2-2
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t22.q30
+        columns: 1
+  p.t23.lecture:
+    title: 任務 2.3｜寫出你的定位句｜先讀講義
+    lectureChapter: 2.3 獨特的精準定位
+    blocks: []
+  p.t23.23a:
+    title: 任務 2.3｜寫出你的定位句｜2.3-A
+    task: stage-02-2-3
+    sourceRef:
+      file: 作業
+      heading: 2.3-A
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t23.q0
+        columns: 1
+      - type: choice
+        q: stage2.t23.q2
+        columns: 1
+      - type: choice
+        q: stage2.t23.q4
+        columns: 1
+      - type: text
+        q: stage2.t23.q6
+      - type: text
+        q: stage2.t23.q7
+      - type: choice
+        q: stage2.t23.q8
+        columns: 1
+      - type: text
+        q: stage2.t23.q9
+      - type: text
+        q: stage2.t23.q10
+      - type: choice
+        q: stage2.t23.q11
+        columns: 1
+      - type: choice
+        q: stage2.t23.q12
+        columns: 1
+  p.t23.23b:
+    title: 任務 2.3｜寫出你的定位句｜2.3-B
+    task: stage-02-2-3
+    sourceRef:
+      file: 作業
+      heading: 2.3-B
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: text
+        q: stage2.t23.q13
+      - type: text
+        q: stage2.t23.q14
+      - type: text
+        q: stage2.t23.q15
+  p.t23.23c:
+    title: 任務 2.3｜寫出你的定位句｜2.3-C
+    task: stage-02-2-3
+    sourceRef:
+      file: 作業
+      heading: 2.3-C
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t23.q16
+        columns: 1
+      - type: choice
+        q: stage2.t23.q17
+        columns: 1
+      - type: choice
+        q: stage2.t23.q18
+        columns: 1
+      - type: choice
+        q: stage2.t23.q19
+        columns: 1
+      - type: text
+        q: stage2.t23.q20
+      - type: choice
+        q: stage2.t23.q21
+        columns: 1
+      - type: choice
+        q: stage2.t23.q22
+        columns: 1
+      - type: text
+        q: stage2.t23.q23
+      - type: choice
+        q: stage2.t23.q24
+        columns: 1
+  p.t23.23d:
+    title: 任務 2.3｜寫出你的定位句｜2.3-D
+    task: stage-02-2-3
+    sourceRef:
+      file: 作業
+      heading: 2.3-D
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: text
+        q: stage2.t23.q25
+  p.t23.summary:
+    title: 任務 2.3｜寫出你的定位句｜任務
+    task: stage-02-2-3
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t23.q26
+        columns: 1
+  p.t24.lecture:
+    title: 任務 2.4｜訂出產品與價格｜先讀講義
+    lectureChapter: 2.4 好產品與高價格
+    blocks: []
+  p.t24.24a:
+    title: 任務 2.4｜訂出產品與價格｜2.4-A
+    task: stage-02-2-4
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t24.q0
+        columns: 1
+      - type: text
+        q: stage2.t24.q1
+      - type: choice
+        q: stage2.t24.q2
+        columns: 1
+      - type: text
+        q: stage2.t24.q3
+      - type: choice
+        q: stage2.t24.q4
+        columns: 1
+      - type: text
+        q: stage2.t24.q5
+      - type: choice
+        q: stage2.t24.q6
+        columns: 1
+      - type: text
+        q: stage2.t24.q7
+      - type: text
+        q: stage2.t24.q8
+      - type: text
+        q: stage2.t24.q9
+      - type: choice
+        q: stage2.t24.q10
+        columns: 1
+  p.t24.24b:
+    title: 任務 2.4｜訂出產品與價格｜2.4-B
+    task: stage-02-2-4
+    sourceRef:
+      file: 作業
+      heading: 2.4-B
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: text
+        q: stage2.t24.q11
+      - type: text
+        q: stage2.t24.q12
+      - type: text
+        q: stage2.t24.q13
+  p.t24.24c:
+    title: 任務 2.4｜訂出產品與價格｜2.4-C
+    task: stage-02-2-4
+    sourceRef:
+      file: 作業
+      heading: 2.4-C
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: text
+        q: stage2.t24.q14
+      - type: text
+        q: stage2.t24.q15
+      - type: choice
+        q: stage2.t24.q16
+        columns: 1
+      - type: choice
+        q: stage2.t24.q20
+        columns: 1
+  p.t24.24d:
+    title: 任務 2.4｜訂出產品與價格｜2.4-D
+    task: stage-02-2-4
+    sourceRef:
+      file: 作業
+      heading: 2.4-D
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: text
+        q: stage2.t24.q21
+      - type: text
+        q: stage2.t24.q22
+      - type: text
+        q: stage2.t24.q23
+      - type: text
+        q: stage2.t24.q24
+      - type: text
+        q: stage2.t24.q25
+      - type: text
+        q: stage2.t24.q26
+  p.t24.summary:
+    title: 任務 2.4｜訂出產品與價格｜任務
+    task: stage-02-2-4
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t24.q27
+        columns: 1
+  p.t25.lecture:
+    title: 任務 2.5｜組出你的成交方案｜先讀講義
+    lectureChapter: 2.5 賣爆的成交環節
+    blocks: []
+  p.t25.25a:
+    title: 任務 2.5｜組出你的成交方案｜2.5-A
+    task: stage-02-2-5
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t25.q0
+        columns: 1
+      - type: text
+        q: stage2.t25.q1
+      - type: choice
+        q: stage2.t25.q2
+        columns: 1
+      - type: text
+        q: stage2.t25.q3
+      - type: choice
+        q: stage2.t25.q4
+        columns: 1
+      - type: text
+        q: stage2.t25.q5
+      - type: text
+        q: stage2.t25.q6
+      - type: choice
+        q: stage2.t25.q7
+        columns: 1
+  p.t25.25b:
+    title: 任務 2.5｜組出你的成交方案｜2.5-B
+    task: stage-02-2-5
+    sourceRef:
+      file: 作業
+      heading: 2.5-B
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: text
+        q: stage2.t25.q8
+      - type: text
+        q: stage2.t25.q9
+      - type: choice
+        q: stage2.t25.q10
+        columns: 1
+  p.t25.25c:
+    title: 任務 2.5｜組出你的成交方案｜2.5-C
+    task: stage-02-2-5
+    sourceRef:
+      file: 作業
+      heading: 2.5-C
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t25.q11
+        columns: 1
+      - type: text
+        q: stage2.t25.q13
+      - type: choice
+        q: stage2.t25.q14
+        columns: 1
+      - type: choice
+        q: stage2.t25.q15
+        columns: 1
+      - type: choice
+        q: stage2.t25.q17
+        columns: 1
+      - type: choice
+        q: stage2.t25.q19
+        columns: 1
+  p.t25.25d:
+    title: 任務 2.5｜組出你的成交方案｜2.5-D
+    task: stage-02-2-5
+    sourceRef:
+      file: 作業
+      heading: 2.5-D
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t25.q21
+        columns: 1
+      - type: choice
+        q: stage2.t25.q22
+        columns: 1
+      - type: text
+        q: stage2.t25.q24
+      - type: choice
+        q: stage2.t25.q25
+        columns: 1
+      - type: choice
+        q: stage2.t25.q26
+        columns: 1
+      - type: choice
+        q: stage2.t25.q30
+        columns: 1
+      - type: text
+        q: stage2.t25.q31
+      - type: text
+        q: stage2.t25.q32
+  p.t25.25e:
+    title: 任務 2.5｜組出你的成交方案｜2.5-E
+    task: stage-02-2-5
+    sourceRef:
+      file: 作業
+      heading: 2.5-E
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t25.q33
+        columns: 1
+      - type: text
+        q: stage2.t25.q34
+  p.t25.summary:
+    title: 任務 2.5｜組出你的成交方案｜任務
+    task: stage-02-2-5
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: choice
+        q: stage2.t25.q35
+        columns: 1
+  p.app.stage02:
+    title: 附錄｜一頁定位藍圖｜stage-02-附錄
+    task: stage-02-附錄
+    sourceRef:
+      file: 作業
+      heading: stage-02-附錄
+    blocks:
+      - type: prose
+        text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
+        origin: authored
+      - type: text
+        q: stage2.app.q0
+      - type: text
+        q: stage2.app.q1
+      - type: text
+        q: stage2.app.q2
+      - type: text
+        q: stage2.app.q3
+      - type: text
+        q: stage2.app.q4
+      - type: text
+        q: stage2.app.q5
+      - type: text
+        q: stage2.app.q6
+      - type: text
+        q: stage2.app.q7
+questions:
+  stage2.t21.q0:
+    kind: single
+    label: 我以為學員會說的
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-0
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-A
+    options:
+      - id: o0
+        label: 這是我最早寫的那一版——照抄，往下做第 2 格
+        other: false
+      - id: o1
+        label: 我在 1.2-E 勾過 B，已經改掉了——不用抄，跳到下面那格
+        other: false
+  stage2.t21.q1:
+    kind: text
+    label: 抄 1.1-B 步驟 2 那句「他會親口說的話」
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-1
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-A
+  stage2.t21.q2:
+    kind: text
+    label: 我原本以為他卡在【＿＿＿＿】，
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-2
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-A
+  stage2.t21.q3:
+    kind: text
+    label: 實際上他一直在講的是【＿＿＿＿】。
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-3
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-A
+  stage2.t21.q4:
+    kind: text
+    label: 從 1.2-A 的十句裡挑一句——出現最多次的那句，或最像在抱怨的那句
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-4
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-A
+  stage2.t21.q5:
+    kind: multi
+    label: 第 3 格：兩句差在哪（可以複選）
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-5
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-A
+    options:
+      - id: o0
+        label: 用詞不一樣——我用的是行內的講法，他用的是生活裡的話
+        other: false
+      - id: o1
+        label: 在意的點不一樣——我以為他在意 A，他講的是 B
+        other: false
+      - id: o2
+        label: 他講得比我想的細——他講的是某一個時間、某一件小事
+        other: false
+      - id: o3
+        label: 他講得比我想的重——他已經在下結論了，不是在問問題
+        other: false
+      - id: o4
+        label: 幾乎一樣——（勾這個的話，回第 2 格換一句最不像你原本想的，重填一次）
+        other: false
+  stage2.t21.q6:
+    kind: text
+    label: 表面痛｜我的原話（可以放好幾句）
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-6
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-A
+  stage2.t21.q7:
+    kind: text
+    label: 真正要的結果｜我的原話（可以放好幾句）
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-7
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-A
+  stage2.t21.q8:
+    kind: text
+    label: 恐懼｜我的原話（可以放好幾句）
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-8
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-A
+  stage2.t21.q9:
+    kind: single
+    label: 恐懼那一格是空的嗎？
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-9
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-A
+    options:
+      - id: o0
+        label: 有句子
+        other: false
+      - id: o1
+        label: 空的
+        other: false
+  stage2.t21.q10:
+    kind: text
+    label: 追問完，我的恐懼句是
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-10
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-A
+  stage2.t21.q11:
+    kind: text
+    label: 競品 1｜賣給誰
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-11
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q12:
+    kind: text
+    label: 競品 1｜主打什麼
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-12
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q13:
+    kind: text
+    label: 競品 1｜價格帶
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-13
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q14:
+    kind: text
+    label: 競品 1｜承諾什麼
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-14
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q15:
+    kind: text
+    label: 競品 1｜最大弱點
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-15
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q16:
+    kind: text
+    label: 競品 2｜賣給誰
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-16
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q17:
+    kind: text
+    label: 競品 2｜主打什麼
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-17
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q18:
+    kind: text
+    label: 競品 2｜價格帶
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-18
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q19:
+    kind: text
+    label: 競品 2｜承諾什麼
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-19
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q20:
+    kind: text
+    label: 競品 2｜最大弱點
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-20
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q21:
+    kind: text
+    label: 競品 3｜賣給誰
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-21
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q22:
+    kind: text
+    label: 競品 3｜主打什麼
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-22
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q23:
+    kind: text
+    label: 競品 3｜價格帶
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-23
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q24:
+    kind: text
+    label: 競品 3｜承諾什麼
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-24
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q25:
+    kind: text
+    label: 競品 3｜最大弱點
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-25
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-B
+  stage2.t21.q26:
+    kind: text
+    label: 競品 1 主打：＿＿＿＿
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-26
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+  stage2.t21.q27:
+    kind: text
+    label: 競品 2 主打：＿＿＿＿
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-27
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+  stage2.t21.q28:
+    kind: text
+    label: 競品 3 主打：＿＿＿＿
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-28
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+  stage2.t21.q29:
+    kind: text
+    label: 三家都在講的是（一個詞）：＿＿＿＿
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-29
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+  stage2.t21.q30:
+    kind: text
+    label: 沒有人在講的是
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-30
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+  stage2.t21.q31:
+    kind: text
+    label: 把你剛寫的那句「沒有人在講的是＿＿＿＿」唸一次，然後問自己：
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-31
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+  stage2.t21.q32:
+    kind: single
+    label: 我能不能把它拆成別人照著做的順序？
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-32
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+    options:
+      - id: o0
+        label: 講得出來——我講得出第一步看什麼、第二步做什麼
+        other: false
+      - id: o1
+        label: 還講不出來——我知道自己在做什麼，但講出來就變成「我比較會看」這種話
+        other: false
+  stage2.t21.q33:
+    kind: single
+    label: 想像明天競品 1 把你這句話原封不動貼到他的頁面上
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-33
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+    options:
+      - id: o0
+        label: 抄不走——他貼了也做不出來，或是跟他現在賣的東西會打架
+        other: false
+      - id: o1
+        label: 抄得走——他明天就可以貼，客人也不會覺得奇怪
+        other: false
+  stage2.t21.q34:
+    kind: text
+    label: 我在第 ＿＿＿＿ 格。
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-34
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+  stage2.t21.q35:
+    kind: single
+    label: 同一句話誰講都行，那客人為什麼要記得你。勾一個綁法
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-35
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+    options:
+      - id: o0
+        label: 幫這套做法取一個名字
+        other: false
+      - id: o1
+        label: 加上只有你有的經歷
+        other: false
+      - id: o2
+        label: 加上你的篩選（我只做誰、我不做誰）
+        other: false
+  stage2.t21.q36:
+    kind: text
+    label: 第一步我先看：＿＿＿＿
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-36
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+  stage2.t21.q37:
+    kind: text
+    label: 然後我看：＿＿＿＿
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-37
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+  stage2.t21.q38:
+    kind: text
+    label: 最後我才：＿＿＿＿
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-38
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+  stage2.t21.q39:
+    kind: text
+    label: 句型： 我只做1.4-B 的相反的你這一行在做的事
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-39
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+  stage2.t21.q40:
+    kind: multi
+    label: 翻回 1.4-B，你已經寫過一句「我不收誰」。把它反過來
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-40
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+    options:
+      - id: o0
+        label: 我走的是篩選型，這一格先標暫定
+        other: false
+  stage2.t21.q41:
+    kind: multi
+    label: 任務 2.1 完成標準
+    task: stage-02-2-1
+    optional: false
+    legacyKeys:
+      - stage-02-2-1-answer-41
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 任務
+    options:
+      - id: o0
+        label: 對過「我以為 vs 他實際說」，接下來用的是他實際說的那一欄
+        other: false
+      - id: o1
+        label: 三層需求都有句子（包含恐懼那一層）
+        other: false
+      - id: o2
+        label: 競品五欄表填完 3 家
+        other: false
+      - id: o3
+        label: 寫出一句「沒有人在講的是」，而且落在 ① 或 ②（或走篩選型，並標了暫定）
+        other: false
+  stage2.t22.q0:
+    kind: single
+    label: 翻回 1.2-E，你有沒有勾 D（原話裡有一種人反覆出現，但不是你原本設定的那種）？
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-0
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+    options:
+      - id: o0
+        label: 沒勾 D——直接跳到第 1 格，你要畫的就是 1.1-A 那個人
+        other: false
+      - id: o1
+        label: 有勾 D——先做完下面兩格
+        other: false
+  stage2.t22.q1:
+    kind: text
+    label: 人選 1（抄 1.1-A）
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-1
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+  stage2.t22.q2:
+    kind: text
+    label: 人選 2（抄 1.2-E 的 D 項）
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-2
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+  stage2.t22.q3:
+    kind: single
+    label: 二選一（選擇要畫的人）
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-3
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+    options:
+      - id: o0
+        label: 我畫人選 1
+        other: false
+      - id: o1
+        label: 我畫人選 2
+        other: false
+  stage2.t22.q4:
+    kind: single
+    label: 哪一個，我手上的原話比較多？
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-4
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+    options:
+      - id: o0
+        label: 人選 1
+        other: false
+      - id: o1
+        label: 人選 2
+        other: false
+  stage2.t22.q5:
+    kind: single
+    label: 哪一個，已經掏過錢了（不管是掏給誰）？
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-5
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+    options:
+      - id: o0
+        label: 人選 1
+        other: false
+      - id: o1
+        label: 人選 2
+        other: false
+  stage2.t22.q6:
+    kind: single
+    label: 哪一個，我現在就講得出他上禮拜發生了什麼事？
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-6
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+    options:
+      - id: o0
+        label: 人選 1
+        other: false
+      - id: o1
+        label: 人選 2
+        other: false
+  stage2.t22.q7:
+    kind: text
+    label: 名字（自己取一個）：＿＿＿＿
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-7
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+  stage2.t22.q8:
+    kind: text
+    label: 年齡：＿＿＿＿ 歲
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-8
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+  stage2.t22.q9:
+    kind: text
+    label: 職業／身分：＿＿＿＿
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-9
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+  stage2.t22.q10:
+    kind: text
+    label: 早上：＿＿＿＿
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-10
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+  stage2.t22.q11:
+    kind: text
+    label: 下午：＿＿＿＿
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-11
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+  stage2.t22.q12:
+    kind: text
+    label: 晚上：＿＿＿＿
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-12
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+  stage2.t22.q13:
+    kind: text
+    label: 第 3 格：他現在卡在哪一件事
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-13
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+  stage2.t22.q14:
+    kind: multi
+    label: ① 他試過的是什麼（先勾類型）
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-14
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+    options:
+      - id: o0
+        label: 同一行的另一個老師／師傅／教練
+        other: false
+      - id: o1
+        label: 大型的機構或品牌
+        other: false
+      - id: o2
+        label: 網路上免費的東西（影片、社團、文章）
+        other: false
+      - id: o3
+        label: 自己買工具、買產品、買教材，自己來
+        other: false
+      - id: o4
+        label: 找家人或朋友幫忙
+        other: false
+      - id: o5
+        label: 其他
+        other: true
+  stage2.t22.q16:
+    kind: text
+    label: 寫得出是哪一家／哪一個就寫下來： ＿＿＿＿
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-16
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+  stage2.t22.q17:
+    kind: single
+    label: ② 那個東西當初跟他說的是什麼（勾一個）
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-17
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+    options:
+      - id: o0
+        label: 會變好、會有效果
+        other: false
+      - id: o1
+        label: 有專業的人帶著
+        other: false
+      - id: o2
+        label: 比較便宜或比較快
+        other: false
+      - id: o3
+        label: 很多人都是用這個
+        other: false
+      - id: o4
+        label: 會照他的狀況量身訂做
+        other: false
+      - id: o5
+        label: 沒有特別講什麼，他只是想說先試試看
+        other: false
+  stage2.t22.q18:
+    kind: single
+    label: ③ 為什麼沒兌現（勾一到兩個）
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-18
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+    options:
+      - id: o0
+        label: 根本沒開始，或開始了沒做完
+        other: false
+      - id: o1
+        label: 做完了，但沒有變化
+        other: false
+      - id: o2
+        label: 一開始有效，後來又回去了
+        other: false
+      - id: o3
+        label: 對方很制式，沒有針對他的狀況
+        other: false
+      - id: o4
+        label: 沒有人告訴他下一步要做什麼
+        other: false
+      - id: o5
+        label: 他被歸成一類——「你這個狀況本來就是這樣」
+        other: false
+      - id: o6
+        label: 他自己也說不上來，就是覺得沒用
+        other: false
+  stage2.t22.q19:
+    kind: text
+    label: 第二，它可能直接給你切入點。 把 ③ 勾的那一項，跟 2.1-C 那句「沒有人在講的是＿＿＿＿」放在一起看：
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-19
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+  stage2.t22.q20:
+    kind: single
+    label: 第一，它決定你不能講什麼。 ① 勾到的那一類，你再推薦他一次，他會直接關掉
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-20
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+    options:
+      - id: o0
+        label: 對得上——他失敗的地方，正好就是我找到的空白
+        other: false
+      - id: o1
+        label: 對不上——記下來，先往下走
+        other: false
+  stage2.t22.q21:
+    kind: multi
+    label: 第 5 格：他半夜滑手機在看什麼
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-21
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+    options:
+      - id: o0
+        label: 短影音
+        other: false
+      - id: o1
+        label: 同樣處境的人在貼什麼
+        other: false
+      - id: o2
+        label: 社團裡的討論
+        other: false
+      - id: o3
+        label: 購物平台
+        other: false
+      - id: o4
+        label: 其他
+        other: true
+  stage2.t22.q23:
+    kind: multi
+    label: 第 6 格：這件事他會跟誰討論
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-23
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+    options:
+      - id: o0
+        label: 沒有人，自己決定
+        other: false
+      - id: o1
+        label: 配偶／伴侶
+        other: false
+      - id: o2
+        label: 同行朋友
+        other: false
+      - id: o3
+        label: 家人
+        other: false
+      - id: o4
+        label: 其他
+        other: true
+  stage2.t22.q25:
+    kind: text
+    label: 句型： 時間，他在做什麼，看到什麼，然後心裡想什麼
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-25
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-B
+  stage2.t22.q26:
+    kind: text
+    label: 星期三晚上十一點，她收走孩子桌上的評量，看到整頁只寫了三題，想到下個月又要繳補習費
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-26
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-B
+  stage2.t22.q27:
+    kind: text
+    label: 規則： 用「我」開頭，口語，像他在傳訊息抱怨（第 1 題）
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-27
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-C
+  stage2.t22.q28:
+    kind: text
+    label: 規則： 用「我」開頭，口語，像他在傳訊息抱怨（第 2 題）
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-28
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-C
+  stage2.t22.q29:
+    kind: text
+    label: 規則： 用「我」開頭，口語，像他在傳訊息抱怨（第 3 題）
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-29
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.2-C
+  stage2.t22.q30:
+    kind: single
+    label: 任務 2.2 完成標準
+    task: stage-02-2-2
+    optional: false
+    legacyKeys:
+      - stage-02-2-2-answer-30
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 任務
+    options:
+      - id: o0
+        label: 我知道我畫的是誰（有勾 D 的人，已經二選一）
+        other: false
+      - id: o1
+        label: 六格都填了，他有名字
+        other: false
+      - id: o2
+        label: 第 4 格有一組完整的「試過什麼→承諾什麼→為什麼沒用」
+        other: false
+      - id: o3
+        label: 有一個具體的時刻（有時間、有畫面）
+        other: false
+  stage2.t23.q0:
+    kind: single
+    label: ① 他們都要客人做到什麼？（勾一個）
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-0
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-A
+    options:
+      - id: o0
+        label: 多練、多做，次數要夠
+        other: false
+      - id: o1
+        label: 撐久一點、不要中斷
+        other: false
+      - id: o2
+        label: 先弄懂、先學會，才能開始做
+        other: false
+      - id: o3
+        label: 照他們排好的進度走
+        other: false
+      - id: o4
+        label: 買更完整、更貴的那個方案
+        other: false
+      - id: o5
+        label: 自己先搞清楚問題出在哪
+        other: false
+      - id: o6
+        label: 其他
+        other: true
+  stage2.t23.q2:
+    kind: single
+    label: ② 他們都預設這件事要多久？（勾一個）
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-2
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-A
+    options:
+      - id: o0
+        label: 一段很長的時間，半年以上才看得到
+        other: false
+      - id: o1
+        label: 固定的堂數或梯次跑完
+        other: false
+      - id: o2
+        label: 每天或每週都要來
+        other: false
+      - id: o3
+        label: 反覆做很多次才會有感覺
+        other: false
+      - id: o4
+        label: 一次就要做到位
+        other: false
+      - id: o5
+        label: 其他
+        other: true
+  stage2.t23.q4:
+    kind: single
+    label: ③ 他們都照什麼順序做？（勾一個）
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-4
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-A
+    options:
+      - id: o0
+        label: 先學會，再開始做
+        other: false
+      - id: o1
+        label: 先看懂，再動手
+        other: false
+      - id: o2
+        label: 先打基礎，再處理他真正在意的那件事
+        other: false
+      - id: o3
+        label: 先處理表面的，再講根本的
+        other: false
+      - id: o4
+        label: 先做完整套，再看結果
+        other: false
+      - id: o5
+        label: 其他
+        other: true
+  stage2.t23.q6:
+    kind: text
+    label: 我要反過來的是第 ＿＿＿＿ 句。
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-6
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-A
+  stage2.t23.q7:
+    kind: text
+    label: 大家都當成正常的是： ＿＿＿＿
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-7
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-A
+  stage2.t23.q8:
+    kind: single
+    label: 他們的客人裡一定會有一種人是失敗的。那種人是怎麼失敗的？（勾一個）
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-8
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-A
+    options:
+      - id: o0
+        label: 很認真做了，但沒有效果
+        other: false
+      - id: o1
+        label: 做到一半就停了
+        other: false
+      - id: o2
+        label: 有效果，但後來又回去了
+        other: false
+      - id: o3
+        label: 學完了，但不敢真的開始
+        other: false
+      - id: o4
+        label: 換過很多家，每一家都一樣
+        other: false
+  stage2.t23.q9:
+    kind: text
+    label: 他們會失敗，代表「＿＿＿＿」這個假設有洞。
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-9
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-A
+  stage2.t23.q10:
+    kind: text
+    label: 我主張：＿＿＿＿
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-10
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-A
+  stage2.t23.q11:
+    kind: single
+    label: 會不會有同行覺得你在亂講？
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-11
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-A
+    options:
+      - id: o0
+        label: 會
+        other: false
+      - id: o1
+        label: 不會
+        other: false
+  stage2.t23.q12:
+    kind: single
+    label: 會不會有一群客人不同意？
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-12
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-A
+    options:
+      - id: o0
+        label: 會
+        other: false
+      - id: o1
+        label: 不會
+        other: false
+  stage2.t23.q13:
+    kind: text
+    label: 對【＿＿＿＿】而言，
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-13
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-B
+  stage2.t23.q14:
+    kind: text
+    label: 把前面的答案填進去
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-14
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-B
+  stage2.t23.q15:
+    kind: text
+    label: 因為【＿＿＿＿】。
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-15
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-B
+  stage2.t23.q16:
+    kind: single
+    label: 怎麼測（選一種就好）
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-16
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-C
+    options:
+      - id: o0
+        label: 有人可以唸 → 唸給一個外行朋友聽，隔五分鐘請他複述一次
+        other: false
+      - id: o1
+        label: 身邊沒有人 → 唸出聲錄下來。隔一天，不要看原句，憑記憶把它重寫一次，再跟原句比對
+        other: false
+  stage2.t23.q17:
+    kind: single
+    label: 過的標準： 複述或重寫出來的意思，跟你原本要講的一樣。用字不同沒關係
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-17
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-C
+    options:
+      - id: o0
+        label: 過
+        other: false
+      - id: o1
+        label: 沒過
+        other: false
+  stage2.t23.q18:
+    kind: single
+    label: 沒過的話，勾一個
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-18
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-C
+    options:
+      - id: o0
+        label: 只想得起一兩個詞，串不成句 → 太長。砍到 20 字以內，先砍形容詞和只有你這行才懂的字
+        other: false
+      - id: o1
+        label: 串得出來，但意思跑掉了 → 有一個詞會被理解成別的意思。找出那個詞，換成生活裡會用的字
+        other: false
+      - id: o2
+        label: 出來的變成一句別人也在講的話 → 你的主張沒有進到句子裡。回 2.3-A 步驟 2，把主張塞進第 2 格
+        other: false
+  stage2.t23.q19:
+    kind: single
+    label: 過的標準： 你講得出至少一種人會反對，而且講得出他反對的理由
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-19
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-C
+    options:
+      - id: o0
+        label: 過
+        other: false
+      - id: o1
+        label: 沒過
+        other: false
+  stage2.t23.q20:
+    kind: text
+    label: 被反對的理由是： ＿＿＿＿
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-20
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-C
+  stage2.t23.q21:
+    kind: single
+    label: 沒過的話，代表這句話太安全。勾一個方向把它變尖
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-21
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-C
+    options:
+      - id: o0
+        label: 把「比較好」改成「不做」——別人教得更細 → 我不教技術
+        other: false
+      - id: o1
+        label: 把順序反過來——先 A 再 B → 先 B 再 A
+        other: false
+      - id: o2
+        label: 把大家都當成正常的那件事說成不正常——抄 2.3-A 步驟 1 那一格
+        other: false
+  stage2.t23.q22:
+    kind: single
+    label: 過的標準： 你講得出一群具體的人，而且你真的不想要他們
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-22
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-C
+    options:
+      - id: o0
+        label: 過
+        other: false
+      - id: o1
+        label: 沒過
+        other: false
+  stage2.t23.q23:
+    kind: text
+    label: 被排除掉的是： ＿＿＿＿
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-23
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-C
+  stage2.t23.q24:
+    kind: single
+    label: 沒過的話分兩種
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-24
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-C
+    options:
+      - id: o0
+        label: 我想不出排除掉誰 → 太廣了。回 2.2-A 開頭你選定的那個人，加一個處境再縮一次：剛開始的／已經花過錢的／時間剩不多的／做過一輪停掉的
+        other: false
+      - id: o1
+        label: 我想得出來，但我不想放掉他們 → 這不是句子的問題，是你還沒決定。翻回 1.4-B，那裡你已經決定過一次「我不收誰」。兩邊對不起來的話，先以 1.4-B 為準
+        other: false
+  stage2.t23.q25:
+    kind: text
+    label: 把定位句壓成一句 15 字以內、可以直接當廣告標題的話
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-25
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.3-D
+  stage2.t23.q26:
+    kind: multi
+    label: 任務 2.3 完成標準
+    task: stage-02-2-3
+    optional: false
+    legacyKeys:
+      - stage-02-2-3-answer-26
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 任務
+    options:
+      - id: o0
+        label: 寫出共同前提，並且反過來了
+        other: false
+      - id: o1
+        label: 定位句四格都填完
+        other: false
+      - id: o2
+        label: 三個測試都過（沒過的已經照指示改完，而且重測過）
+        other: false
+      - id: o3
+        label: 有一句 15 字以內的濃縮版
+        other: false
+  stage2.t24.q0:
+    kind: single
+    label: 我目前給的承諾，落在哪一層？（勾一個）
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-0
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+    options:
+      - id: o0
+        label: 他嘴巴上說的那個問題（抄 2.1-A 表面痛）
+        other: false
+      - id: o1
+        label: 他真正想拿到的結果（抄 2.1-A 中間那層）
+        other: false
+      - id: o2
+        label: 他不會公開講的那件事（抄 2.1-A 恐懼層）
+        other: false
+      - id: o3
+        label: 我還沒想過要承諾什麼
+        other: false
+  stage2.t24.q1:
+    kind: text
+    label: 打分： 勾第一個 1 分，第二個 2 分，第三個 3 分，第四個 0 分 → ＿＿＿＿ 分
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-1
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t24.q2:
+    kind: multi
+    label: 我手上已經有的（可複選，一項 1 分，最多 3 分）（第 1 小題）
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-2
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+    options:
+      - id: o0
+        label: 我講得出他第一週要做哪幾件事，照著順序
+        other: false
+      - id: o1
+        label: 我給的東西他可以直接拿去改，不用從白紙開始
+        other: false
+      - id: o2
+        label: 我講得出至少一個人的完整過程，從一開始到後來變怎樣
+        other: false
+      - id: o3
+        label: 中間有固定的時間我會看他做得對不對
+        other: false
+      - id: o4
+        label: 我講得出我不收誰（抄 1.4-B）
+        other: false
+      - id: o5
+        label: 有一個環節他當場就看得到我怎麼做（試做、試聽、初診、免費體驗）
+        other: false
+  stage2.t24.q3:
+    kind: text
+    label: 我手上已經有的（可複選，一項 1 分，最多 3 分）（第 2 小題）
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-3
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t24.q4:
+    kind: single
+    label: 他最快什麼時候會看到一點東西？（勾一個）
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-4
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+    options:
+      - id: o0
+        label: 第一次接觸就看得到（諮詢、試做、試聽當場）
+        other: false
+      - id: o1
+        label: 第一週之內
+        other: false
+      - id: o2
+        label: 一個月內
+        other: false
+      - id: o3
+        label: 要跑完整套才看得到
+        other: false
+      - id: o4
+        label: 我不知道，沒設計過
+        other: false
+  stage2.t24.q5:
+    kind: text
+    label: 打分： 由上往下 3、3、2、1、0 分 → ＿＿＿＿ 分
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-5
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t24.q6:
+    kind: multi
+    label: 我目前幫他省掉的是什麼？（可複選，一項 1 分，最多 3 分）（第 1 小題）
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-6
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+    options:
+      - id: o0
+        label: 他不用自己決定順序，我排好
+        other: false
+      - id: o1
+        label: 他不用從零做，我給半成品
+        other: false
+      - id: o2
+        label: 他不用自己判斷做得對不對，我會看
+        other: false
+      - id: o3
+        label: 他不用學會全部，只要會用到的那部分
+        other: false
+      - id: o4
+        label: 沒有，目前都是他自己來
+        other: false
+  stage2.t24.q7:
+    kind: text
+    label: 我目前幫他省掉的是什麼？（可複選，一項 1 分，最多 3 分）（第 2 小題）
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-7
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t24.q8:
+    kind: text
+    label: 我最弱的一格是第 ＿＿＿＿ 格。
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-8
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t24.q9:
+    kind: text
+    label: 我最強的一格是第 ＿＿＿＿ 格。
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-9
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t24.q10:
+    kind: multi
+    label: 回上面槓桿 2，看你沒勾到的那幾項。從裡面挑兩項，勾起來當成你接下來要補的
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-10
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+    options:
+      - id: o0
+        label: 我講得出他第一週要做哪幾件事，照著順序
+        other: false
+      - id: o1
+        label: 我給的東西他可以直接拿去改，不用從白紙開始
+        other: false
+      - id: o2
+        label: 我講得出至少一個人的完整過程，從一開始到後來變怎樣
+        other: false
+      - id: o3
+        label: 中間有固定的時間我會看他做得對不對
+        other: false
+      - id: o4
+        label: 我講得出我不收誰（抄 1.4-B）
+        other: false
+      - id: o5
+        label: 有一個環節他當場就看得到我怎麼做（試做、試聽、初診、免費體驗）
+        other: false
+  stage2.t24.q11:
+    kind: text
+    label: 1. 他省下什麼？
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-11
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-B
+  stage2.t24.q12:
+    kind: text
+    label: 2. 他得到什麼？
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-12
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-B
+  stage2.t24.q13:
+    kind: text
+    label: 3. 他不做的代價是什麼？（一年後他在哪裡）
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-13
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-B
+  stage2.t24.q14:
+    kind: text
+    label: 我的主力產品是： ＿＿＿＿
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-14
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-C
+  stage2.t24.q15:
+    kind: text
+    label: 價格： NT$ ＿＿＿＿
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-15
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-C
+  stage2.t24.q16:
+    kind: multi
+    label: 三根支柱檢查（三根都要有）
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-16
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-C
+    options:
+      - id: o0
+        label: 明確的結果：我講得出他會拿到什麼 →
+        other: false
+      - id: o1
+        label: 明確的流程：我講得出第一週做什麼 →
+        other: false
+      - id: o2
+        label: 明確的篩選：我講得出我不收誰 →
+        other: false
+  stage2.t24.q20:
+    kind: multi
+    label: 合規自我檢查
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-20
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-C
+    options:
+      - id: o0
+        label: 我的文字裡沒有「保證」「一定」「必」
+        other: false
+      - id: o1
+        label: 講到成果時有標明是個案
+        other: false
+      - id: o2
+        label: 我承諾的是流程，不是結果
+        other: false
+  stage2.t24.q21:
+    kind: text
+    label: 入口｜是什麼
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-21
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-D
+  stage2.t24.q22:
+    kind: text
+    label: 入口｜價格
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-22
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-D
+  stage2.t24.q23:
+    kind: text
+    label: 主力｜是什麼
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-23
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-D
+  stage2.t24.q24:
+    kind: text
+    label: 主力｜價格
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-24
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-D
+  stage2.t24.q25:
+    kind: text
+    label: 延伸｜是什麼
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-25
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-D
+  stage2.t24.q26:
+    kind: text
+    label: 延伸｜價格
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-26
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.4-D
+  stage2.t24.q27:
+    kind: multi
+    label: 任務 2.4 完成標準
+    task: stage-02-2-4
+    optional: false
+    legacyKeys:
+      - stage-02-2-4-answer-27
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 任務
+    options:
+      - id: o0
+        label: 四槓桿都有勾、都有分數，知道最弱和最強的是哪一格
+        other: false
+      - id: o1
+        label: 定價三問都回答了
+        other: false
+      - id: o2
+        label: 有一個價格，而且三根支柱都在
+        other: false
+      - id: o3
+        label: 通過合規自我檢查
+        other: false
+  stage2.t25.q0:
+    kind: multi
+    label: 我目前給得出的（可複選）（第 1 小題）
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-0
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+    options:
+      - id: o0
+        label: 我自己走過同一條路，講得出當時的過程
+        other: false
+      - id: o1
+        label: 至少一個人的完整過程，從一開始到後來變怎樣
+        other: false
+      - id: o2
+        label: 一個看得到、查得到的東西（作品、紀錄、頁面、成果）
+        other: false
+      - id: o3
+        label: 一個他當場就能看到方法在運作的環節（試做、試聽、初診、免費體驗）
+        other: false
+      - id: o4
+        label: 目前只有「我很有經驗」「我做很久了」這一類的話
+        other: false
+  stage2.t25.q1:
+    kind: text
+    label: 強度： 勾幾項就幾分，最多 3 分。只勾最後一項是 0 分 → ＿＿＿＿ 分（第 1 小題）
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-1
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+  stage2.t25.q2:
+    kind: multi
+    label: 我目前給得出的（可複選）（第 2 小題）
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-2
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+    options:
+      - id: o0
+        label: 我講得出他第一週要做哪幾件事，照著順序
+        other: false
+      - id: o1
+        label: 我給的東西他可以直接拿去改，不用從白紙開始
+        other: false
+      - id: o2
+        label: 中間有固定的時間我會看他做得對不對
+        other: false
+      - id: o3
+        label: 第一週或第一次就會有一個他看得到的小成果
+        other: false
+      - id: o4
+        label: 要動手的那個人，過程裡我會親自帶
+        other: false
+      - id: o5
+        label: 目前主要靠他自己照著做
+        other: false
+  stage2.t25.q3:
+    kind: text
+    label: 強度： 勾幾項就幾分，最多 3 分。只勾最後一項是 0 分 → ＿＿＿＿ 分（第 2 小題）
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-3
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+  stage2.t25.q4:
+    kind: single
+    label: 我目前給得出的（勾一個）
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-4
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+    options:
+      - id: o0
+        label: 我這一行有一個不是我訂的時間表（考試、季節、梯次、年紀、政策）
+        other: false
+      - id: o1
+        label: 我有一個真實的限制（一次只能帶幾個、開課時間固定、價格確定會調）
+        other: false
+      - id: o2
+        label: 兩個都沒有，但我講得出他再拖一年會變怎樣
+        other: false
+      - id: o3
+        label: 目前什麼都沒有，或是我在用「限時優惠」這一類的話
+        other: false
+  stage2.t25.q5:
+    kind: text
+    label: 強度： 由上往下 3、2、2、0 分 → ＿＿＿＿ 分
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-5
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+  stage2.t25.q6:
+    kind: text
+    label: 我最弱的是疑慮 ＿＿＿＿
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-6
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+  stage2.t25.q7:
+    kind: multi
+    label: 有 0 分的格子嗎？
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-7
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+    options:
+      - id: o0
+        label: 沒有，三格都至少 1 分 → 往下走
+        other: false
+      - id: o1
+        label: 疑慮 1 是 0 分 → 回 2.1-C。你的空白地帶可能還沒變成講得出來的東西，先把那一格補起來
+        other: false
+      - id: o2
+        label: 疑慮 2 是 0 分 → 回 2.4-A 槓桿 2，從沒勾到的那幾項挑兩項，現在就挑
+        other: false
+      - id: o3
+        label: 疑慮 3 是 0 分 → 不用回頭。 那代表你不用稀缺，等一下 2.5-D 直接走 C
+        other: false
+  stage2.t25.q8:
+    kind: text
+    label: 翻回 2.4-A 補強第 2 格，你在那裡挑了兩項要補的。把它們抄到這裡
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-8
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-B
+  stage2.t25.q9:
+    kind: text
+    label: 句型： 你不用他害怕的那件事，我會你要做的事
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-9
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-B
+  stage2.t25.q10:
+    kind: single
+    label: 唸一次你寫的前半格
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-10
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-B
+    options:
+      - id: o0
+        label: 很具體，講得出是哪一件事
+        other: false
+      - id: o1
+        label: 很籠統，像「你不用擔心」「你不用煩惱」「你不用想太多」
+        other: false
+  stage2.t25.q11:
+    kind: multi
+    label: 主體：他真正買的那個結果
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-11
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-C
+    options:
+      - id: o0
+        label: 抄 2.4-C 的主力產品
+        other: false
+  stage2.t25.q13:
+    kind: text
+    label: 用一句話寫他拿到的是什麼（不是你給的東西，是他的狀況變怎樣）
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-13
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-C
+  stage2.t25.q14:
+    kind: single
+    label: 看一次你剛寫的那句話，它在講什麼？
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-14
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-C
+    options:
+      - id: o0
+        label: 他的狀況變怎樣
+        other: false
+      - id: o1
+        label: 我給了什麼（幾堂課、幾次、多少時數、什麼內容）
+        other: false
+  stage2.t25.q15:
+    kind: multi
+    label: 先看 2.4-A 補強第 2 格挑的那兩項，再從下面勾（可複選，建議不超過三項）
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-15
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-C
+    options:
+      - id: o0
+        label: 照順序排好的流程表
+        other: false
+      - id: o1
+        label: 可以直接改的成品模板或範本
+        other: false
+      - id: o2
+        label: 一份自己對照用的檢查表
+        other: false
+      - id: o3
+        label: 常見狀況怎麼處理的整理
+        other: false
+      - id: o4
+        label: 固定時間的檢查或回報
+        other: false
+      - id: o5
+        label: 一個可以問問題的管道
+        other: false
+      - id: o6
+        label: 其他
+        other: true
+  stage2.t25.q17:
+    kind: multi
+    label: 不能的，劃掉
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-17
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-C
+    options:
+      - id: o0
+        label: 我劃掉了 項
+        other: false
+  stage2.t25.q19:
+    kind: multi
+    label: 降風險：讓他敢下決定的東西
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-19
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-C
+    options:
+      - id: o0
+        label: 分階段，先做第一段再決定要不要繼續
+        other: false
+      - id: o1
+        label: 第一次是試的，不合適不用繼續
+        other: false
+      - id: o2
+        label: 明確講清楚什麼情況可以退出
+        other: false
+      - id: o3
+        label: 過程中我會親自帶，不是丟給他自己做
+        other: false
+      - id: o4
+        label: 先講明我不收誰（抄 1.4-B），讓他知道你不是誰都收
+        other: false
+      - id: o5
+        label: 其他
+        other: true
+  stage2.t25.q21:
+    kind: single
+    label: 先看一件事：你這一行有沒有一個不是你訂的時間表？
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-21
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-D
+    options:
+      - id: o0
+        label: 有 → 往下填 A，填完這一題就結束，不用做稀缺
+        other: false
+      - id: o1
+        label: 沒有 → 跳過 A，往下做 B 或 C
+        other: false
+  stage2.t25.q22:
+    kind: single
+    label: 我這一行的時間表是（勾一個）
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-22
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-D
+    options:
+      - id: o0
+        label: 一個固定的考試或檢定
+        other: false
+      - id: o1
+        label: 季節或節日（夏天前、過年前、換季）
+        other: false
+      - id: o2
+        label: 固定的梯次或開班時間
+        other: false
+      - id: o3
+        label: 對方的年紀或階段（越晚處理越難的那種）
+        other: false
+      - id: o4
+        label: 法規、政策、資格的期限
+        other: false
+      - id: o5
+        label: 其他
+        other: true
+  stage2.t25.q24:
+    kind: text
+    label: 把它寫成一句陳述事實的話
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-24
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-D
+  stage2.t25.q25:
+    kind: single
+    label: 寫完檢查一件事： 唸一次，你有沒有在後面接一句「所以現在不處理就來不及了」？
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-25
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-D
+    options:
+      - id: o0
+        label: 沒有接 → 過了
+        other: false
+      - id: o1
+        label: 有接 → 把那一句刪掉。 講完就停是事實，替他下結論就是恐嚇，而且你不能保證
+        other: false
+  stage2.t25.q26:
+    kind: single
+    label: 我的限制是（勾一個）
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-26
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-D
+    options:
+      - id: o0
+        label: 我一次只能帶幾個人： 位
+        other: false
+      - id: o1
+        label: 開課或開班的時間是固定的
+        other: false
+      - id: o2
+        label: 價格確定會在某個時間點調整，理由是
+        other: false
+      - id: o3
+        label: 我沒有這一類的限制 → 跳到 C
+        other: false
+  stage2.t25.q30:
+    kind: multi
+    label: 真實性檢查（兩題都要打勾才能用）
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-30
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-D
+    options:
+      - id: o0
+        label: 這個理由我可以公開講出來，而且經得起追問
+        other: false
+      - id: o1
+        label: 時間到了之後我真的會照做，不會偷偷延長
+        other: false
+  stage2.t25.q31:
+    kind: text
+    label: 抄 2.4-B 第 3 問的答案（他不做的代價）
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-31
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-D
+  stage2.t25.q32:
+    kind: text
+    label: 再過一年，＿＿＿＿。
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-32
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-D
+  stage2.t25.q33:
+    kind: single
+    label: 選一個你要用的（勾一個就好）
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-33
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-E
+    options:
+      - id: o0
+        label: 跟現在的損失比：你現在每個月流掉的，比這個數字大
+        other: false
+      - id: o1
+        label: 跟不做的代價比：一年後你還在同一個位置，那一年值多少
+        other: false
+      - id: o2
+        label: 跟替代方案比：自己摸索要花的時間和錢，加起來比這個數字多
+        other: false
+  stage2.t25.q34:
+    kind: text
+    label: 寫成你的版本
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-34
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 2.5-E
+  stage2.t25.q35:
+    kind: multi
+    label: 任務 2.5 完成標準
+    task: stage-02-2-5
+    optional: false
+    legacyKeys:
+      - stage-02-2-5-answer-35
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: 任務
+    options:
+      - id: o0
+        label: 三個疑慮都有勾、有強度，知道最弱的是哪一個
+        other: false
+      - id: o1
+        label: 有一句「你不用，我會」
+        other: false
+      - id: o2
+        label: 成交方案三層填完，加值刪過一輪
+        other: false
+      - id: o3
+        label: 時間理由走完 A、B、C 其中一條，而且通過檢查
+        other: false
+  stage2.app.q0:
+    kind: text
+    label: 沒有人在講的是（抄 2.1-C）
+    task: stage-02-附錄
+    optional: false
+    legacyKeys:
+      - stage-02-附錄-answer-0
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: stage-02-附錄
+  stage2.app.q1:
+    kind: text
+    label: 我的客人是（名字＋一句話，抄 2.2-A）
+    task: stage-02-附錄
+    optional: false
+    legacyKeys:
+      - stage-02-附錄-answer-1
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: stage-02-附錄
+  stage2.app.q2:
+    kind: text
+    label: 他的那個時刻（抄 2.2-B）（第 1 小題）
+    task: stage-02-附錄
+    optional: false
+    legacyKeys:
+      - stage-02-附錄-answer-2
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: stage-02-附錄
+  stage2.app.q3:
+    kind: text
+    label: 他的那個時刻（抄 2.2-B）（第 2 小題）
+    task: stage-02-附錄
+    optional: false
+    legacyKeys:
+      - stage-02-附錄-answer-3
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: stage-02-附錄
+  stage2.app.q4:
+    kind: text
+    label: 他的那個時刻（抄 2.2-B）（第 3 小題）
+    task: stage-02-附錄
+    optional: false
+    legacyKeys:
+      - stage-02-附錄-answer-4
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: stage-02-附錄
+  stage2.app.q5:
+    kind: text
+    label: 我的定位句（15 字以內）（抄 2.3-D）
+    task: stage-02-附錄
+    optional: false
+    legacyKeys:
+      - stage-02-附錄-answer-5
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: stage-02-附錄
+  stage2.app.q6:
+    kind: text
+    label: 我的主力產品與價格（抄 2.4-C）
+    task: stage-02-附錄
+    optional: false
+    legacyKeys:
+      - stage-02-附錄-answer-6
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: stage-02-附錄
+  stage2.app.q7:
+    kind: text
+    label: 我最有力的那一句（抄 2.5-B）
+    task: stage-02-附錄
+    optional: false
+    legacyKeys:
+      - stage-02-附錄-answer-7
+    origin: source
+    sourceRef:
+      file: 作業
+      heading: stage-02-附錄
+tables: {}
+derived: {}
+blueprint:
+  sections:
+    - title: 一頁定位藍圖
+      items:
+        - label: 沒有人在講的是
+          value: stage2.t21.q24
+          fallback: 暫定
+          multiline: true
+        - label: 我的客人是
+          value: stage2.t22.q2
+          fallback: 暫定
+          multiline: true
+        - label: 他的那個時刻
+          value: stage2.t22.q23
+          fallback: 暫定
+          multiline: true
+        - label: 大家都覺得＿＿，但我主張＿＿
+          value: stage2.t23.q12
+          fallback: 暫定
+          multiline: true
+        - label: 我的定位句（15 字以內）
+          value: stage2.t23.q26
+          fallback: 暫定
+          multiline: true
+        - label: 我的主力產品與價格
+          value: stage2.t24.q20
+          fallback: 暫定
+          multiline: true
+        - label: 我最有力的那一句
+          value: stage2.t25.q14
+          fallback: 暫定
+          multiline: true
+dropped: []
