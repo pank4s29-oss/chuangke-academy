@@ -349,8 +349,10 @@ pages:
         origin: authored
       - type: text
         q: stage2.t23.q13
-      - type: text
+      - type: sentence
         q: stage2.t23.q14
+        title: 定位句（自動組合，可直接修改）
+        multiline: true
       - type: text
         q: stage2.t23.q15
   p.t23.23c:
@@ -388,6 +390,10 @@ pages:
       - type: choice
         q: stage2.t23.q24
         columns: 1
+      - type: check
+        derived: stage2.t23.opposition_check
+      - type: check
+        derived: stage2.t23.tests_check
   p.t23.23d:
     title: 任務 2.3｜寫出你的定位句｜2.3-D
     task: stage-02-2-3
@@ -400,6 +406,8 @@ pages:
         origin: authored
       - type: text
         q: stage2.t23.q25
+      - type: check
+        derived: stage2.t23.short_check
   p.t23.summary:
     title: 任務 2.3｜寫出你的定位句｜任務
     task: stage-02-2-3
@@ -451,6 +459,26 @@ pages:
       - type: choice
         q: stage2.t24.q10
         columns: 1
+      - type: readout
+        derived: stage2.t24.leverage1.score
+        title: 槓桿 1｜結果多想要｜自動分數
+      - type: check
+        derived: stage2.t24.leverage1.score.label
+      - type: readout
+        derived: stage2.t24.leverage2.score
+        title: 槓桿 2｜成功機率多高｜自動分數
+      - type: check
+        derived: stage2.t24.leverage2.score.label
+      - type: readout
+        derived: stage2.t24.leverage3.score
+        title: 槓桿 3｜多快拿到｜自動分數
+      - type: check
+        derived: stage2.t24.leverage3.score.label
+      - type: readout
+        derived: stage2.t24.leverage4.score
+        title: 槓桿 4｜多輕鬆｜自動分數
+      - type: check
+        derived: stage2.t24.leverage4.score.label
   p.t24.24b:
     title: 任務 2.4｜訂出產品與價格｜2.4-B
     task: stage-02-2-4
@@ -553,6 +581,21 @@ pages:
       - type: choice
         q: stage2.t25.q7
         columns: 1
+      - type: readout
+        derived: stage2.t25.concern1.score
+        title: 疑慮 1｜我不信這有用｜自動強度
+      - type: check
+        derived: stage2.t25.concern1.score.label
+      - type: readout
+        derived: stage2.t25.concern2.score
+        title: 疑慮 2｜我不信我做得到｜自動強度
+      - type: check
+        derived: stage2.t25.concern2.score.label
+      - type: readout
+        derived: stage2.t25.concern3.score
+        title: 疑慮 3｜我不急｜自動強度
+      - type: check
+        derived: stage2.t25.concern3.score.label
   p.t25.25b:
     title: 任務 2.5｜組出你的成交方案｜2.5-B
     task: stage-02-2-5
@@ -1886,10 +1929,11 @@ questions:
     optional: false
     legacyKeys:
       - stage-02-2-3-answer-14
-    origin: source
+    origin: source-derived
     sourceRef:
       file: 作業
       heading: 2.3-B
+    derived: stage2.t23.position_auto
   stage2.t23.q15:
     kind: text
     label: 因為【＿＿＿＿】。
@@ -3078,37 +3122,443 @@ questions:
       file: 作業
       heading: stage-02-附錄
 tables: {}
-derived: {}
+derived:
+  stage2.t23.position_auto:
+    op: template
+    template: 對【{{stage2.t23.q13}}】而言，我是唯一{{stage2.t23.q10}}的定位服務，因為{{stage2.t23.q15}}。
+    blank: ＿＿＿＿
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.3-B
+  stage2.t23.short_check:
+    op: charCount
+    inputs:
+      - stage2.t23.q25
+    max: 15
+    unit: 字
+    good: 目前 {{n}} 字，符合 15 字以內。
+    bad: 目前 {{n}} 字，請再濃縮到 {{max}} 字以內。
+    incomplete: 先填寫濃縮版，系統會自動檢查。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.3-D
+  stage2.t23.opposition_check:
+    op: cases
+    cases:
+      - when:
+          inputs:
+            - stage2.t23.q11
+            - stage2.t23.q12
+          allEqual: o0
+        template: 兩題都答「會」：這句定位已經有立場。
+        tone: good
+      - when:
+          else: true
+        template: 至少有一題還沒答「會」：回到 2.3-A 把主張再說尖一點。
+        tone: neutral
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.3-C
+  stage2.t23.tests_check:
+    op: cases
+    cases:
+      - when:
+          inputs:
+            - stage2.t23.q17
+            - stage2.t23.q19
+            - stage2.t23.q22
+          allEqual: o0
+        template: 複述、反對、排除三項都已通過。
+        tone: good
+      - when:
+          else: true
+        template: 三項測試尚未全部通過；請依下方勾選結果回頭修改。
+        tone: neutral
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.3-C
+  stage2.t24.leverage1.score:
+    op: weightedCount
+    inputs:
+      - stage2.t24.q0
+    weights:
+      o0: 1
+      o1: 2
+      o2: 3
+      o3: 0
+    cap: 3
+    suffix: " 分"
+    incomplete: 完成選擇後自動計分。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t24.leverage1.score.label:
+    op: band
+    input: stage2.t24.leverage1.score
+    output: label
+    bands:
+      - min: 0
+        max: 0
+        label: 尚未建立
+        detail: 先完成這一題，系統才會計分。
+      - min: 1
+        max: 1
+        label: 起步中
+        detail: 已有一個可用的支撐點。
+      - min: 2
+        max: 2
+        label: 有基礎
+        detail: 已有兩個支撐點，可以再補強成功機率。
+      - min: 3
+        max: 3
+        label: 站得住
+        detail: 這一格已達到本題最高分。
+    incomplete: 完成選擇後自動判定。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t24.leverage2.score:
+    op: weightedCount
+    inputs:
+      - stage2.t24.q2
+    weights:
+      o0: 1
+      o1: 1
+      o2: 1
+      o3: 1
+      o4: 1
+      o5: 1
+    cap: 3
+    suffix: " 分"
+    incomplete: 完成選擇後自動計分。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t24.leverage2.score.label:
+    op: band
+    input: stage2.t24.leverage2.score
+    output: label
+    bands:
+      - min: 0
+        max: 0
+        label: 尚未建立
+        detail: 先完成這一題，系統才會計分。
+      - min: 1
+        max: 1
+        label: 起步中
+        detail: 已有一個可用的支撐點。
+      - min: 2
+        max: 2
+        label: 有基礎
+        detail: 已有兩個支撐點，可以再補強成功機率。
+      - min: 3
+        max: 3
+        label: 站得住
+        detail: 這一格已達到本題最高分。
+    incomplete: 完成選擇後自動判定。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t24.leverage3.score:
+    op: weightedCount
+    inputs:
+      - stage2.t24.q4
+    weights:
+      o0: 3
+      o1: 3
+      o2: 2
+      o3: 1
+      o4: 0
+    cap: 3
+    suffix: " 分"
+    incomplete: 完成選擇後自動計分。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t24.leverage3.score.label:
+    op: band
+    input: stage2.t24.leverage3.score
+    output: label
+    bands:
+      - min: 0
+        max: 0
+        label: 尚未建立
+        detail: 先完成這一題，系統才會計分。
+      - min: 1
+        max: 1
+        label: 起步中
+        detail: 已有一個可用的支撐點。
+      - min: 2
+        max: 2
+        label: 有基礎
+        detail: 已有兩個支撐點，可以再補強成功機率。
+      - min: 3
+        max: 3
+        label: 站得住
+        detail: 這一格已達到本題最高分。
+    incomplete: 完成選擇後自動判定。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t24.leverage4.score:
+    op: weightedCount
+    inputs:
+      - stage2.t24.q6
+    weights:
+      o0: 1
+      o1: 1
+      o2: 1
+      o3: 1
+      o4: 0
+    cap: 3
+    suffix: " 分"
+    incomplete: 完成選擇後自動計分。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t24.leverage4.score.label:
+    op: band
+    input: stage2.t24.leverage4.score
+    output: label
+    bands:
+      - min: 0
+        max: 0
+        label: 尚未建立
+        detail: 先完成這一題，系統才會計分。
+      - min: 1
+        max: 1
+        label: 起步中
+        detail: 已有一個可用的支撐點。
+      - min: 2
+        max: 2
+        label: 有基礎
+        detail: 已有兩個支撐點，可以再補強成功機率。
+      - min: 3
+        max: 3
+        label: 站得住
+        detail: 這一格已達到本題最高分。
+    incomplete: 完成選擇後自動判定。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.4-A
+  stage2.t25.concern1.score:
+    op: weightedCount
+    inputs:
+      - stage2.t25.q0
+    weights:
+      o0: 1
+      o1: 1
+      o2: 1
+      o3: 1
+      o4: 0
+    cap: 3
+    suffix: " 分"
+    incomplete: 完成選擇後自動計分。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+  stage2.t25.concern1.score.label:
+    op: band
+    input: stage2.t25.concern1.score
+    output: label
+    bands:
+      - min: 0
+        max: 0
+        label: 尚未建立
+        detail: 先完成這一題，系統才會計分。
+      - min: 1
+        max: 1
+        label: 起步中
+        detail: 已有一個可用的支撐點。
+      - min: 2
+        max: 2
+        label: 有基礎
+        detail: 已有兩個支撐點，可以再補強成功機率。
+      - min: 3
+        max: 3
+        label: 站得住
+        detail: 這一格已達到本題最高分。
+    incomplete: 完成選擇後自動判定。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+  stage2.t25.concern2.score:
+    op: weightedCount
+    inputs:
+      - stage2.t25.q2
+    weights:
+      o0: 1
+      o1: 1
+      o2: 1
+      o3: 1
+      o4: 1
+      o5: 0
+    cap: 3
+    suffix: " 分"
+    incomplete: 完成選擇後自動計分。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+  stage2.t25.concern2.score.label:
+    op: band
+    input: stage2.t25.concern2.score
+    output: label
+    bands:
+      - min: 0
+        max: 0
+        label: 尚未建立
+        detail: 先完成這一題，系統才會計分。
+      - min: 1
+        max: 1
+        label: 起步中
+        detail: 已有一個可用的支撐點。
+      - min: 2
+        max: 2
+        label: 有基礎
+        detail: 已有兩個支撐點，可以再補強成功機率。
+      - min: 3
+        max: 3
+        label: 站得住
+        detail: 這一格已達到本題最高分。
+    incomplete: 完成選擇後自動判定。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+  stage2.t25.concern3.score:
+    op: weightedCount
+    inputs:
+      - stage2.t25.q4
+    weights:
+      o0: 3
+      o1: 2
+      o2: 2
+      o3: 0
+    cap: 3
+    suffix: " 分"
+    incomplete: 完成選擇後自動計分。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+  stage2.t25.concern3.score.label:
+    op: band
+    input: stage2.t25.concern3.score
+    output: label
+    bands:
+      - min: 0
+        max: 0
+        label: 尚未建立
+        detail: 先完成這一題，系統才會計分。
+      - min: 1
+        max: 1
+        label: 起步中
+        detail: 已有一個可用的支撐點。
+      - min: 2
+        max: 2
+        label: 有基礎
+        detail: 已有兩個支撐點，可以再補強成功機率。
+      - min: 3
+        max: 3
+        label: 站得住
+        detail: 這一格已達到本題最高分。
+    incomplete: 完成選擇後自動判定。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.5-A
+  stage2.t22.audience_auto:
+    op: template
+    template: "{{stage2.t22.q7}}（{{stage2.t22.q8}}歲，{{stage2.t22.q9}}）"
+    blank: ＿＿＿＿
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.2-A
+  stage2.t24.product_price_auto:
+    op: joinNonEmpty
+    inputs:
+      - stage2.t24.q14
+      - stage2.t24.q15
+    sep: "｜NT$ "
+    end: ""
+    requireAll: false
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.4-C
+  stage2.app.audience:
+    op: firstNonEmpty
+    inputs:
+      - stage2.t22.audience_auto
+      - stage2.t22.q1
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 附錄：一頁定位藍圖
+  stage2.app.moment:
+    op: firstNonEmpty
+    inputs:
+      - stage2.t22.q25
+      - stage2.t22.q26
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.2-B
+  stage2.app.offer:
+    op: firstNonEmpty
+    inputs:
+      - stage2.t25.q9
+      - stage2.t25.q13
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.5-B
 blueprint:
   sections:
     - title: 一頁定位藍圖
       items:
         - label: 沒有人在講的是
-          value: stage2.t21.q24
+          value: stage2.t21.q30
           fallback: 暫定
           multiline: true
         - label: 我的客人是
-          value: stage2.t22.q2
+          value: stage2.app.audience
           fallback: 暫定
           multiline: true
         - label: 他的那個時刻
-          value: stage2.t22.q23
+          value: stage2.app.moment
           fallback: 暫定
           multiline: true
         - label: 大家都覺得＿＿，但我主張＿＿
-          value: stage2.t23.q12
+          value: stage2.t23.position_auto
           fallback: 暫定
           multiline: true
         - label: 我的定位句（15 字以內）
-          value: stage2.t23.q26
+          value: stage2.t23.q25
           fallback: 暫定
           multiline: true
         - label: 我的主力產品與價格
-          value: stage2.t24.q20
+          value: stage2.t24.product_price_auto
           fallback: 暫定
           multiline: true
         - label: 我最有力的那一句
-          value: stage2.t25.q14
+          value: stage2.app.offer
           fallback: 暫定
           multiline: true
 dropped: []

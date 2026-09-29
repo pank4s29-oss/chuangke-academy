@@ -15,7 +15,7 @@ export function derivedRefs(d: Derived): string[] {
     case "template": case "format": return templateKeys(d.template);
     case "switch": return [d.input];
     case "cases": return d.cases.flatMap((c) => [...(c.when.input ? [c.when.input] : []), ...(c.when.inputs ?? []), ...templateKeys(c.template)]);
-    case "joinNonEmpty": case "countEquals": case "charCount": case "firstNonEmpty": return d.inputs;
+    case "joinNonEmpty": case "countEquals": case "weightedCount": case "charCount": case "firstNonEmpty": return d.inputs;
     case "band": case "regexAbsent": case "orderedList": case "mapJoin": case "dateAdd": case "dateFormat": return [d.input];
     case "whereAny": return d.rules.map((r) => r.input);
     case "weekSplit": return [d.start, d.end];
@@ -171,6 +171,13 @@ export function createEngine(spec: FlowSpec, state: FlowState): Engine {
         const complete = unanswered.length === 0;
         if (d.output === "left") return { text: complete ? "" : (d.leftText ?? "還有 {{n}} 題沒答").replace("{{n}}", String(unanswered.length)), tone: "neutral", complete: !complete, list: unanswered };
         return { text: complete ? String(n) : "", number: n, complete, list: unanswered };
+      }
+      case "weightedCount": {
+        const unanswered = d.inputs.filter((k) => ids(k).length === 0);
+        const raw = d.inputs.reduce((sum, k) => sum + ids(k).reduce((n, id) => n + (d.weights[id] ?? 0), 0), 0);
+        const n = d.cap === undefined ? raw : Math.min(raw, d.cap);
+        if (unanswered.length) return { text: d.incomplete ?? "", number: n, complete: false, list: unanswered, tone: "neutral" };
+        return { text: `${n}${d.suffix}`, number: n, complete: true };
       }
       case "band": {
         const src = spec.derived[d.input] ? derive(d.input) : { number: Number(str(d.input)), complete: str(d.input) !== "", text: str(d.input) } as DerivedValue;
