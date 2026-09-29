@@ -87,6 +87,7 @@ function Sentence({ c, b }: { c: Ctx; b: Extract<BlockT, { type: "sentence" }> }
       {derived?.parts && !edited && (
         <p className="flow-sentence" aria-live="polite">{derived.parts.map((p, i) => <span key={i} className={p.kind === "filled" ? "flow-mark" : p.kind === "blank" ? "flow-blank" : undefined}>{p.text}</span>)}</p>
       )}
+      {!edited && derived?.complete && <div className="flow-auto-note">已從前面答案自動帶入，可直接使用；需要時再修改。</div>}
       <textarea className="flow-input" rows={b.multiline ? 3 : 2} aria-label={`${b.title ?? def.label}（可修改）`} placeholder={derived?.parts ? "上面是自動組好的句子，可以直接在這裡修改" : undefined} value={edited ? str(c.st.answers[b.q] ?? "") : v} onChange={(e) => c.edit(b.q, e.target.value)} />
       {edited && <button type="button" className="flow-link" onClick={() => c.regen(b.q)}>照選項重新組合</button>}
     </Field>

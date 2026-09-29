@@ -50,4 +50,9 @@ describe("stage-02 guided flow", () => {
     expect(engine.values["stage2.t25.concern2.score"]?.number).toBe(3);
     expect(engine.values["stage2.t25.concern3.score"]?.number).toBe(2);
   });
+
+  it("reuses an earlier answer instead of asking the learner to copy it again", () => {
+    const engine = createEngine(spec, { edited: [], answers: { "stage2.t24.q13": "一年後仍然卡在同一個問題" } });
+    expect(engine.value("stage2.t25.q31")).toBe("一年後仍然卡在同一個問題");
+  });
 });

@@ -217,6 +217,7 @@ textarea.flow-input { min-height: 5.2rem; border: 1px solid #17171740; border-ra
 .flow-chip { background: transparent; border: 1px solid #17171740; border-radius: 999px; padding: .18rem .65rem; color: var(--pencil); }
 .flow-chip:hover, .flow-chip[aria-pressed="true"] { background: var(--hl); border-color: var(--ink); color: var(--ink); }
 .flow-sentence, .flow-readout { border: 0; border-left: 3px solid var(--hl); border-radius: 0; background: #17171705; padding: .8rem 1rem; font-size: 1.12rem; }
+.flow-auto-note { margin-top: .35rem; color: var(--ok); font-size: .78rem; }
 .flow-tone { border: 0; border-left: 3px solid var(--hl); border-radius: 0; background: #17171705; padding: .55rem .9rem; }
 .flow-tone-good { color: var(--ok); border-left-color: var(--ok); }
 .flow-tone-bad { color: var(--warn); border-left-color: var(--warn); }

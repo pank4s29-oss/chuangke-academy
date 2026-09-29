@@ -682,7 +682,7 @@ pages:
       - type: choice
         q: stage2.t25.q30
         columns: 1
-      - type: text
+      - type: sentence
         q: stage2.t25.q31
       - type: text
         q: stage2.t25.q32
@@ -2981,6 +2981,7 @@ questions:
     sourceRef:
       file: 作業
       heading: 2.5-D
+    derived: stage2.t25.q31_auto
   stage2.t25.q32:
     kind: text
     label: 再過一年，＿＿＿＿。
@@ -3544,6 +3545,14 @@ derived:
     sourceRef:
       file: 作業
       heading: 2.5-B
+  stage2.t25.q31_auto:
+    op: firstNonEmpty
+    inputs:
+      - stage2.t24.q13
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.4-B
 blueprint:
   sections:
     - title: 一頁定位藍圖
