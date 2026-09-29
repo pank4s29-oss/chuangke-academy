@@ -1,0 +1,170 @@
+schemaVersion: 1
+stage: stage-01
+title: 階段一：獲客招生的商業模式
+flows:
+  self_study:
+    label: 自學版
+    parts:
+      - { id: open, label: 開場, pageIds: [p.open] }
+      - { id: three, label: 三句話, pageIds: [p.t1.a, p.t1.b, p.t1.c] }
+      - { id: current, label: 現況, pageIds: [p.t3] }
+      - { id: blueprint, label: 藍圖, pageIds: [p.blueprint] }
+    pages:
+      - id: p.open
+        part: open
+        title: 先把這套系統走一遍
+        description: 一頁一件事，不確定就先寫「暫定」。答案會留在你的工作區。
+        sourceRef: { file: 作業, heading: 使用說明 }
+        blocks:
+          - { type: prose, label: 使用方式, prompt: 先選最接近你的選項，再把句子改成你會說的話。完成後可隨時保存進度。 }
+          - { type: callout, label: 今天的目標, prompt: 走完階段一，你會得到一份可以拿去實作的第一版系統藍圖。 }
+          - { type: text, key: stage1.open.name, label: 你的名字, placeholder: 請輸入名字 }
+      - id: p.t1.a
+        part: three
+        title: 你的客人，跟這個問題走到哪一步了？
+        description: 先選狀態，再把「我服務的是……」這句話寫出來。
+        sourceRef: { file: 作業, heading: 1-A }
+        blocks:
+          - { type: choice, key: stage1.t1.a.stage, label: 先選一個最接近的狀態, multiple: false, options: [{ id: A, label: 還沒動作 }, { id: B, label: 自己想辦法 }, { id: C, label: 花過錢找別人解決但沒解決 }, { id: D, label: 已經有結果想要更好 }] }
+          - { type: text, key: stage1.t1.a.identity, label: 這個人是誰？, placeholder: 例如：剛開店的老闆、想轉職的人 }
+          - { type: text, key: stage1.t1.a.state, label: 他現在的狀態是什麼？, placeholder: 請用客人自己的說法 }
+          - { type: sentence, key: stage1.t1.a.sentence, derive: stage1.t1.a.sentence }
+          - { type: check, key: stage1.t1.a.sentence, derive: stage1.t1.a.sentence }
+      - id: p.t1.b
+        part: three
+        title: 他會親口說出什麼？
+        description: 把做過什麼、投入多少、結果怎樣，串成一句他傳 LINE 會說的話。
+        sourceRef: { file: 作業, heading: 1-B }
+        blocks:
+          - { type: choice, key: stage1.t1.b.did, label: 他做過什麼？, options: [{ id: tried, label: 試過但沒效果 }, { id: paid, label: 花錢找人做 }, { id: other, label: 其他, other: true }] }
+          - { type: choice, key: stage1.t1.b.invest, label: 他投入多少？, options: [{ id: time, label: 花了很多時間 }, { id: money, label: 花了錢 }, { id: other, label: 其他, other: true }] }
+          - { type: choice, key: stage1.t1.b.result, label: 結果怎樣？, options: [{ id: no_change, label: 沒有改變 }, { id: tired, label: 很累但沒有結果 }, { id: other, label: 其他, other: true }] }
+          - { type: textarea, key: stage1.t1.b.quote, label: 他會親口說的那句話, derive: stage1.t1.b.quote, placeholder: 先由上面的選項組合，你可以再改成口語 }
+      - id: p.t1.c
+        part: three
+        title: 為什麼他要選你？
+        description: 選一個你真的有證據的切角，不用急著寫得完美。
+        sourceRef: { file: 作業, heading: 1-C }
+        blocks:
+          - { type: choice, key: stage1.t1.c.tried, label: 你以前有試過解決這個問題嗎？, options: [{ id: no, label: 沒有 }, { id: yes, label: 有 }] }
+          - { type: choice, key: stage1.t1.c.angle, label: 選你的可信任切角, options: [{ id: experience, label: 經歷型 }, { id: method, label: 方法型 }, { id: result, label: 結果型 }] }
+          - { type: textarea, key: stage1.t1.c.proof, label: 你的證據或故事, placeholder: 寫一個你可以直接說出口的例子 }
+          - { type: sentence, key: stage1.t1.c.sentence, derive: stage1.t1.c.sentence }
+      - id: p.t3
+        part: current
+        title: 你的系統目前卡在哪裡？
+        description: 勾選現況，立刻看到優先要補的破口。
+        sourceRef: { file: 作業, heading: 任務 3 }
+        blocks:
+          - { type: choice, key: stage1.t3.flow, label: 流量, options: [{ id: none, label: 目前沒有穩定流量 }, { id: some, label: 偶爾有人來 }] }
+          - { type: choice, key: stage1.t3.screen, label: 篩選, options: [{ id: none, label: 不篩選 }, { id: standard, label: 心裡有標準 }, { id: done, label: 有明確流程 }] }
+          - { type: choice, key: stage1.t3.close, label: 成交, options: [{ id: none, label: 目前沒有 }, { id: quote, label: 報價 }, { id: process, label: 有成交流程 }] }
+          - { type: choice, key: stage1.t3.deliver, label: 交付, options: [{ id: none, label: 目前沒有 }, { id: process, label: 有交付流程 }] }
+          - { type: sentence, key: stage1.t3.gaps, derive: stage1.t3.gaps }
+      - id: p.blueprint
+        part: blueprint
+        title: 你的第一版系統藍圖
+        description: 這不是完美答案，是你接下來可以拿去測試的版本。
+        sourceRef: { file: 作業, heading: 附錄 }
+        blocks:
+          - { type: blueprint, key: blueprint, label: 藍圖輸出 }
+  consult_session:
+    label: 諮詢對談版
+    parts:
+      - { id: consult, label: 諮詢流程, pageIds: [p.t3, p.t1.a, p.t1.b, p.t1.c, p.blueprint] }
+    pages:
+      - id: p.t3
+        part: consult
+        title: 你的系統目前卡在哪裡？
+        description: 勾選現況，立刻看到優先要補的破口。
+        blocks:
+          - { type: choice, key: stage1.t3.flow, label: 流量, options: [{ id: none, label: 目前沒有穩定流量 }, { id: some, label: 偶爾有人來 }] }
+          - { type: choice, key: stage1.t3.screen, label: 篩選, options: [{ id: none, label: 不篩選 }, { id: standard, label: 心裡有標準 }, { id: done, label: 有明確流程 }] }
+          - { type: choice, key: stage1.t3.close, label: 成交, options: [{ id: none, label: 目前沒有 }, { id: quote, label: 報價 }, { id: process, label: 有成交流程 }] }
+          - { type: choice, key: stage1.t3.deliver, label: 交付, options: [{ id: none, label: 目前沒有 }, { id: process, label: 有交付流程 }] }
+          - { type: sentence, key: stage1.t3.gaps, derive: stage1.t3.gaps }
+      - id: p.t1.a
+        part: consult
+        title: 你的客人，跟這個問題走到哪一步了？
+        description: 先選狀態，再把「我服務的是……」這句話寫出來。
+        blocks:
+          - { type: choice, key: stage1.t1.a.stage, label: 先選一個最接近的狀態, options: [{ id: A, label: 還沒動作 }, { id: B, label: 自己想辦法 }, { id: C, label: 花過錢找別人解決但沒解決 }, { id: D, label: 已經有結果想要更好 }] }
+          - { type: text, key: stage1.t1.a.identity, label: 這個人是誰？ }
+          - { type: text, key: stage1.t1.a.state, label: 他現在的狀態是什麼？ }
+          - { type: sentence, key: stage1.t1.a.sentence, derive: stage1.t1.a.sentence }
+      - id: p.t1.b
+        part: consult
+        title: 他會親口說出什麼？
+        blocks:
+          - { type: choice, key: stage1.t1.b.did, label: 他做過什麼？, options: [{ id: tried, label: 試過但沒效果 }, { id: paid, label: 花錢找人做 }] }
+          - { type: choice, key: stage1.t1.b.invest, label: 他投入多少？, options: [{ id: time, label: 花了很多時間 }, { id: money, label: 花了錢 }] }
+          - { type: choice, key: stage1.t1.b.result, label: 結果怎樣？, options: [{ id: no_change, label: 沒有改變 }, { id: tired, label: 很累但沒有結果 }] }
+          - { type: textarea, key: stage1.t1.b.quote, label: 他會親口說的那句話, derive: stage1.t1.b.quote }
+      - id: p.t1.c
+        part: consult
+        title: 為什麼他要選你？
+        blocks:
+          - { type: choice, key: stage1.t1.c.tried, label: 你以前有試過解決這個問題嗎？, options: [{ id: no, label: 沒有 }, { id: yes, label: 有 }] }
+          - { type: choice, key: stage1.t1.c.angle, label: 選你的可信任切角, options: [{ id: experience, label: 經歷型 }, { id: method, label: 方法型 }, { id: result, label: 結果型 }] }
+          - { type: textarea, key: stage1.t1.c.proof, label: 你的證據或故事 }
+          - { type: sentence, key: stage1.t1.c.sentence, derive: stage1.t1.c.sentence }
+      - id: p.blueprint
+        part: consult
+        title: 你的第一版系統藍圖
+        description: 這不是完美答案，是你接下來可以拿去測試的版本。
+        blocks:
+          - { type: blueprint, key: blueprint, label: 藍圖輸出 }
+questions:
+  stage1.open.name: { id: stage1.open.name, label: 你的名字, type: text, legacyKeys: [] }
+  stage1.t1.a.stage: { id: stage1.t1.a.stage, label: 客人目前狀態, type: choice, legacyKeys: [stage-01-1-answer-0] }
+  stage1.t1.a.identity: { id: stage1.t1.a.identity, label: 被服務的身分, type: text, legacyKeys: [stage-01-1-answer-1] }
+  stage1.t1.a.state: { id: stage1.t1.a.state, label: 被服務的狀態, type: text, legacyKeys: [stage-01-1-answer-2] }
+  stage1.t1.a.sentence: { id: stage1.t1.a.sentence, label: 我服務的是, type: sentence, legacyKeys: [stage-01-1-answer-3] }
+  stage1.t1.b.did: { id: stage1.t1.b.did, label: 他做過什麼, type: choice, legacyKeys: [] }
+  stage1.t1.b.invest: { id: stage1.t1.b.invest, label: 他投入多少, type: choice, legacyKeys: [] }
+  stage1.t1.b.result: { id: stage1.t1.b.result, label: 結果怎樣, type: choice, legacyKeys: [] }
+  stage1.t1.b.quote: { id: stage1.t1.b.quote, label: 他會說的那句話, type: textarea, legacyKeys: [stage-01-1-answer-10] }
+  stage1.t1.c.tried: { id: stage1.t1.c.tried, label: 是否試過, type: choice, legacyKeys: [] }
+  stage1.t1.c.angle: { id: stage1.t1.c.angle, label: 可信任切角, type: choice, legacyKeys: [] }
+  stage1.t1.c.proof: { id: stage1.t1.c.proof, label: 證據, type: textarea, legacyKeys: [] }
+  stage1.t1.c.sentence: { id: stage1.t1.c.sentence, label: 為什麼選你, type: sentence, legacyKeys: [stage-01-1-answer-14] }
+  stage1.t3.flow: { id: stage1.t3.flow, label: 流量, type: choice, legacyKeys: [] }
+  stage1.t3.screen: { id: stage1.t3.screen, label: 篩選, type: choice, legacyKeys: [] }
+  stage1.t3.close: { id: stage1.t3.close, label: 成交, type: choice, legacyKeys: [] }
+  stage1.t3.deliver: { id: stage1.t3.deliver, label: 交付, type: choice, legacyKeys: [] }
+derived:
+  stage1.t1.a.sentence:
+    id: stage1.t1.a.sentence
+    op: template
+    inputs: [stage1.t1.a.state, stage1.t1.a.identity]
+    args: { template: '我服務的是「{{stage1.t1.a.state}}」的「{{stage1.t1.a.identity}}」。', blank: ＿＿ }
+    origin: source
+  stage1.t1.b.quote:
+    id: stage1.t1.b.quote
+    op: joinNonEmpty
+    inputs: [stage1.t1.b.did, stage1.t1.b.invest, stage1.t1.b.result]
+    args: { separator: "，", end: "。" }
+    origin: source-derived
+  stage1.t1.c.sentence:
+    id: stage1.t1.c.sentence
+    op: template
+    inputs: [stage1.t1.c.angle, stage1.t1.c.proof]
+    args: { template: '我會用「{{stage1.t1.c.angle}}」證明我能幫你：{{stage1.t1.c.proof}}。', blank: ＿＿ }
+    origin: source-derived
+  stage1.t3.gaps:
+    id: stage1.t3.gaps
+    op: whereAny
+    inputs: [stage1.t3.flow, stage1.t3.screen, stage1.t3.close, stage1.t3.deliver]
+    args: { includes: { stage1.t3.flow: [目前沒有], stage1.t3.screen: [不篩選, 心裡有標準], stage1.t3.close: [目前沒有, 報價], stage1.t3.deliver: [目前沒有] } }
+    origin: source-derived
+blueprint:
+  sections:
+    - { id: who, label: 服務誰, derive: stage1.t1.a.sentence }
+    - { id: quote, label: 他會說的那句話, derive: stage1.t1.b.quote }
+    - { id: why, label: 為什麼選你, derive: stage1.t1.c.sentence }
+    - { id: gaps, label: 目前破口, derive: stage1.t3.gaps }
+legacyKeyMap:
+  stage-01-1-answer-3: stage1.t1.a.sentence
+  stage-01-1-answer-10: stage1.t1.b.quote
+  stage-01-1-answer-14: stage1.t1.c.sentence
+dropped: []

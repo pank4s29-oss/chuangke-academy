@@ -3,6 +3,8 @@ import TaskFlow from "@/components/TaskFlow";
 import { course } from "@/lib/content/course";
 import { readTaskSectionsWithFields, readTaskSectionsWithFieldsFromSources, applyQuestionOverrides } from "@/lib/content/taskSections";
 import { createClient } from "@/lib/supabase/server";
+import FlowRunner from "@/components/flow/FlowRunner";
+import { loadFlow } from "@/lib/flow/server";
 
 type Props = { params: { workspaceId: string; courseKey: string; stageKey: string } };
 type ContentVersion = { stage_id: string; content_json: unknown; version_number: number };
@@ -10,6 +12,8 @@ type ContentVersion = { stage_id: string; content_json: unknown; version_number:
 export default async function WorkspaceLearnPage({ params }: Props) {
   const stage = params.courseKey === course.key ? course.stages.find((item) => item.key === params.stageKey) : undefined;
   if (!stage) notFound();
+  const flow = loadFlow(params.stageKey);
+  if (flow) return <FlowRunner document={flow.document} stageKey={params.stageKey} workspaceId={params.workspaceId} />;
   const stageIndex = course.stages.findIndex((item) => item.key === stage.key);
   const nextStageKey = course.stages[stageIndex + 1]?.key;
   const referenceKeys = [...new Set(["stage-01", "stage-02", stage.key])];

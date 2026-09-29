@@ -1,0 +1,2793 @@
+[
+  {
+    "key": "stage-02-2-1",
+    "title": "任務 2.1：把市場拆開來看",
+    "fields": [
+      {
+        "prompt": "我以為學員會說的",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-1-option-0-0",
+            "label": "這是我最早寫的那一版——照抄，往下做第 2 格"
+          },
+          {
+            "key": "stage-02-2-1-option-0-1",
+            "label": "我在 1.2-E 勾過 B，已經改掉了——不用抄，跳到下面那格"
+          }
+        ],
+        "multiple": false,
+        "group": "第 1 格：我以為學員會說的",
+        "key": "stage-02-2-1-answer-0",
+        "sourceSectionKey": "2.1-A",
+        "sourceStepKey": "開始之前：兩句話並排看一次",
+        "required": true
+      },
+      {
+        "prompt": "抄 1.1-B 步驟 2 那句「他會親口說的話」",
+        "type": "text",
+        "group": "抄 1.1-B 步驟 2 那句「他會親口說的話」",
+        "key": "stage-02-2-1-answer-1",
+        "sourceSectionKey": "2.1-A",
+        "sourceStepKey": "開始之前：兩句話並排看一次",
+        "required": true,
+        "dependsOn": {
+          "fieldKey": "stage-02-2-1-answer-0",
+          "optionKey": "stage-02-2-1-option-0-0",
+          "optionLabel": "這是我最早寫的那一版——照抄，往下做第 2 格"
+        }
+      },
+      {
+        "prompt": "我原本以為他卡在【＿＿＿＿】，",
+        "type": "text",
+        "group": "抄 1.1-B 步驟 2 那句「他會親口說的話」",
+        "key": "stage-02-2-1-answer-2",
+        "sourceSectionKey": "2.1-A",
+        "sourceStepKey": "開始之前：兩句話並排看一次",
+        "required": true,
+        "dependsOn": {
+          "fieldKey": "stage-02-2-1-answer-0",
+          "optionKey": "stage-02-2-1-option-0-1",
+          "optionLabel": "我在 1.2-E 勾過 B，已經改掉了——不用抄，跳到下面那格"
+        }
+      },
+      {
+        "prompt": "實際上他一直在講的是【＿＿＿＿】。",
+        "type": "text",
+        "group": "抄 1.1-B 步驟 2 那句「他會親口說的話」",
+        "key": "stage-02-2-1-answer-3",
+        "sourceSectionKey": "2.1-A",
+        "sourceStepKey": "開始之前：兩句話並排看一次",
+        "required": true,
+        "dependsOn": {
+          "fieldKey": "stage-02-2-1-answer-0",
+          "optionKey": "stage-02-2-1-option-0-1",
+          "optionLabel": "我在 1.2-E 勾過 B，已經改掉了——不用抄，跳到下面那格"
+        }
+      },
+      {
+        "prompt": "從 1.2-A 的十句裡挑一句——出現最多次的那句，或最像在抱怨的那句",
+        "type": "text",
+        "group": "從 1.2-A 的十句裡挑一句——出現最多次的那句，或最像在抱怨的那句",
+        "key": "stage-02-2-1-answer-4",
+        "sourceSectionKey": "2.1-A",
+        "sourceStepKey": "開始之前：兩句話並排看一次",
+        "required": true
+      },
+      {
+        "prompt": "第 3 格：兩句差在哪（可以複選）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-1-option-5-0",
+            "label": "用詞不一樣——我用的是行內的講法，他用的是生活裡的話"
+          },
+          {
+            "key": "stage-02-2-1-option-5-1",
+            "label": "在意的點不一樣——我以為他在意 A，他講的是 B"
+          },
+          {
+            "key": "stage-02-2-1-option-5-2",
+            "label": "他講得比我想的細——他講的是某一個時間、某一件小事"
+          },
+          {
+            "key": "stage-02-2-1-option-5-3",
+            "label": "他講得比我想的重——他已經在下結論了，不是在問問題"
+          },
+          {
+            "key": "stage-02-2-1-option-5-4",
+            "label": "幾乎一樣——（勾這個的話，回第 2 格換一句最不像你原本想的，重填一次）"
+          }
+        ],
+        "multiple": true,
+        "group": "第 3 格：兩句差在哪（可以複選）",
+        "key": "stage-02-2-1-answer-5",
+        "sourceSectionKey": "2.1-A",
+        "sourceStepKey": "開始之前：兩句話並排看一次",
+        "required": true
+      },
+      {
+        "prompt": "表面痛｜我的原話（可以放好幾句）",
+        "type": "text",
+        "group": "開始之前：兩句話並排看一次｜我的原話（可以放好幾句）",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-0",
+        "tableTitle": "開始之前：兩句話並排看一次",
+        "tableRow": "表面痛",
+        "tableColumn": "我的原話（可以放好幾句）",
+        "key": "stage-02-2-1-answer-6",
+        "sourceSectionKey": "2.1-A",
+        "sourceStepKey": "開始之前：兩句話並排看一次",
+        "required": true
+      },
+      {
+        "prompt": "真正要的結果｜我的原話（可以放好幾句）",
+        "type": "text",
+        "group": "開始之前：兩句話並排看一次｜我的原話（可以放好幾句）",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-0",
+        "tableTitle": "開始之前：兩句話並排看一次",
+        "tableRow": "真正要的結果",
+        "tableColumn": "我的原話（可以放好幾句）",
+        "key": "stage-02-2-1-answer-7",
+        "sourceSectionKey": "2.1-A",
+        "sourceStepKey": "開始之前：兩句話並排看一次",
+        "required": true
+      },
+      {
+        "prompt": "恐懼｜我的原話（可以放好幾句）",
+        "type": "text",
+        "group": "開始之前：兩句話並排看一次｜我的原話（可以放好幾句）",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-0",
+        "tableTitle": "開始之前：兩句話並排看一次",
+        "tableRow": "恐懼",
+        "tableColumn": "我的原話（可以放好幾句）",
+        "key": "stage-02-2-1-answer-8",
+        "sourceSectionKey": "2.1-A",
+        "sourceStepKey": "開始之前：兩句話並排看一次",
+        "required": true
+      },
+      {
+        "prompt": "恐懼那一格是空的嗎？",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-1-option-9-0",
+            "label": "有句子"
+          },
+          {
+            "key": "stage-02-2-1-option-9-1",
+            "label": "空的"
+          }
+        ],
+        "multiple": false,
+        "group": "恐懼那一格是空的嗎？",
+        "key": "stage-02-2-1-answer-9",
+        "sourceSectionKey": "2.1-A",
+        "sourceStepKey": "恐懼那一格是空的嗎？",
+        "required": true
+      },
+      {
+        "prompt": "追問完，我的恐懼句是",
+        "type": "text",
+        "group": "追問完，我的恐懼句是",
+        "key": "stage-02-2-1-answer-10",
+        "sourceSectionKey": "2.1-A",
+        "sourceStepKey": "恐懼那一格是空的嗎？",
+        "required": true
+      },
+      {
+        "prompt": "競品 1｜賣給誰",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 1",
+        "tableColumn": "賣給誰",
+        "key": "stage-02-2-1-answer-11",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 1｜主打什麼",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 1",
+        "tableColumn": "主打什麼",
+        "key": "stage-02-2-1-answer-12",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 1｜價格帶",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 1",
+        "tableColumn": "價格帶",
+        "key": "stage-02-2-1-answer-13",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 1｜承諾什麼",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 1",
+        "tableColumn": "承諾什麼",
+        "key": "stage-02-2-1-answer-14",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 1｜最大弱點",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 1",
+        "tableColumn": "最大弱點",
+        "key": "stage-02-2-1-answer-15",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 2｜賣給誰",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 2",
+        "tableColumn": "賣給誰",
+        "key": "stage-02-2-1-answer-16",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 2｜主打什麼",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 2",
+        "tableColumn": "主打什麼",
+        "key": "stage-02-2-1-answer-17",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 2｜價格帶",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 2",
+        "tableColumn": "價格帶",
+        "key": "stage-02-2-1-answer-18",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 2｜承諾什麼",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 2",
+        "tableColumn": "承諾什麼",
+        "key": "stage-02-2-1-answer-19",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 2｜最大弱點",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 2",
+        "tableColumn": "最大弱點",
+        "key": "stage-02-2-1-answer-20",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 3｜賣給誰",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 3",
+        "tableColumn": "賣給誰",
+        "key": "stage-02-2-1-answer-21",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 3｜主打什麼",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 3",
+        "tableColumn": "主打什麼",
+        "key": "stage-02-2-1-answer-22",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 3｜價格帶",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 3",
+        "tableColumn": "價格帶",
+        "key": "stage-02-2-1-answer-23",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 3｜承諾什麼",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 3",
+        "tableColumn": "承諾什麼",
+        "key": "stage-02-2-1-answer-24",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 3｜最大弱點",
+        "type": "text",
+        "group": "2.1-B 競品拆解五欄表｜賣給誰／主打什麼／價格帶／承諾什麼／最大弱點",
+        "layout": "table",
+        "tableKey": "stage-02-2-1-table-1",
+        "tableTitle": "2.1-B 競品拆解五欄表",
+        "tableRow": "競品 3",
+        "tableColumn": "最大弱點",
+        "key": "stage-02-2-1-answer-25",
+        "sourceSectionKey": "2.1-B",
+        "required": true
+      },
+      {
+        "prompt": "競品 1 主打：＿＿＿＿",
+        "type": "text",
+        "group": "步驟 1：把三家的「主打什麼」抄下來",
+        "key": "stage-02-2-1-answer-26",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "步驟 1：把三家的「主打什麼」抄下來",
+        "required": true
+      },
+      {
+        "prompt": "競品 2 主打：＿＿＿＿",
+        "type": "text",
+        "group": "步驟 1：把三家的「主打什麼」抄下來",
+        "key": "stage-02-2-1-answer-27",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "步驟 1：把三家的「主打什麼」抄下來",
+        "required": true
+      },
+      {
+        "prompt": "競品 3 主打：＿＿＿＿",
+        "type": "text",
+        "group": "步驟 1：把三家的「主打什麼」抄下來",
+        "key": "stage-02-2-1-answer-28",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "步驟 1：把三家的「主打什麼」抄下來",
+        "required": true
+      },
+      {
+        "prompt": "三家都在講的是（一個詞）：＿＿＿＿",
+        "type": "text",
+        "group": "步驟 2：看它們的共同點",
+        "key": "stage-02-2-1-answer-29",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "步驟 2：看它們的共同點",
+        "required": true
+      },
+      {
+        "prompt": "沒有人在講的是",
+        "type": "text",
+        "group": "沒有人在講的是",
+        "key": "stage-02-2-1-answer-30",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "步驟 3：寫出空白",
+        "required": true
+      },
+      {
+        "prompt": "把你剛寫的那句「沒有人在講的是＿＿＿＿」唸一次，然後問自己：",
+        "type": "text",
+        "group": "問題一：你講得出步驟嗎？",
+        "key": "stage-02-2-1-answer-31",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "步驟 4：這個空白撐不撐得住",
+        "required": true
+      },
+      {
+        "prompt": "我能不能把它拆成別人照著做的順序？",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-1-option-32-0",
+            "label": "講得出來——我講得出第一步看什麼、第二步做什麼"
+          },
+          {
+            "key": "stage-02-2-1-option-32-1",
+            "label": "還講不出來——我知道自己在做什麼，但講出來就變成「我比較會看」這種話"
+          }
+        ],
+        "multiple": false,
+        "group": "我能不能把它拆成別人照著做的順序？",
+        "key": "stage-02-2-1-answer-32",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "步驟 4：這個空白撐不撐得住",
+        "required": true
+      },
+      {
+        "prompt": "想像明天競品 1 把你這句話原封不動貼到他的頁面上",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-1-option-33-0",
+            "label": "抄不走——他貼了也做不出來，或是跟他現在賣的東西會打架"
+          },
+          {
+            "key": "stage-02-2-1-option-33-1",
+            "label": "抄得走——他明天就可以貼，客人也不會覺得奇怪"
+          }
+        ],
+        "multiple": false,
+        "group": "想像明天競品 1 把你這句話原封不動貼到他的頁面上",
+        "key": "stage-02-2-1-answer-33",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "步驟 4：這個空白撐不撐得住",
+        "required": true
+      },
+      {
+        "prompt": "我在第 ＿＿＿＿ 格。",
+        "type": "text",
+        "group": "兩題對出你在哪一格",
+        "key": "stage-02-2-1-answer-34",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "步驟 4：這個空白撐不撐得住",
+        "required": true
+      },
+      {
+        "prompt": "同一句話誰講都行，那客人為什麼要記得你。勾一個綁法",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-1-option-35-0",
+            "label": "幫這套做法取一個名字"
+          },
+          {
+            "key": "stage-02-2-1-option-35-1",
+            "label": "加上只有你有的經歷"
+          },
+          {
+            "key": "stage-02-2-1-option-35-2",
+            "label": "加上你的篩選（我只做誰、我不做誰）"
+          }
+        ],
+        "multiple": false,
+        "group": "同一句話誰講都行，那客人為什麼要記得你。勾一個綁法",
+        "key": "stage-02-2-1-answer-35",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "② 可以用，但要綁在你身上",
+        "required": true
+      },
+      {
+        "prompt": "第一步我先看：＿＿＿＿",
+        "type": "text",
+        "group": "三次都一樣的那個順序，就是你的步驟雛形",
+        "key": "stage-02-2-1-answer-36",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "③ 你有東西，只是還沒變成別人拿得到的形式",
+        "required": true
+      },
+      {
+        "prompt": "然後我看：＿＿＿＿",
+        "type": "text",
+        "group": "三次都一樣的那個順序，就是你的步驟雛形",
+        "key": "stage-02-2-1-answer-37",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "③ 你有東西，只是還沒變成別人拿得到的形式",
+        "required": true
+      },
+      {
+        "prompt": "最後我才：＿＿＿＿",
+        "type": "text",
+        "group": "三次都一樣的那個順序，就是你的步驟雛形",
+        "key": "stage-02-2-1-answer-38",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "③ 你有東西，只是還沒變成別人拿得到的形式",
+        "required": true
+      },
+      {
+        "prompt": "句型： 我只做1.4-B 的相反的你這一行在做的事",
+        "description": "我只做【＿＿＿＿】的【＿＿＿＿】。",
+        "type": "text",
+        "group": "句型： 我只做1.4-B 的相反的你這一行在做的事",
+        "key": "stage-02-2-1-answer-39",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "④ 這不是空白，是大家都覺得不值得講",
+        "required": true
+      },
+      {
+        "prompt": "翻回 1.4-B，你已經寫過一句「我不收誰」。把它反過來",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-1-option-40-0",
+            "label": "我走的是篩選型，這一格先標暫定"
+          }
+        ],
+        "multiple": true,
+        "group": "翻回 1.4-B，你已經寫過一句「我不收誰」。把它反過來",
+        "key": "stage-02-2-1-answer-40",
+        "sourceSectionKey": "2.1-C",
+        "sourceStepKey": "④ 這不是空白，是大家都覺得不值得講",
+        "required": true
+      },
+      {
+        "prompt": "任務 2.1 完成標準",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-1-option-41-0",
+            "label": "對過「我以為 vs 他實際說」，接下來用的是他實際說的那一欄"
+          },
+          {
+            "key": "stage-02-2-1-option-41-1",
+            "label": "三層需求都有句子（包含恐懼那一層）"
+          },
+          {
+            "key": "stage-02-2-1-option-41-2",
+            "label": "競品五欄表填完 3 家"
+          },
+          {
+            "key": "stage-02-2-1-option-41-3",
+            "label": "寫出一句「沒有人在講的是」，而且落在 ① 或 ②（或走篩選型，並標了暫定）",
+            "otherInputKey": "stage-02-2-1-answer-42"
+          }
+        ],
+        "multiple": true,
+        "group": "任務 2.1 完成標準",
+        "key": "stage-02-2-1-answer-41",
+        "sourceSectionKey": "任務",
+        "required": true
+      },
+      {
+        "prompt": "任務 2.1 完成標準｜寫出一句「沒有人在講的是」，而且落在 ① 或 ②（或走篩選型，並標了暫定）（請補充說明）",
+        "type": "text",
+        "group": "任務 2.1 完成標準",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-1-answer-41",
+        "key": "stage-02-2-1-answer-42",
+        "sourceSectionKey": "任務",
+        "required": true
+      }
+    ]
+  },
+  {
+    "key": "stage-02-2-2",
+    "title": "任務 2.2：把客人縮成一個人",
+    "fields": [
+      {
+        "prompt": "翻回 1.2-E，你有沒有勾 D（原話裡有一種人反覆出現，但不是你原本設定的那種）？",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-2-option-0-0",
+            "label": "沒勾 D——直接跳到第 1 格，你要畫的就是 1.1-A 那個人"
+          },
+          {
+            "key": "stage-02-2-2-option-0-1",
+            "label": "有勾 D——先做完下面兩格"
+          }
+        ],
+        "multiple": false,
+        "group": "翻回 1.2-E，你有沒有勾 D（原話裡有一種人反覆出現，但不是你原本設定的那種）？",
+        "key": "stage-02-2-2-answer-0",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "開始之前：你要畫的是哪一個人",
+        "required": true
+      },
+      {
+        "prompt": "人選 1（抄 1.1-A）",
+        "description": "我服務的是【＿＿＿＿】的【＿＿＿＿】。",
+        "type": "text",
+        "group": "人選 1（抄 1.1-A）",
+        "key": "stage-02-2-2-answer-1",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "開始之前：你要畫的是哪一個人",
+        "required": true
+      },
+      {
+        "prompt": "人選 2（抄 1.2-E 的 D 項）",
+        "description": "原話裡一直出現的是【＿＿＿＿】的【＿＿＿＿】。",
+        "type": "text",
+        "group": "人選 2（抄 1.2-E 的 D 項）",
+        "key": "stage-02-2-2-answer-2",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "開始之前：你要畫的是哪一個人",
+        "required": true
+      },
+      {
+        "prompt": "二選一（選擇要畫的人）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-2-option-3-0",
+            "label": "我畫人選 1"
+          },
+          {
+            "key": "stage-02-2-2-option-3-1",
+            "label": "我畫人選 2"
+          }
+        ],
+        "multiple": false,
+        "group": "二選一（選擇要畫的人）",
+        "key": "stage-02-2-2-answer-3",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "開始之前：你要畫的是哪一個人",
+        "required": true
+      },
+      {
+        "prompt": "哪一個，我手上的原話比較多？",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-2-option-4-1",
+            "label": "人選 1"
+          },
+          {
+            "key": "stage-02-2-2-option-4-2",
+            "label": "人選 2"
+          }
+        ],
+        "multiple": false,
+        "group": "開始之前：你要畫的是哪一個人｜人選 1／人選 2",
+        "layout": "table",
+        "tableKey": "stage-02-2-2-table-0",
+        "tableTitle": "開始之前：你要畫的是哪一個人",
+        "tableRow": "哪一個，我手上的原話比較多？",
+        "tableColumn": "選擇",
+        "key": "stage-02-2-2-answer-4",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "開始之前：你要畫的是哪一個人",
+        "required": true
+      },
+      {
+        "prompt": "哪一個，已經掏過錢了（不管是掏給誰）？",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-2-option-5-1",
+            "label": "人選 1"
+          },
+          {
+            "key": "stage-02-2-2-option-5-2",
+            "label": "人選 2"
+          }
+        ],
+        "multiple": false,
+        "group": "開始之前：你要畫的是哪一個人｜人選 1／人選 2",
+        "layout": "table",
+        "tableKey": "stage-02-2-2-table-0",
+        "tableTitle": "開始之前：你要畫的是哪一個人",
+        "tableRow": "哪一個，已經掏過錢了（不管是掏給誰）？",
+        "tableColumn": "選擇",
+        "key": "stage-02-2-2-answer-5",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "開始之前：你要畫的是哪一個人",
+        "required": true
+      },
+      {
+        "prompt": "哪一個，我現在就講得出他上禮拜發生了什麼事？",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-2-option-6-1",
+            "label": "人選 1"
+          },
+          {
+            "key": "stage-02-2-2-option-6-2",
+            "label": "人選 2"
+          }
+        ],
+        "multiple": false,
+        "group": "開始之前：你要畫的是哪一個人｜人選 1／人選 2",
+        "layout": "table",
+        "tableKey": "stage-02-2-2-table-0",
+        "tableTitle": "開始之前：你要畫的是哪一個人",
+        "tableRow": "哪一個，我現在就講得出他上禮拜發生了什麼事？",
+        "tableColumn": "選擇",
+        "key": "stage-02-2-2-answer-6",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "開始之前：你要畫的是哪一個人",
+        "required": true
+      },
+      {
+        "prompt": "名字（自己取一個）：＿＿＿＿",
+        "type": "text",
+        "group": "第 1 格：他是誰",
+        "key": "stage-02-2-2-answer-7",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 1 格：他是誰",
+        "required": true
+      },
+      {
+        "prompt": "年齡：＿＿＿＿ 歲",
+        "type": "text",
+        "group": "第 1 格：他是誰",
+        "key": "stage-02-2-2-answer-8",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 1 格：他是誰",
+        "required": true
+      },
+      {
+        "prompt": "職業／身分：＿＿＿＿",
+        "type": "text",
+        "group": "第 1 格：他是誰",
+        "key": "stage-02-2-2-answer-9",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 1 格：他是誰",
+        "required": true
+      },
+      {
+        "prompt": "早上：＿＿＿＿",
+        "type": "text",
+        "group": "第 2 格：他的一天",
+        "key": "stage-02-2-2-answer-10",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 2 格：他的一天",
+        "required": true
+      },
+      {
+        "prompt": "下午：＿＿＿＿",
+        "type": "text",
+        "group": "第 2 格：他的一天",
+        "key": "stage-02-2-2-answer-11",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 2 格：他的一天",
+        "required": true
+      },
+      {
+        "prompt": "晚上：＿＿＿＿",
+        "type": "text",
+        "group": "第 2 格：他的一天",
+        "key": "stage-02-2-2-answer-12",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 2 格：他的一天",
+        "required": true
+      },
+      {
+        "prompt": "第 3 格：他現在卡在哪一件事",
+        "type": "text",
+        "group": "第 3 格：他現在卡在哪一件事",
+        "key": "stage-02-2-2-answer-13",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 3 格：他現在卡在哪一件事",
+        "required": true
+      },
+      {
+        "prompt": "① 他試過的是什麼（先勾類型）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-2-option-14-0",
+            "label": "同一行的另一個老師／師傅／教練"
+          },
+          {
+            "key": "stage-02-2-2-option-14-1",
+            "label": "大型的機構或品牌"
+          },
+          {
+            "key": "stage-02-2-2-option-14-2",
+            "label": "網路上免費的東西（影片、社團、文章）"
+          },
+          {
+            "key": "stage-02-2-2-option-14-3",
+            "label": "自己買工具、買產品、買教材，自己來"
+          },
+          {
+            "key": "stage-02-2-2-option-14-4",
+            "label": "找家人或朋友幫忙"
+          },
+          {
+            "key": "stage-02-2-2-option-14-5",
+            "label": "其他",
+            "otherInputKey": "stage-02-2-2-answer-15"
+          }
+        ],
+        "multiple": true,
+        "group": "① 他試過的是什麼（先勾類型）",
+        "key": "stage-02-2-2-answer-14",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 4 格：他試過什麼？為什麼沒用",
+        "required": true
+      },
+      {
+        "prompt": "① 他試過的是什麼（先勾類型）｜其他（請補充說明）",
+        "type": "text",
+        "group": "① 他試過的是什麼（先勾類型）",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-2-answer-14",
+        "key": "stage-02-2-2-answer-15",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 4 格：他試過什麼？為什麼沒用",
+        "required": true
+      },
+      {
+        "prompt": "寫得出是哪一家／哪一個就寫下來： ＿＿＿＿",
+        "type": "text",
+        "group": "① 他試過的是什麼（先勾類型）",
+        "key": "stage-02-2-2-answer-16",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 4 格：他試過什麼？為什麼沒用",
+        "required": true
+      },
+      {
+        "prompt": "② 那個東西當初跟他說的是什麼（勾一個）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-2-option-17-0",
+            "label": "會變好、會有效果"
+          },
+          {
+            "key": "stage-02-2-2-option-17-1",
+            "label": "有專業的人帶著"
+          },
+          {
+            "key": "stage-02-2-2-option-17-2",
+            "label": "比較便宜或比較快"
+          },
+          {
+            "key": "stage-02-2-2-option-17-3",
+            "label": "很多人都是用這個"
+          },
+          {
+            "key": "stage-02-2-2-option-17-4",
+            "label": "會照他的狀況量身訂做"
+          },
+          {
+            "key": "stage-02-2-2-option-17-5",
+            "label": "沒有特別講什麼，他只是想說先試試看"
+          }
+        ],
+        "multiple": false,
+        "group": "② 那個東西當初跟他說的是什麼（勾一個）",
+        "key": "stage-02-2-2-answer-17",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 4 格：他試過什麼？為什麼沒用",
+        "required": true
+      },
+      {
+        "prompt": "③ 為什麼沒兌現（勾一到兩個）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-2-option-18-0",
+            "label": "根本沒開始，或開始了沒做完"
+          },
+          {
+            "key": "stage-02-2-2-option-18-1",
+            "label": "做完了，但沒有變化"
+          },
+          {
+            "key": "stage-02-2-2-option-18-2",
+            "label": "一開始有效，後來又回去了"
+          },
+          {
+            "key": "stage-02-2-2-option-18-3",
+            "label": "對方很制式，沒有針對他的狀況"
+          },
+          {
+            "key": "stage-02-2-2-option-18-4",
+            "label": "沒有人告訴他下一步要做什麼"
+          },
+          {
+            "key": "stage-02-2-2-option-18-5",
+            "label": "他被歸成一類——「你這個狀況本來就是這樣」"
+          },
+          {
+            "key": "stage-02-2-2-option-18-6",
+            "label": "他自己也說不上來，就是覺得沒用"
+          }
+        ],
+        "multiple": false,
+        "group": "③ 為什麼沒兌現（勾一到兩個）",
+        "key": "stage-02-2-2-answer-18",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 4 格：他試過什麼？為什麼沒用",
+        "required": true
+      },
+      {
+        "prompt": "第二，它可能直接給你切入點。 把 ③ 勾的那一項，跟 2.1-C 那句「沒有人在講的是＿＿＿＿」放在一起看：",
+        "type": "text",
+        "group": "第一，它決定你不能講什麼。 ① 勾到的那一類，你再推薦他一次，他會直接關掉",
+        "key": "stage-02-2-2-answer-19",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 4 格：他試過什麼？為什麼沒用",
+        "required": true
+      },
+      {
+        "prompt": "第一，它決定你不能講什麼。 ① 勾到的那一類，你再推薦他一次，他會直接關掉",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-2-option-20-0",
+            "label": "對得上——他失敗的地方，正好就是我找到的空白"
+          },
+          {
+            "key": "stage-02-2-2-option-20-1",
+            "label": "對不上——記下來，先往下走"
+          }
+        ],
+        "multiple": false,
+        "group": "第一，它決定你不能講什麼。 ① 勾到的那一類，你再推薦他一次，他會直接關掉",
+        "key": "stage-02-2-2-answer-20",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 4 格：他試過什麼？為什麼沒用",
+        "required": true
+      },
+      {
+        "prompt": "第 5 格：他半夜滑手機在看什麼",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-2-option-21-0",
+            "label": "短影音"
+          },
+          {
+            "key": "stage-02-2-2-option-21-1",
+            "label": "同樣處境的人在貼什麼"
+          },
+          {
+            "key": "stage-02-2-2-option-21-2",
+            "label": "社團裡的討論"
+          },
+          {
+            "key": "stage-02-2-2-option-21-3",
+            "label": "購物平台"
+          },
+          {
+            "key": "stage-02-2-2-option-21-4",
+            "label": "其他",
+            "otherInputKey": "stage-02-2-2-answer-22"
+          }
+        ],
+        "multiple": true,
+        "group": "第 5 格：他半夜滑手機在看什麼",
+        "key": "stage-02-2-2-answer-21",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 5 格：他半夜滑手機在看什麼",
+        "required": true
+      },
+      {
+        "prompt": "第 5 格：他半夜滑手機在看什麼｜其他（請補充說明）",
+        "type": "text",
+        "group": "第 5 格：他半夜滑手機在看什麼",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-2-answer-21",
+        "key": "stage-02-2-2-answer-22",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 5 格：他半夜滑手機在看什麼",
+        "required": true
+      },
+      {
+        "prompt": "第 6 格：這件事他會跟誰討論",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-2-option-23-0",
+            "label": "沒有人，自己決定"
+          },
+          {
+            "key": "stage-02-2-2-option-23-1",
+            "label": "配偶／伴侶"
+          },
+          {
+            "key": "stage-02-2-2-option-23-2",
+            "label": "同行朋友"
+          },
+          {
+            "key": "stage-02-2-2-option-23-3",
+            "label": "家人"
+          },
+          {
+            "key": "stage-02-2-2-option-23-4",
+            "label": "其他",
+            "otherInputKey": "stage-02-2-2-answer-24"
+          }
+        ],
+        "multiple": true,
+        "group": "第 6 格：這件事他會跟誰討論",
+        "key": "stage-02-2-2-answer-23",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 6 格：這件事他會跟誰討論",
+        "required": true
+      },
+      {
+        "prompt": "第 6 格：這件事他會跟誰討論｜其他（請補充說明）",
+        "type": "text",
+        "group": "第 6 格：這件事他會跟誰討論",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-2-answer-23",
+        "key": "stage-02-2-2-answer-24",
+        "sourceSectionKey": "2.2-A",
+        "sourceStepKey": "第 6 格：這件事他會跟誰討論",
+        "required": true
+      },
+      {
+        "prompt": "句型： 時間，他在做什麼，看到什麼，然後心裡想什麼",
+        "type": "text",
+        "group": "句型： 時間，他在做什麼，看到什麼，然後心裡想什麼",
+        "key": "stage-02-2-2-answer-25",
+        "sourceSectionKey": "2.2-B",
+        "required": true
+      },
+      {
+        "prompt": "星期三晚上十一點，她收走孩子桌上的評量，看到整頁只寫了三題，想到下個月又要繳補習費",
+        "type": "text",
+        "group": "星期三晚上十一點，她收走孩子桌上的評量，看到整頁只寫了三題，想到下個月又要繳補習費",
+        "key": "stage-02-2-2-answer-26",
+        "sourceSectionKey": "2.2-B",
+        "required": true
+      },
+      {
+        "prompt": "規則： 用「我」開頭，口語，像他在傳訊息抱怨（第 1 題）",
+        "type": "text",
+        "group": "規則： 用「我」開頭，口語，像他在傳訊息抱怨",
+        "key": "stage-02-2-2-answer-27",
+        "sourceSectionKey": "2.2-C",
+        "required": true
+      },
+      {
+        "prompt": "規則： 用「我」開頭，口語，像他在傳訊息抱怨（第 2 題）",
+        "type": "text",
+        "group": "規則： 用「我」開頭，口語，像他在傳訊息抱怨",
+        "key": "stage-02-2-2-answer-28",
+        "sourceSectionKey": "2.2-C",
+        "required": true
+      },
+      {
+        "prompt": "規則： 用「我」開頭，口語，像他在傳訊息抱怨（第 3 題）",
+        "type": "text",
+        "group": "規則： 用「我」開頭，口語，像他在傳訊息抱怨",
+        "key": "stage-02-2-2-answer-29",
+        "sourceSectionKey": "2.2-C",
+        "required": true
+      },
+      {
+        "prompt": "任務 2.2 完成標準",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-2-option-30-0",
+            "label": "我知道我畫的是誰（有勾 D 的人，已經二選一）"
+          },
+          {
+            "key": "stage-02-2-2-option-30-1",
+            "label": "六格都填了，他有名字"
+          },
+          {
+            "key": "stage-02-2-2-option-30-2",
+            "label": "第 4 格有一組完整的「試過什麼→承諾什麼→為什麼沒用」"
+          },
+          {
+            "key": "stage-02-2-2-option-30-3",
+            "label": "有一個具體的時刻（有時間、有畫面）"
+          }
+        ],
+        "multiple": false,
+        "group": "任務 2.2 完成標準",
+        "key": "stage-02-2-2-answer-30",
+        "sourceSectionKey": "任務",
+        "required": true
+      }
+    ]
+  },
+  {
+    "key": "stage-02-2-3",
+    "title": "任務 2.3：寫出你的定位句",
+    "fields": [
+      {
+        "prompt": "① 他們都要客人做到什麼？（勾一個）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-0-0",
+            "label": "多練、多做，次數要夠"
+          },
+          {
+            "key": "stage-02-2-3-option-0-1",
+            "label": "撐久一點、不要中斷"
+          },
+          {
+            "key": "stage-02-2-3-option-0-2",
+            "label": "先弄懂、先學會，才能開始做"
+          },
+          {
+            "key": "stage-02-2-3-option-0-3",
+            "label": "照他們排好的進度走"
+          },
+          {
+            "key": "stage-02-2-3-option-0-4",
+            "label": "買更完整、更貴的那個方案"
+          },
+          {
+            "key": "stage-02-2-3-option-0-5",
+            "label": "自己先搞清楚問題出在哪"
+          },
+          {
+            "key": "stage-02-2-3-option-0-6",
+            "label": "其他",
+            "otherInputKey": "stage-02-2-3-answer-1"
+          }
+        ],
+        "multiple": false,
+        "group": "① 他們都要客人做到什麼？（勾一個）",
+        "key": "stage-02-2-3-answer-0",
+        "sourceSectionKey": "2.3-A",
+        "sourceStepKey": "步驟 1：找出三家都沒質疑過的假設",
+        "required": true
+      },
+      {
+        "prompt": "① 他們都要客人做到什麼？（勾一個）｜其他（請補充說明）",
+        "type": "text",
+        "group": "① 他們都要客人做到什麼？（勾一個）",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-3-answer-0",
+        "key": "stage-02-2-3-answer-1",
+        "sourceSectionKey": "2.3-A",
+        "sourceStepKey": "步驟 1：找出三家都沒質疑過的假設",
+        "required": true
+      },
+      {
+        "prompt": "② 他們都預設這件事要多久？（勾一個）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-2-0",
+            "label": "一段很長的時間，半年以上才看得到"
+          },
+          {
+            "key": "stage-02-2-3-option-2-1",
+            "label": "固定的堂數或梯次跑完"
+          },
+          {
+            "key": "stage-02-2-3-option-2-2",
+            "label": "每天或每週都要來"
+          },
+          {
+            "key": "stage-02-2-3-option-2-3",
+            "label": "反覆做很多次才會有感覺"
+          },
+          {
+            "key": "stage-02-2-3-option-2-4",
+            "label": "一次就要做到位"
+          },
+          {
+            "key": "stage-02-2-3-option-2-5",
+            "label": "其他",
+            "otherInputKey": "stage-02-2-3-answer-3"
+          }
+        ],
+        "multiple": false,
+        "group": "② 他們都預設這件事要多久？（勾一個）",
+        "key": "stage-02-2-3-answer-2",
+        "sourceSectionKey": "2.3-A",
+        "sourceStepKey": "步驟 1：找出三家都沒質疑過的假設",
+        "required": true
+      },
+      {
+        "prompt": "② 他們都預設這件事要多久？（勾一個）｜其他（請補充說明）",
+        "type": "text",
+        "group": "② 他們都預設這件事要多久？（勾一個）",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-3-answer-2",
+        "key": "stage-02-2-3-answer-3",
+        "sourceSectionKey": "2.3-A",
+        "sourceStepKey": "步驟 1：找出三家都沒質疑過的假設",
+        "required": true
+      },
+      {
+        "prompt": "③ 他們都照什麼順序做？（勾一個）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-4-0",
+            "label": "先學會，再開始做"
+          },
+          {
+            "key": "stage-02-2-3-option-4-1",
+            "label": "先看懂，再動手"
+          },
+          {
+            "key": "stage-02-2-3-option-4-2",
+            "label": "先打基礎，再處理他真正在意的那件事"
+          },
+          {
+            "key": "stage-02-2-3-option-4-3",
+            "label": "先處理表面的，再講根本的"
+          },
+          {
+            "key": "stage-02-2-3-option-4-4",
+            "label": "先做完整套，再看結果"
+          },
+          {
+            "key": "stage-02-2-3-option-4-5",
+            "label": "其他",
+            "otherInputKey": "stage-02-2-3-answer-5"
+          }
+        ],
+        "multiple": false,
+        "group": "③ 他們都照什麼順序做？（勾一個）",
+        "key": "stage-02-2-3-answer-4",
+        "sourceSectionKey": "2.3-A",
+        "sourceStepKey": "步驟 1：找出三家都沒質疑過的假設",
+        "required": true
+      },
+      {
+        "prompt": "③ 他們都照什麼順序做？（勾一個）｜其他（請補充說明）",
+        "type": "text",
+        "group": "③ 他們都照什麼順序做？（勾一個）",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-3-answer-4",
+        "key": "stage-02-2-3-answer-5",
+        "sourceSectionKey": "2.3-A",
+        "sourceStepKey": "步驟 1：找出三家都沒質疑過的假設",
+        "required": true
+      },
+      {
+        "prompt": "我要反過來的是第 ＿＿＿＿ 句。",
+        "type": "text",
+        "group": "三句裡面挑一句你最有把握的",
+        "key": "stage-02-2-3-answer-6",
+        "sourceSectionKey": "2.3-A",
+        "sourceStepKey": "步驟 1：找出三家都沒質疑過的假設",
+        "required": true
+      },
+      {
+        "prompt": "大家都當成正常的是： ＿＿＿＿",
+        "type": "text",
+        "group": "就是那種你跟客人解釋過很多次的事——「這個本來就會這樣」「每個人都是這樣」",
+        "key": "stage-02-2-3-answer-7",
+        "sourceSectionKey": "2.3-A",
+        "sourceStepKey": "如果 ① 你勾不出來",
+        "required": true
+      },
+      {
+        "prompt": "他們的客人裡一定會有一種人是失敗的。那種人是怎麼失敗的？（勾一個）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-8-0",
+            "label": "很認真做了，但沒有效果"
+          },
+          {
+            "key": "stage-02-2-3-option-8-1",
+            "label": "做到一半就停了"
+          },
+          {
+            "key": "stage-02-2-3-option-8-2",
+            "label": "有效果，但後來又回去了"
+          },
+          {
+            "key": "stage-02-2-3-option-8-3",
+            "label": "學完了，但不敢真的開始"
+          },
+          {
+            "key": "stage-02-2-3-option-8-4",
+            "label": "換過很多家，每一家都一樣"
+          }
+        ],
+        "multiple": false,
+        "group": "他們的客人裡一定會有一種人是失敗的。那種人是怎麼失敗的？（勾一個）",
+        "key": "stage-02-2-3-answer-8",
+        "sourceSectionKey": "2.3-A",
+        "sourceStepKey": "如果三句都填不出來",
+        "required": true
+      },
+      {
+        "prompt": "他們會失敗，代表「＿＿＿＿」這個假設有洞。",
+        "type": "text",
+        "group": "把它翻成一個假設",
+        "key": "stage-02-2-3-answer-9",
+        "sourceSectionKey": "2.3-A",
+        "sourceStepKey": "如果三句都填不出來",
+        "required": true
+      },
+      {
+        "prompt": "我主張：＿＿＿＿",
+        "type": "text",
+        "group": "✓ 別人教技術，我教怎麼敢——這是換一條路",
+        "key": "stage-02-2-3-answer-10",
+        "sourceSectionKey": "2.3-A",
+        "sourceStepKey": "步驟 2：把它反過來",
+        "required": true
+      },
+      {
+        "prompt": "會不會有同行覺得你在亂講？",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-11-1",
+            "label": "會"
+          },
+          {
+            "key": "stage-02-2-3-option-11-2",
+            "label": "不會"
+          }
+        ],
+        "multiple": false,
+        "group": "步驟 3：敢不敢說測試｜會／不會",
+        "layout": "table",
+        "tableKey": "stage-02-2-3-table-2",
+        "tableTitle": "步驟 3：敢不敢說測試",
+        "tableRow": "會不會有同行覺得你在亂講？",
+        "tableColumn": "選擇",
+        "key": "stage-02-2-3-answer-11",
+        "sourceSectionKey": "2.3-A",
+        "sourceStepKey": "步驟 3：敢不敢說測試",
+        "required": true
+      },
+      {
+        "prompt": "會不會有一群客人不同意？",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-12-1",
+            "label": "會"
+          },
+          {
+            "key": "stage-02-2-3-option-12-2",
+            "label": "不會"
+          }
+        ],
+        "multiple": false,
+        "group": "步驟 3：敢不敢說測試｜會／不會",
+        "layout": "table",
+        "tableKey": "stage-02-2-3-table-2",
+        "tableTitle": "步驟 3：敢不敢說測試",
+        "tableRow": "會不會有一群客人不同意？",
+        "tableColumn": "選擇",
+        "key": "stage-02-2-3-answer-12",
+        "sourceSectionKey": "2.3-A",
+        "sourceStepKey": "步驟 3：敢不敢說測試",
+        "required": true
+      },
+      {
+        "prompt": "對【＿＿＿＿】而言，",
+        "type": "text",
+        "group": "把前面的答案填進去",
+        "key": "stage-02-2-3-answer-13",
+        "sourceSectionKey": "2.3-B",
+        "required": true
+      },
+      {
+        "prompt": "把前面的答案填進去",
+        "description": "我是唯一【＿＿＿＿】的【＿＿＿＿】，",
+        "type": "text",
+        "group": "把前面的答案填進去",
+        "key": "stage-02-2-3-answer-14",
+        "sourceSectionKey": "2.3-B",
+        "required": true
+      },
+      {
+        "prompt": "因為【＿＿＿＿】。",
+        "type": "text",
+        "group": "把前面的答案填進去",
+        "key": "stage-02-2-3-answer-15",
+        "sourceSectionKey": "2.3-B",
+        "required": true
+      },
+      {
+        "prompt": "怎麼測（選一種就好）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-16-0",
+            "label": "有人可以唸 → 唸給一個外行朋友聽，隔五分鐘請他複述一次"
+          },
+          {
+            "key": "stage-02-2-3-option-16-1",
+            "label": "身邊沒有人 → 唸出聲錄下來。隔一天，不要看原句，憑記憶把它重寫一次，再跟原句比對"
+          }
+        ],
+        "multiple": false,
+        "group": "怎麼測（選一種就好）",
+        "key": "stage-02-2-3-answer-16",
+        "sourceSectionKey": "2.3-C",
+        "sourceStepKey": "測試一：複述測試",
+        "required": true
+      },
+      {
+        "prompt": "過的標準： 複述或重寫出來的意思，跟你原本要講的一樣。用字不同沒關係",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-17-0",
+            "label": "過"
+          },
+          {
+            "key": "stage-02-2-3-option-17-1",
+            "label": "沒過"
+          }
+        ],
+        "multiple": false,
+        "group": "過的標準： 複述或重寫出來的意思，跟你原本要講的一樣。用字不同沒關係",
+        "key": "stage-02-2-3-answer-17",
+        "sourceSectionKey": "2.3-C",
+        "sourceStepKey": "測試一：複述測試",
+        "required": true
+      },
+      {
+        "prompt": "沒過的話，勾一個",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-18-0",
+            "label": "只想得起一兩個詞，串不成句 → 太長。砍到 20 字以內，先砍形容詞和只有你這行才懂的字"
+          },
+          {
+            "key": "stage-02-2-3-option-18-1",
+            "label": "串得出來，但意思跑掉了 → 有一個詞會被理解成別的意思。找出那個詞，換成生活裡會用的字"
+          },
+          {
+            "key": "stage-02-2-3-option-18-2",
+            "label": "出來的變成一句別人也在講的話 → 你的主張沒有進到句子裡。回 2.3-A 步驟 2，把主張塞進第 2 格"
+          }
+        ],
+        "multiple": false,
+        "group": "沒過的話，勾一個",
+        "key": "stage-02-2-3-answer-18",
+        "sourceSectionKey": "2.3-C",
+        "sourceStepKey": "測試一：複述測試",
+        "required": true
+      },
+      {
+        "prompt": "過的標準： 你講得出至少一種人會反對，而且講得出他反對的理由",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-19-0",
+            "label": "過"
+          },
+          {
+            "key": "stage-02-2-3-option-19-1",
+            "label": "沒過"
+          }
+        ],
+        "multiple": false,
+        "group": "過的標準： 你講得出至少一種人會反對，而且講得出他反對的理由",
+        "key": "stage-02-2-3-answer-19",
+        "sourceSectionKey": "2.3-C",
+        "sourceStepKey": "測試二：反對測試",
+        "required": true
+      },
+      {
+        "prompt": "被反對的理由是： ＿＿＿＿",
+        "type": "text",
+        "group": "過的標準： 你講得出至少一種人會反對，而且講得出他反對的理由",
+        "key": "stage-02-2-3-answer-20",
+        "sourceSectionKey": "2.3-C",
+        "sourceStepKey": "測試二：反對測試",
+        "required": true
+      },
+      {
+        "prompt": "沒過的話，代表這句話太安全。勾一個方向把它變尖",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-21-0",
+            "label": "把「比較好」改成「不做」——別人教得更細 → 我不教技術"
+          },
+          {
+            "key": "stage-02-2-3-option-21-1",
+            "label": "把順序反過來——先 A 再 B → 先 B 再 A"
+          },
+          {
+            "key": "stage-02-2-3-option-21-2",
+            "label": "把大家都當成正常的那件事說成不正常——抄 2.3-A 步驟 1 那一格"
+          }
+        ],
+        "multiple": false,
+        "group": "沒過的話，代表這句話太安全。勾一個方向把它變尖",
+        "key": "stage-02-2-3-answer-21",
+        "sourceSectionKey": "2.3-C",
+        "sourceStepKey": "測試二：反對測試",
+        "required": true
+      },
+      {
+        "prompt": "過的標準： 你講得出一群具體的人，而且你真的不想要他們",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-22-0",
+            "label": "過"
+          },
+          {
+            "key": "stage-02-2-3-option-22-1",
+            "label": "沒過"
+          }
+        ],
+        "multiple": false,
+        "group": "過的標準： 你講得出一群具體的人，而且你真的不想要他們",
+        "key": "stage-02-2-3-answer-22",
+        "sourceSectionKey": "2.3-C",
+        "sourceStepKey": "測試三：排除測試",
+        "required": true
+      },
+      {
+        "prompt": "被排除掉的是： ＿＿＿＿",
+        "type": "text",
+        "group": "過的標準： 你講得出一群具體的人，而且你真的不想要他們",
+        "key": "stage-02-2-3-answer-23",
+        "sourceSectionKey": "2.3-C",
+        "sourceStepKey": "測試三：排除測試",
+        "required": true
+      },
+      {
+        "prompt": "沒過的話分兩種",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-24-0",
+            "label": "我想不出排除掉誰 → 太廣了。回 2.2-A 開頭你選定的那個人，加一個處境再縮一次：剛開始的／已經花過錢的／時間剩不多的／做過一輪停掉的"
+          },
+          {
+            "key": "stage-02-2-3-option-24-1",
+            "label": "我想得出來，但我不想放掉他們 → 這不是句子的問題，是你還沒決定。翻回 1.4-B，那裡你已經決定過一次「我不收誰」。兩邊對不起來的話，先以 1.4-B 為準"
+          }
+        ],
+        "multiple": false,
+        "group": "沒過的話分兩種",
+        "key": "stage-02-2-3-answer-24",
+        "sourceSectionKey": "2.3-C",
+        "sourceStepKey": "測試三：排除測試",
+        "required": true
+      },
+      {
+        "prompt": "把定位句壓成一句 15 字以內、可以直接當廣告標題的話",
+        "type": "text",
+        "group": "把定位句壓成一句 15 字以內、可以直接當廣告標題的話",
+        "key": "stage-02-2-3-answer-25",
+        "sourceSectionKey": "2.3-D",
+        "required": true
+      },
+      {
+        "prompt": "任務 2.3 完成標準",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-3-option-26-0",
+            "label": "寫出共同前提，並且反過來了"
+          },
+          {
+            "key": "stage-02-2-3-option-26-1",
+            "label": "定位句四格都填完"
+          },
+          {
+            "key": "stage-02-2-3-option-26-2",
+            "label": "三個測試都過（沒過的已經照指示改完，而且重測過）"
+          },
+          {
+            "key": "stage-02-2-3-option-26-3",
+            "label": "有一句 15 字以內的濃縮版"
+          }
+        ],
+        "multiple": true,
+        "group": "任務 2.3 完成標準",
+        "key": "stage-02-2-3-answer-26",
+        "sourceSectionKey": "任務",
+        "required": true
+      }
+    ]
+  },
+  {
+    "key": "stage-02-2-4",
+    "title": "任務 2.4：訂出產品與價格",
+    "fields": [
+      {
+        "prompt": "我目前給的承諾，落在哪一層？（勾一個）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-4-option-0-0",
+            "label": "他嘴巴上說的那個問題（抄 2.1-A 表面痛）"
+          },
+          {
+            "key": "stage-02-2-4-option-0-1",
+            "label": "他真正想拿到的結果（抄 2.1-A 中間那層）"
+          },
+          {
+            "key": "stage-02-2-4-option-0-2",
+            "label": "他不會公開講的那件事（抄 2.1-A 恐懼層）"
+          },
+          {
+            "key": "stage-02-2-4-option-0-3",
+            "label": "我還沒想過要承諾什麼"
+          }
+        ],
+        "multiple": false,
+        "group": "我目前給的承諾，落在哪一層？（勾一個）",
+        "key": "stage-02-2-4-answer-0",
+        "sourceSectionKey": "2.4-A",
+        "sourceStepKey": "槓桿 1：結果多想要",
+        "required": true
+      },
+      {
+        "prompt": "打分： 勾第一個 1 分，第二個 2 分，第三個 3 分，第四個 0 分 → ＿＿＿＿ 分",
+        "type": "text",
+        "group": "我目前給的承諾，落在哪一層？（勾一個）",
+        "key": "stage-02-2-4-answer-1",
+        "sourceSectionKey": "2.4-A",
+        "sourceStepKey": "槓桿 1：結果多想要",
+        "required": true
+      },
+      {
+        "prompt": "我手上已經有的（可複選，一項 1 分，最多 3 分）（第 1 小題）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-4-option-2-0",
+            "label": "我講得出他第一週要做哪幾件事，照著順序"
+          },
+          {
+            "key": "stage-02-2-4-option-2-1",
+            "label": "我給的東西他可以直接拿去改，不用從白紙開始"
+          },
+          {
+            "key": "stage-02-2-4-option-2-2",
+            "label": "我講得出至少一個人的完整過程，從一開始到後來變怎樣"
+          },
+          {
+            "key": "stage-02-2-4-option-2-3",
+            "label": "中間有固定的時間我會看他做得對不對"
+          },
+          {
+            "key": "stage-02-2-4-option-2-4",
+            "label": "我講得出我不收誰（抄 1.4-B）"
+          },
+          {
+            "key": "stage-02-2-4-option-2-5",
+            "label": "有一個環節他當場就看得到我怎麼做（試做、試聽、初診、免費體驗）"
+          }
+        ],
+        "multiple": true,
+        "group": "我手上已經有的（可複選，一項 1 分，最多 3 分）",
+        "key": "stage-02-2-4-answer-2",
+        "sourceSectionKey": "2.4-A",
+        "sourceStepKey": "槓桿 2：成功機率多高",
+        "required": true
+      },
+      {
+        "prompt": "我手上已經有的（可複選，一項 1 分，最多 3 分）（第 2 小題）",
+        "description": "勾了 ＿＿＿＿ 項 → ＿＿＿＿ 分（0 項 0 分，1 項 1 分，2 項 2 分，3 項以上 3 分）",
+        "type": "text",
+        "group": "我手上已經有的（可複選，一項 1 分，最多 3 分）",
+        "key": "stage-02-2-4-answer-3",
+        "sourceSectionKey": "2.4-A",
+        "sourceStepKey": "槓桿 2：成功機率多高",
+        "required": true
+      },
+      {
+        "prompt": "他最快什麼時候會看到一點東西？（勾一個）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-4-option-4-0",
+            "label": "第一次接觸就看得到（諮詢、試做、試聽當場）"
+          },
+          {
+            "key": "stage-02-2-4-option-4-1",
+            "label": "第一週之內"
+          },
+          {
+            "key": "stage-02-2-4-option-4-2",
+            "label": "一個月內"
+          },
+          {
+            "key": "stage-02-2-4-option-4-3",
+            "label": "要跑完整套才看得到"
+          },
+          {
+            "key": "stage-02-2-4-option-4-4",
+            "label": "我不知道，沒設計過"
+          }
+        ],
+        "multiple": false,
+        "group": "他最快什麼時候會看到一點東西？（勾一個）",
+        "key": "stage-02-2-4-answer-4",
+        "sourceSectionKey": "2.4-A",
+        "sourceStepKey": "槓桿 3：多快拿到",
+        "required": true
+      },
+      {
+        "prompt": "打分： 由上往下 3、3、2、1、0 分 → ＿＿＿＿ 分",
+        "type": "text",
+        "group": "他最快什麼時候會看到一點東西？（勾一個）",
+        "key": "stage-02-2-4-answer-5",
+        "sourceSectionKey": "2.4-A",
+        "sourceStepKey": "槓桿 3：多快拿到",
+        "required": true
+      },
+      {
+        "prompt": "我目前幫他省掉的是什麼？（可複選，一項 1 分，最多 3 分）（第 1 小題）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-4-option-6-0",
+            "label": "他不用自己決定順序，我排好"
+          },
+          {
+            "key": "stage-02-2-4-option-6-1",
+            "label": "他不用從零做，我給半成品"
+          },
+          {
+            "key": "stage-02-2-4-option-6-2",
+            "label": "他不用自己判斷做得對不對，我會看"
+          },
+          {
+            "key": "stage-02-2-4-option-6-3",
+            "label": "他不用學會全部，只要會用到的那部分"
+          },
+          {
+            "key": "stage-02-2-4-option-6-4",
+            "label": "沒有，目前都是他自己來"
+          }
+        ],
+        "multiple": true,
+        "group": "我目前幫他省掉的是什麼？（可複選，一項 1 分，最多 3 分）",
+        "key": "stage-02-2-4-answer-6",
+        "sourceSectionKey": "2.4-A",
+        "sourceStepKey": "槓桿 4：多輕鬆",
+        "required": true
+      },
+      {
+        "prompt": "我目前幫他省掉的是什麼？（可複選，一項 1 分，最多 3 分）（第 2 小題）",
+        "description": "勾了 ＿＿＿＿ 項 → ＿＿＿＿ 分（最後一項算 0 分）",
+        "type": "text",
+        "group": "我目前幫他省掉的是什麼？（可複選，一項 1 分，最多 3 分）",
+        "key": "stage-02-2-4-answer-7",
+        "sourceSectionKey": "2.4-A",
+        "sourceStepKey": "槓桿 4：多輕鬆",
+        "required": true
+      },
+      {
+        "prompt": "我最弱的一格是第 ＿＿＿＿ 格。",
+        "type": "text",
+        "group": "四格總覽",
+        "key": "stage-02-2-4-answer-8",
+        "sourceSectionKey": "2.4-A",
+        "sourceStepKey": "四格總覽",
+        "required": true
+      },
+      {
+        "prompt": "我最強的一格是第 ＿＿＿＿ 格。",
+        "type": "text",
+        "group": "四格總覽",
+        "key": "stage-02-2-4-answer-9",
+        "sourceSectionKey": "2.4-A",
+        "sourceStepKey": "四格總覽",
+        "required": true
+      },
+      {
+        "prompt": "回上面槓桿 2，看你沒勾到的那幾項。從裡面挑兩項，勾起來當成你接下來要補的",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-4-option-10-0",
+            "label": "我講得出他第一週要做哪幾件事，照著順序"
+          },
+          {
+            "key": "stage-02-2-4-option-10-1",
+            "label": "我給的東西他可以直接拿去改，不用從白紙開始"
+          },
+          {
+            "key": "stage-02-2-4-option-10-2",
+            "label": "我講得出至少一個人的完整過程，從一開始到後來變怎樣"
+          },
+          {
+            "key": "stage-02-2-4-option-10-3",
+            "label": "中間有固定的時間我會看他做得對不對"
+          },
+          {
+            "key": "stage-02-2-4-option-10-4",
+            "label": "我講得出我不收誰（抄 1.4-B）"
+          },
+          {
+            "key": "stage-02-2-4-option-10-5",
+            "label": "有一個環節他當場就看得到我怎麼做（試做、試聽、初診、免費體驗）"
+          }
+        ],
+        "multiple": true,
+        "group": "回上面槓桿 2，看你沒勾到的那幾項。從裡面挑兩項，勾起來當成你接下來要補的",
+        "key": "stage-02-2-4-answer-10",
+        "sourceSectionKey": "2.4-A",
+        "sourceStepKey": "補強第 2 格（成功機率）",
+        "required": true
+      },
+      {
+        "prompt": "1. 他省下什麼？",
+        "type": "text",
+        "group": "1. 他省下什麼？",
+        "key": "stage-02-2-4-answer-11",
+        "sourceSectionKey": "2.4-B",
+        "required": true
+      },
+      {
+        "prompt": "2. 他得到什麼？",
+        "type": "text",
+        "group": "2. 他得到什麼？",
+        "key": "stage-02-2-4-answer-12",
+        "sourceSectionKey": "2.4-B",
+        "required": true
+      },
+      {
+        "prompt": "3. 他不做的代價是什麼？（一年後他在哪裡）",
+        "type": "text",
+        "group": "3. 他不做的代價是什麼？（一年後他在哪裡）",
+        "key": "stage-02-2-4-answer-13",
+        "sourceSectionKey": "2.4-B",
+        "required": true
+      },
+      {
+        "prompt": "我的主力產品是： ＿＿＿＿",
+        "type": "text",
+        "group": "2.4-C 訂價格",
+        "key": "stage-02-2-4-answer-14",
+        "sourceSectionKey": "2.4-C",
+        "required": true
+      },
+      {
+        "prompt": "價格： NT$ ＿＿＿＿",
+        "type": "text",
+        "group": "2.4-C 訂價格",
+        "key": "stage-02-2-4-answer-15",
+        "sourceSectionKey": "2.4-C",
+        "required": true
+      },
+      {
+        "prompt": "三根支柱檢查（三根都要有）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-4-option-16-0",
+            "label": "明確的結果：我講得出他會拿到什麼 →",
+            "otherInputKey": "stage-02-2-4-answer-17"
+          },
+          {
+            "key": "stage-02-2-4-option-16-1",
+            "label": "明確的流程：我講得出第一週做什麼 →",
+            "otherInputKey": "stage-02-2-4-answer-18"
+          },
+          {
+            "key": "stage-02-2-4-option-16-2",
+            "label": "明確的篩選：我講得出我不收誰 →",
+            "otherInputKey": "stage-02-2-4-answer-19"
+          }
+        ],
+        "multiple": true,
+        "group": "三根支柱檢查（三根都要有）",
+        "key": "stage-02-2-4-answer-16",
+        "sourceSectionKey": "2.4-C",
+        "sourceStepKey": "三根支柱檢查（三根都要有）",
+        "required": true
+      },
+      {
+        "prompt": "三根支柱檢查（三根都要有）｜明確的結果：我講得出他會拿到什麼 →（請補充說明）",
+        "type": "text",
+        "group": "三根支柱檢查（三根都要有）",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-4-answer-16",
+        "key": "stage-02-2-4-answer-17",
+        "sourceSectionKey": "2.4-C",
+        "sourceStepKey": "三根支柱檢查（三根都要有）",
+        "required": true
+      },
+      {
+        "prompt": "三根支柱檢查（三根都要有）｜明確的流程：我講得出第一週做什麼 →（請補充說明）",
+        "type": "text",
+        "group": "三根支柱檢查（三根都要有）",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-4-answer-16",
+        "key": "stage-02-2-4-answer-18",
+        "sourceSectionKey": "2.4-C",
+        "sourceStepKey": "三根支柱檢查（三根都要有）",
+        "required": true
+      },
+      {
+        "prompt": "三根支柱檢查（三根都要有）｜明確的篩選：我講得出我不收誰 →（請補充說明）",
+        "type": "text",
+        "group": "三根支柱檢查（三根都要有）",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-4-answer-16",
+        "key": "stage-02-2-4-answer-19",
+        "sourceSectionKey": "2.4-C",
+        "sourceStepKey": "三根支柱檢查（三根都要有）",
+        "required": true
+      },
+      {
+        "prompt": "合規自我檢查",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-4-option-20-0",
+            "label": "我的文字裡沒有「保證」「一定」「必」"
+          },
+          {
+            "key": "stage-02-2-4-option-20-1",
+            "label": "講到成果時有標明是個案"
+          },
+          {
+            "key": "stage-02-2-4-option-20-2",
+            "label": "我承諾的是流程，不是結果"
+          }
+        ],
+        "multiple": true,
+        "group": "合規自我檢查",
+        "key": "stage-02-2-4-answer-20",
+        "sourceSectionKey": "2.4-C",
+        "sourceStepKey": "合規自我檢查",
+        "required": true
+      },
+      {
+        "prompt": "入口｜是什麼",
+        "type": "text",
+        "group": "2.4-D 產品階梯｜是什麼／價格",
+        "layout": "table",
+        "tableKey": "stage-02-2-4-table-1",
+        "tableTitle": "2.4-D 產品階梯",
+        "tableRow": "入口",
+        "tableColumn": "是什麼",
+        "key": "stage-02-2-4-answer-21",
+        "sourceSectionKey": "2.4-D",
+        "required": true
+      },
+      {
+        "prompt": "入口｜價格",
+        "type": "text",
+        "group": "2.4-D 產品階梯｜是什麼／價格",
+        "layout": "table",
+        "tableKey": "stage-02-2-4-table-1",
+        "tableTitle": "2.4-D 產品階梯",
+        "tableRow": "入口",
+        "tableColumn": "價格",
+        "key": "stage-02-2-4-answer-22",
+        "sourceSectionKey": "2.4-D",
+        "required": true
+      },
+      {
+        "prompt": "主力｜是什麼",
+        "type": "text",
+        "group": "2.4-D 產品階梯｜是什麼／價格",
+        "layout": "table",
+        "tableKey": "stage-02-2-4-table-1",
+        "tableTitle": "2.4-D 產品階梯",
+        "tableRow": "主力",
+        "tableColumn": "是什麼",
+        "key": "stage-02-2-4-answer-23",
+        "sourceSectionKey": "2.4-D",
+        "required": true
+      },
+      {
+        "prompt": "主力｜價格",
+        "type": "text",
+        "group": "2.4-D 產品階梯｜是什麼／價格",
+        "layout": "table",
+        "tableKey": "stage-02-2-4-table-1",
+        "tableTitle": "2.4-D 產品階梯",
+        "tableRow": "主力",
+        "tableColumn": "價格",
+        "key": "stage-02-2-4-answer-24",
+        "sourceSectionKey": "2.4-D",
+        "required": true
+      },
+      {
+        "prompt": "延伸｜是什麼",
+        "type": "text",
+        "group": "2.4-D 產品階梯｜是什麼／價格",
+        "layout": "table",
+        "tableKey": "stage-02-2-4-table-1",
+        "tableTitle": "2.4-D 產品階梯",
+        "tableRow": "延伸",
+        "tableColumn": "是什麼",
+        "key": "stage-02-2-4-answer-25",
+        "sourceSectionKey": "2.4-D",
+        "required": true
+      },
+      {
+        "prompt": "延伸｜價格",
+        "type": "text",
+        "group": "2.4-D 產品階梯｜是什麼／價格",
+        "layout": "table",
+        "tableKey": "stage-02-2-4-table-1",
+        "tableTitle": "2.4-D 產品階梯",
+        "tableRow": "延伸",
+        "tableColumn": "價格",
+        "key": "stage-02-2-4-answer-26",
+        "sourceSectionKey": "2.4-D",
+        "required": true
+      },
+      {
+        "prompt": "任務 2.4 完成標準",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-4-option-27-0",
+            "label": "四槓桿都有勾、都有分數，知道最弱和最強的是哪一格"
+          },
+          {
+            "key": "stage-02-2-4-option-27-1",
+            "label": "定價三問都回答了"
+          },
+          {
+            "key": "stage-02-2-4-option-27-2",
+            "label": "有一個價格，而且三根支柱都在"
+          },
+          {
+            "key": "stage-02-2-4-option-27-3",
+            "label": "通過合規自我檢查"
+          }
+        ],
+        "multiple": true,
+        "group": "任務 2.4 完成標準",
+        "key": "stage-02-2-4-answer-27",
+        "sourceSectionKey": "任務",
+        "required": true
+      }
+    ]
+  },
+  {
+    "key": "stage-02-2-5",
+    "title": "任務 2.5：組出你的成交方案",
+    "fields": [
+      {
+        "prompt": "我目前給得出的（可複選）（第 1 小題）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-0-0",
+            "label": "我自己走過同一條路，講得出當時的過程"
+          },
+          {
+            "key": "stage-02-2-5-option-0-1",
+            "label": "至少一個人的完整過程，從一開始到後來變怎樣"
+          },
+          {
+            "key": "stage-02-2-5-option-0-2",
+            "label": "一個看得到、查得到的東西（作品、紀錄、頁面、成果）"
+          },
+          {
+            "key": "stage-02-2-5-option-0-3",
+            "label": "一個他當場就能看到方法在運作的環節（試做、試聽、初診、免費體驗）"
+          },
+          {
+            "key": "stage-02-2-5-option-0-4",
+            "label": "目前只有「我很有經驗」「我做很久了」這一類的話"
+          }
+        ],
+        "multiple": true,
+        "group": "我目前給得出的（可複選）",
+        "key": "stage-02-2-5-answer-0",
+        "sourceSectionKey": "2.5-A",
+        "sourceStepKey": "疑慮 1：我不信這有用 → 你給的是證據",
+        "required": true
+      },
+      {
+        "prompt": "強度： 勾幾項就幾分，最多 3 分。只勾最後一項是 0 分 → ＿＿＿＿ 分（第 1 小題）",
+        "type": "text",
+        "group": "我目前給得出的（可複選）",
+        "key": "stage-02-2-5-answer-1",
+        "sourceSectionKey": "2.5-A",
+        "sourceStepKey": "疑慮 1：我不信這有用 → 你給的是證據",
+        "required": true
+      },
+      {
+        "prompt": "我目前給得出的（可複選）（第 2 小題）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-2-0",
+            "label": "我講得出他第一週要做哪幾件事，照著順序"
+          },
+          {
+            "key": "stage-02-2-5-option-2-1",
+            "label": "我給的東西他可以直接拿去改，不用從白紙開始"
+          },
+          {
+            "key": "stage-02-2-5-option-2-2",
+            "label": "中間有固定的時間我會看他做得對不對"
+          },
+          {
+            "key": "stage-02-2-5-option-2-3",
+            "label": "第一週或第一次就會有一個他看得到的小成果"
+          },
+          {
+            "key": "stage-02-2-5-option-2-4",
+            "label": "要動手的那個人，過程裡我會親自帶"
+          },
+          {
+            "key": "stage-02-2-5-option-2-5",
+            "label": "目前主要靠他自己照著做"
+          }
+        ],
+        "multiple": true,
+        "group": "我目前給得出的（可複選）",
+        "key": "stage-02-2-5-answer-2",
+        "sourceSectionKey": "2.5-A",
+        "sourceStepKey": "疑慮 2：我不信我做得到 → 你給的是流程與陪伴",
+        "required": true
+      },
+      {
+        "prompt": "強度： 勾幾項就幾分，最多 3 分。只勾最後一項是 0 分 → ＿＿＿＿ 分（第 2 小題）",
+        "type": "text",
+        "group": "我目前給得出的（可複選）",
+        "key": "stage-02-2-5-answer-3",
+        "sourceSectionKey": "2.5-A",
+        "sourceStepKey": "疑慮 2：我不信我做得到 → 你給的是流程與陪伴",
+        "required": true
+      },
+      {
+        "prompt": "我目前給得出的（勾一個）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-4-0",
+            "label": "我這一行有一個不是我訂的時間表（考試、季節、梯次、年紀、政策）"
+          },
+          {
+            "key": "stage-02-2-5-option-4-1",
+            "label": "我有一個真實的限制（一次只能帶幾個、開課時間固定、價格確定會調）"
+          },
+          {
+            "key": "stage-02-2-5-option-4-2",
+            "label": "兩個都沒有，但我講得出他再拖一年會變怎樣"
+          },
+          {
+            "key": "stage-02-2-5-option-4-3",
+            "label": "目前什麼都沒有，或是我在用「限時優惠」這一類的話"
+          }
+        ],
+        "multiple": false,
+        "group": "我目前給得出的（勾一個）",
+        "key": "stage-02-2-5-answer-4",
+        "sourceSectionKey": "2.5-A",
+        "sourceStepKey": "疑慮 3：我不急 → 你給的是真實的時間理由",
+        "required": true
+      },
+      {
+        "prompt": "強度： 由上往下 3、2、2、0 分 → ＿＿＿＿ 分",
+        "type": "text",
+        "group": "我目前給得出的（勾一個）",
+        "key": "stage-02-2-5-answer-5",
+        "sourceSectionKey": "2.5-A",
+        "sourceStepKey": "疑慮 3：我不急 → 你給的是真實的時間理由",
+        "required": true
+      },
+      {
+        "prompt": "我最弱的是疑慮 ＿＿＿＿",
+        "type": "text",
+        "group": "三格總覽",
+        "key": "stage-02-2-5-answer-6",
+        "sourceSectionKey": "2.5-A",
+        "sourceStepKey": "三格總覽",
+        "required": true
+      },
+      {
+        "prompt": "有 0 分的格子嗎？",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-7-0",
+            "label": "沒有，三格都至少 1 分 → 往下走"
+          },
+          {
+            "key": "stage-02-2-5-option-7-1",
+            "label": "疑慮 1 是 0 分 → 回 2.1-C。你的空白地帶可能還沒變成講得出來的東西，先把那一格補起來"
+          },
+          {
+            "key": "stage-02-2-5-option-7-2",
+            "label": "疑慮 2 是 0 分 → 回 2.4-A 槓桿 2，從沒勾到的那幾項挑兩項，現在就挑"
+          },
+          {
+            "key": "stage-02-2-5-option-7-3",
+            "label": "疑慮 3 是 0 分 → 不用回頭。 那代表你不用稀缺，等一下 2.5-D 直接走 C"
+          }
+        ],
+        "multiple": true,
+        "group": "有 0 分的格子嗎？",
+        "key": "stage-02-2-5-answer-7",
+        "sourceSectionKey": "2.5-A",
+        "sourceStepKey": "三格總覽",
+        "required": true
+      },
+      {
+        "prompt": "翻回 2.4-A 補強第 2 格，你在那裡挑了兩項要補的。把它們抄到這裡",
+        "description": "我要補的是：＿＿＿＿ 和 ＿＿＿＿",
+        "type": "text",
+        "group": "翻回 2.4-A 補強第 2 格，你在那裡挑了兩項要補的。把它們抄到這裡",
+        "key": "stage-02-2-5-answer-8",
+        "sourceSectionKey": "2.5-B",
+        "sourceStepKey": "步驟 1：勾選你要給的東西",
+        "required": true
+      },
+      {
+        "prompt": "句型： 你不用他害怕的那件事，我會你要做的事",
+        "description": "你不用【＿＿＿＿】，我會【＿＿＿＿】。",
+        "type": "text",
+        "group": "句型： 你不用他害怕的那件事，我會你要做的事",
+        "key": "stage-02-2-5-answer-9",
+        "sourceSectionKey": "2.5-B",
+        "sourceStepKey": "步驟 2：寫成一句話",
+        "required": true
+      },
+      {
+        "prompt": "唸一次你寫的前半格",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-10-0",
+            "label": "很具體，講得出是哪一件事"
+          },
+          {
+            "key": "stage-02-2-5-option-10-1",
+            "label": "很籠統，像「你不用擔心」「你不用煩惱」「你不用想太多」"
+          }
+        ],
+        "multiple": false,
+        "group": "唸一次你寫的前半格",
+        "key": "stage-02-2-5-answer-10",
+        "sourceSectionKey": "2.5-B",
+        "sourceStepKey": "步驟 2：寫成一句話",
+        "required": true
+      },
+      {
+        "prompt": "主體：他真正買的那個結果",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-11-0",
+            "label": "抄 2.4-C 的主力產品",
+            "otherInputKey": "stage-02-2-5-answer-12"
+          }
+        ],
+        "multiple": true,
+        "group": "主體：他真正買的那個結果",
+        "key": "stage-02-2-5-answer-11",
+        "sourceSectionKey": "2.5-C",
+        "sourceStepKey": "主體：他真正買的那個結果",
+        "required": true
+      },
+      {
+        "prompt": "主體：他真正買的那個結果｜抄 2.4-C 的主力產品（請補充說明）",
+        "type": "text",
+        "group": "主體：他真正買的那個結果",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-5-answer-11",
+        "key": "stage-02-2-5-answer-12",
+        "sourceSectionKey": "2.5-C",
+        "sourceStepKey": "主體：他真正買的那個結果",
+        "required": true
+      },
+      {
+        "prompt": "用一句話寫他拿到的是什麼（不是你給的東西，是他的狀況變怎樣）",
+        "type": "text",
+        "group": "用一句話寫他拿到的是什麼（不是你給的東西，是他的狀況變怎樣）",
+        "key": "stage-02-2-5-answer-13",
+        "sourceSectionKey": "2.5-C",
+        "sourceStepKey": "主體：他真正買的那個結果",
+        "required": true
+      },
+      {
+        "prompt": "看一次你剛寫的那句話，它在講什麼？",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-14-0",
+            "label": "他的狀況變怎樣"
+          },
+          {
+            "key": "stage-02-2-5-option-14-1",
+            "label": "我給了什麼（幾堂課、幾次、多少時數、什麼內容）"
+          }
+        ],
+        "multiple": false,
+        "group": "看一次你剛寫的那句話，它在講什麼？",
+        "key": "stage-02-2-5-answer-14",
+        "sourceSectionKey": "2.5-C",
+        "sourceStepKey": "主體：他真正買的那個結果",
+        "required": true
+      },
+      {
+        "prompt": "先看 2.4-A 補強第 2 格挑的那兩項，再從下面勾（可複選，建議不超過三項）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-15-0",
+            "label": "照順序排好的流程表"
+          },
+          {
+            "key": "stage-02-2-5-option-15-1",
+            "label": "可以直接改的成品模板或範本"
+          },
+          {
+            "key": "stage-02-2-5-option-15-2",
+            "label": "一份自己對照用的檢查表"
+          },
+          {
+            "key": "stage-02-2-5-option-15-3",
+            "label": "常見狀況怎麼處理的整理"
+          },
+          {
+            "key": "stage-02-2-5-option-15-4",
+            "label": "固定時間的檢查或回報"
+          },
+          {
+            "key": "stage-02-2-5-option-15-5",
+            "label": "一個可以問問題的管道"
+          },
+          {
+            "key": "stage-02-2-5-option-15-6",
+            "label": "其他",
+            "otherInputKey": "stage-02-2-5-answer-16"
+          }
+        ],
+        "multiple": true,
+        "group": "先看 2.4-A 補強第 2 格挑的那兩項，再從下面勾（可複選，建議不超過三項）",
+        "key": "stage-02-2-5-answer-15",
+        "sourceSectionKey": "2.5-C",
+        "sourceStepKey": "加值：讓執行變快的東西",
+        "required": true
+      },
+      {
+        "prompt": "先看 2.4-A 補強第 2 格挑的那兩項，再從下面勾（可複選，建議不超過三項）｜其他（請補充說明）",
+        "type": "text",
+        "group": "先看 2.4-A 補強第 2 格挑的那兩項，再從下面勾（可複選，建議不超過三項）",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-5-answer-15",
+        "key": "stage-02-2-5-answer-16",
+        "sourceSectionKey": "2.5-C",
+        "sourceStepKey": "加值：讓執行變快的東西",
+        "required": true
+      },
+      {
+        "prompt": "不能的，劃掉",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-17-0",
+            "label": "我劃掉了 項",
+            "otherInputKey": "stage-02-2-5-answer-18"
+          }
+        ],
+        "multiple": true,
+        "group": "不能的，劃掉",
+        "key": "stage-02-2-5-answer-17",
+        "sourceSectionKey": "2.5-C",
+        "sourceStepKey": "加值：讓執行變快的東西",
+        "required": true
+      },
+      {
+        "prompt": "不能的，劃掉｜我劃掉了 項（請補充說明）",
+        "type": "text",
+        "group": "不能的，劃掉",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-5-answer-17",
+        "key": "stage-02-2-5-answer-18",
+        "sourceSectionKey": "2.5-C",
+        "sourceStepKey": "加值：讓執行變快的東西",
+        "required": true
+      },
+      {
+        "prompt": "降風險：讓他敢下決定的東西",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-19-0",
+            "label": "分階段，先做第一段再決定要不要繼續"
+          },
+          {
+            "key": "stage-02-2-5-option-19-1",
+            "label": "第一次是試的，不合適不用繼續"
+          },
+          {
+            "key": "stage-02-2-5-option-19-2",
+            "label": "明確講清楚什麼情況可以退出"
+          },
+          {
+            "key": "stage-02-2-5-option-19-3",
+            "label": "過程中我會親自帶，不是丟給他自己做"
+          },
+          {
+            "key": "stage-02-2-5-option-19-4",
+            "label": "先講明我不收誰（抄 1.4-B），讓他知道你不是誰都收"
+          },
+          {
+            "key": "stage-02-2-5-option-19-5",
+            "label": "其他",
+            "otherInputKey": "stage-02-2-5-answer-20"
+          }
+        ],
+        "multiple": true,
+        "group": "降風險：讓他敢下決定的東西",
+        "key": "stage-02-2-5-answer-19",
+        "sourceSectionKey": "2.5-C",
+        "sourceStepKey": "降風險：讓他敢下決定的東西",
+        "required": true
+      },
+      {
+        "prompt": "降風險：讓他敢下決定的東西｜其他（請補充說明）",
+        "type": "text",
+        "group": "降風險：讓他敢下決定的東西",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-5-answer-19",
+        "key": "stage-02-2-5-answer-20",
+        "sourceSectionKey": "2.5-C",
+        "sourceStepKey": "降風險：讓他敢下決定的東西",
+        "required": true
+      },
+      {
+        "prompt": "先看一件事：你這一行有沒有一個不是你訂的時間表？",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-21-0",
+            "label": "有 → 往下填 A，填完這一題就結束，不用做稀缺"
+          },
+          {
+            "key": "stage-02-2-5-option-21-1",
+            "label": "沒有 → 跳過 A，往下做 B 或 C"
+          }
+        ],
+        "multiple": false,
+        "group": "先看一件事：你這一行有沒有一個不是你訂的時間表？",
+        "key": "stage-02-2-5-answer-21",
+        "sourceSectionKey": "2.5-D",
+        "required": true
+      },
+      {
+        "prompt": "我這一行的時間表是（勾一個）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-22-0",
+            "label": "一個固定的考試或檢定"
+          },
+          {
+            "key": "stage-02-2-5-option-22-1",
+            "label": "季節或節日（夏天前、過年前、換季）"
+          },
+          {
+            "key": "stage-02-2-5-option-22-2",
+            "label": "固定的梯次或開班時間"
+          },
+          {
+            "key": "stage-02-2-5-option-22-3",
+            "label": "對方的年紀或階段（越晚處理越難的那種）"
+          },
+          {
+            "key": "stage-02-2-5-option-22-4",
+            "label": "法規、政策、資格的期限"
+          },
+          {
+            "key": "stage-02-2-5-option-22-5",
+            "label": "其他",
+            "otherInputKey": "stage-02-2-5-answer-23"
+          }
+        ],
+        "multiple": false,
+        "group": "我這一行的時間表是（勾一個）",
+        "key": "stage-02-2-5-answer-22",
+        "sourceSectionKey": "2.5-D",
+        "sourceStepKey": "A. 外部時間表",
+        "required": true
+      },
+      {
+        "prompt": "我這一行的時間表是（勾一個）｜其他（請補充說明）",
+        "type": "text",
+        "group": "我這一行的時間表是（勾一個）",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-5-answer-22",
+        "key": "stage-02-2-5-answer-23",
+        "sourceSectionKey": "2.5-D",
+        "sourceStepKey": "A. 外部時間表",
+        "required": true
+      },
+      {
+        "prompt": "把它寫成一句陳述事實的話",
+        "description": "現在是＿＿＿＿，到＿＿＿＿還有＿＿＿＿。",
+        "type": "text",
+        "group": "把它寫成一句陳述事實的話",
+        "key": "stage-02-2-5-answer-24",
+        "sourceSectionKey": "2.5-D",
+        "sourceStepKey": "A. 外部時間表",
+        "required": true
+      },
+      {
+        "prompt": "寫完檢查一件事： 唸一次，你有沒有在後面接一句「所以現在不處理就來不及了」？",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-25-0",
+            "label": "沒有接 → 過了"
+          },
+          {
+            "key": "stage-02-2-5-option-25-1",
+            "label": "有接 → 把那一句刪掉。 講完就停是事實，替他下結論就是恐嚇，而且你不能保證"
+          }
+        ],
+        "multiple": false,
+        "group": "寫完檢查一件事： 唸一次，你有沒有在後面接一句「所以現在不處理就來不及了」？",
+        "key": "stage-02-2-5-answer-25",
+        "sourceSectionKey": "2.5-D",
+        "sourceStepKey": "A. 外部時間表",
+        "required": true
+      },
+      {
+        "prompt": "我的限制是（勾一個）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-26-0",
+            "label": "我一次只能帶幾個人： 位",
+            "otherInputKey": "stage-02-2-5-answer-27"
+          },
+          {
+            "key": "stage-02-2-5-option-26-1",
+            "label": "開課或開班的時間是固定的",
+            "otherInputKey": "stage-02-2-5-answer-28"
+          },
+          {
+            "key": "stage-02-2-5-option-26-2",
+            "label": "價格確定會在某個時間點調整，理由是",
+            "otherInputKey": "stage-02-2-5-answer-29"
+          },
+          {
+            "key": "stage-02-2-5-option-26-3",
+            "label": "我沒有這一類的限制 → 跳到 C"
+          }
+        ],
+        "multiple": false,
+        "group": "我的限制是（勾一個）",
+        "key": "stage-02-2-5-answer-26",
+        "sourceSectionKey": "2.5-D",
+        "sourceStepKey": "B. 真實的稀缺（沒有外部時間表的人填）",
+        "required": true
+      },
+      {
+        "prompt": "我的限制是（勾一個）｜我一次只能帶幾個人： 位（請補充說明）",
+        "type": "text",
+        "group": "我的限制是（勾一個）",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-5-answer-26",
+        "key": "stage-02-2-5-answer-27",
+        "sourceSectionKey": "2.5-D",
+        "sourceStepKey": "B. 真實的稀缺（沒有外部時間表的人填）",
+        "required": true
+      },
+      {
+        "prompt": "我的限制是（勾一個）｜開課或開班的時間是固定的（請補充說明）",
+        "type": "text",
+        "group": "我的限制是（勾一個）",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-5-answer-26",
+        "key": "stage-02-2-5-answer-28",
+        "sourceSectionKey": "2.5-D",
+        "sourceStepKey": "B. 真實的稀缺（沒有外部時間表的人填）",
+        "required": true
+      },
+      {
+        "prompt": "我的限制是（勾一個）｜價格確定會在某個時間點調整，理由是（請補充說明）",
+        "type": "text",
+        "group": "我的限制是（勾一個）",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-5-answer-26",
+        "key": "stage-02-2-5-answer-29",
+        "sourceSectionKey": "2.5-D",
+        "sourceStepKey": "B. 真實的稀缺（沒有外部時間表的人填）",
+        "required": true
+      },
+      {
+        "prompt": "真實性檢查（兩題都要打勾才能用）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-30-0",
+            "label": "這個理由我可以公開講出來，而且經得起追問"
+          },
+          {
+            "key": "stage-02-2-5-option-30-1",
+            "label": "時間到了之後我真的會照做，不會偷偷延長"
+          }
+        ],
+        "multiple": true,
+        "group": "真實性檢查（兩題都要打勾才能用）",
+        "key": "stage-02-2-5-answer-30",
+        "sourceSectionKey": "2.5-D",
+        "sourceStepKey": "B. 真實的稀缺（沒有外部時間表的人填）",
+        "required": true
+      },
+      {
+        "prompt": "抄 2.4-B 第 3 問的答案（他不做的代價）",
+        "type": "text",
+        "group": "抄 2.4-B 第 3 問的答案（他不做的代價）",
+        "key": "stage-02-2-5-answer-31",
+        "sourceSectionKey": "2.5-D",
+        "sourceStepKey": "C. 等待的代價（前兩個都沒有的人填）",
+        "required": true
+      },
+      {
+        "prompt": "再過一年，＿＿＿＿。",
+        "type": "text",
+        "group": "寫成一句他自己會算的話",
+        "key": "stage-02-2-5-answer-32",
+        "sourceSectionKey": "2.5-D",
+        "sourceStepKey": "C. 等待的代價（前兩個都沒有的人填）",
+        "required": true
+      },
+      {
+        "prompt": "選一個你要用的（勾一個就好）",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-33-0",
+            "label": "跟現在的損失比：你現在每個月流掉的，比這個數字大"
+          },
+          {
+            "key": "stage-02-2-5-option-33-1",
+            "label": "跟不做的代價比：一年後你還在同一個位置，那一年值多少"
+          },
+          {
+            "key": "stage-02-2-5-option-33-2",
+            "label": "跟替代方案比：自己摸索要花的時間和錢，加起來比這個數字多"
+          }
+        ],
+        "multiple": false,
+        "group": "選一個你要用的（勾一個就好）",
+        "key": "stage-02-2-5-answer-33",
+        "sourceSectionKey": "2.5-E",
+        "required": true
+      },
+      {
+        "prompt": "寫成你的版本",
+        "type": "text",
+        "group": "寫成你的版本",
+        "key": "stage-02-2-5-answer-34",
+        "sourceSectionKey": "2.5-E",
+        "required": true
+      },
+      {
+        "prompt": "任務 2.5 完成標準",
+        "type": "checkboxes",
+        "options": [
+          {
+            "key": "stage-02-2-5-option-35-0",
+            "label": "三個疑慮都有勾、有強度，知道最弱的是哪一個"
+          },
+          {
+            "key": "stage-02-2-5-option-35-1",
+            "label": "有一句「你不用，我會」",
+            "otherInputKey": "stage-02-2-5-answer-36"
+          },
+          {
+            "key": "stage-02-2-5-option-35-2",
+            "label": "成交方案三層填完，加值刪過一輪"
+          },
+          {
+            "key": "stage-02-2-5-option-35-3",
+            "label": "時間理由走完 A、B、C 其中一條，而且通過檢查"
+          }
+        ],
+        "multiple": true,
+        "group": "任務 2.5 完成標準",
+        "key": "stage-02-2-5-answer-35",
+        "sourceSectionKey": "任務",
+        "required": true
+      },
+      {
+        "prompt": "任務 2.5 完成標準｜有一句「你不用，我會」（請補充說明）",
+        "type": "text",
+        "group": "任務 2.5 完成標準",
+        "hiddenInGroup": true,
+        "otherFor": "stage-02-2-5-answer-35",
+        "key": "stage-02-2-5-answer-36",
+        "sourceSectionKey": "任務",
+        "required": true
+      }
+    ]
+  },
+  {
+    "key": "stage-02-附錄",
+    "title": "附錄：一頁定位藍圖",
+    "fields": [
+      {
+        "prompt": "沒有人在講的是（抄 2.1-C）",
+        "type": "text",
+        "group": "沒有人在講的是（抄 2.1-C）",
+        "key": "stage-02-附錄-answer-0",
+        "required": true
+      },
+      {
+        "prompt": "我的客人是（名字＋一句話，抄 2.2-A）",
+        "type": "text",
+        "group": "我的客人是（名字＋一句話，抄 2.2-A）",
+        "key": "stage-02-附錄-answer-1",
+        "required": true
+      },
+      {
+        "prompt": "他的那個時刻（抄 2.2-B）（第 1 小題）",
+        "type": "text",
+        "group": "他的那個時刻（抄 2.2-B）",
+        "key": "stage-02-附錄-answer-2",
+        "required": true
+      },
+      {
+        "prompt": "他的那個時刻（抄 2.2-B）（第 2 小題）",
+        "description": "大家都覺得＿＿＿＿，但我主張＿＿＿＿（抄 2.3-A）",
+        "type": "text",
+        "group": "他的那個時刻（抄 2.2-B）",
+        "key": "stage-02-附錄-answer-3",
+        "required": true
+      },
+      {
+        "prompt": "他的那個時刻（抄 2.2-B）（第 3 小題）",
+        "type": "text",
+        "group": "他的那個時刻（抄 2.2-B）",
+        "key": "stage-02-附錄-answer-4",
+        "required": true
+      },
+      {
+        "prompt": "我的定位句（15 字以內）（抄 2.3-D）",
+        "type": "text",
+        "group": "我的定位句（15 字以內）（抄 2.3-D）",
+        "key": "stage-02-附錄-answer-5",
+        "required": true
+      },
+      {
+        "prompt": "我的主力產品與價格（抄 2.4-C）",
+        "description": "＿＿＿＿ NT$ ＿＿＿＿",
+        "type": "text",
+        "group": "我的主力產品與價格（抄 2.4-C）",
+        "key": "stage-02-附錄-answer-6",
+        "required": true
+      },
+      {
+        "prompt": "我最有力的那一句（抄 2.5-B）",
+        "description": "你不用＿＿＿＿，我會＿＿＿＿",
+        "type": "text",
+        "group": "我最有力的那一句（抄 2.5-B）",
+        "key": "stage-02-附錄-answer-7",
+        "required": true
+      }
+    ]
+  }
+]
