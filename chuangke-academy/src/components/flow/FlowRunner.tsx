@@ -129,7 +129,7 @@ export default function FlowRunner({ spec, lectures, stageKey, courseKey, worksp
   const ctx: Ctx = useMemo(() => ({
     spec, eng, st, lectures, pageId: current ?? "",
     set: (k: string, v: AnswerValue) => setSt((s) => setAnswer(s, k, v)),
-    edit: (k: string, t: string) => setSt((s) => editDerived(s, k, t)),
+    edit: (k: string, t: string) => setSt((s) => editDerived(s, k, t, spec)),
     regen: (k: string) => setSt((s) => regenerate(s, k)),
   }), [spec, eng, st, lectures, current]);
 
