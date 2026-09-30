@@ -1,7 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { createEngine } from "./derive";
+import { createEngine, reversibleKeys } from "./derive";
+import { editDerived } from "./state";
 import { loadFlowSpec } from "./parse";
 import type { FlowState } from "./types";
 import { validateFlow } from "./validate";
@@ -15,7 +16,8 @@ describe("stage-02 guided flow", () => {
   it("parses the generated sidecar and validates references", () => {
     const report = validateFlow(spec, { 作業: assignment, 講義: lecture });
     expect(report.errors).toEqual([]);
-    expect(Object.keys(spec.questions).length).toBe(155);
+    // 155 imported answer fields + 8 slot fields that feed the three sentence patterns below.
+    expect(Object.keys(spec.questions).length).toBe(163);
     expect(Object.keys(spec.pages).length).toBeGreaterThan(30);
   });
 
@@ -49,5 +51,29 @@ describe("stage-02 guided flow", () => {
     expect(engine.values["stage2.t25.concern1.score"]?.number).toBe(2);
     expect(engine.values["stage2.t25.concern2.score"]?.number).toBe(3);
     expect(engine.values["stage2.t25.concern3.score"]?.number).toBe(2);
+  });
+
+  it("composes the three pattern sentences from their slots and writes edits back (two-way)", () => {
+    const st: FlowState = { edited: [], answers: {
+      "stage2.t21.only_who": "學完馬上要開始接客", "stage2.t21.only_what": "手感養成教學",
+      "stage2.t22.moment_time": "週日晚上十點", "stage2.t22.moment_doing": "躺在床上滑手機", "stage2.t22.moment_saw": "同行貼出「這個月已額滿」", "stage2.t22.moment_thought": "想到明天一堂課都沒有",
+      "stage2.t25.fear": "自己想清楚全部", "stage2.t25.do": "陪你做出第一版",
+    } };
+    const e = createEngine(spec, st);
+    expect(e.value("stage2.t21.q39")).toBe("我只做【學完馬上要開始接客】的【手感養成教學】。");
+    expect(e.value("stage2.t22.q25")).toBe("週日晚上十點，他躺在床上滑手機，看到同行貼出「這個月已額滿」，然後想到明天一堂課都沒有。");
+    expect(e.value("stage2.t25.q9")).toBe("你不用【自己想清楚全部】，我會【陪你做出第一版】。");
+    // blueprint reads the composed sentences
+    expect(e.value("stage2.app.offer")).toBe("你不用【自己想清楚全部】，我會【陪你做出第一版】。");
+    // half-filled: sentence is not "complete", so downstream stays empty
+    expect(createEngine(spec, { edited: [], answers: { "stage2.t25.fear": "x" } }).value("stage2.t25.q9")).toBe("");
+    for (const k of ["stage2.t21.q39", "stage2.t22.q25", "stage2.t25.q9"]) expect(reversibleKeys(spec, k)?.length).toBeGreaterThan(1);
+    const back = editDerived(st, "stage2.t25.q9", "你不用【一個人扛】，我會【帶你走完】。", spec);
+    expect(back.answers["stage2.t25.fear"]).toBe("一個人扛");
+    expect(back.answers["stage2.t25.do"]).toBe("帶你走完");
+    expect(back.edited).toEqual([]);
+    const scene = editDerived(st, "stage2.t22.q25", "星期三晚上十一點，他收走評量，看到只寫了三題，然後想到補習費。", spec);
+    expect(scene.answers["stage2.t22.moment_time"]).toBe("星期三晚上十一點");
+    expect(scene.answers["stage2.t22.moment_thought"]).toBe("想到補習費");
   });
 });
