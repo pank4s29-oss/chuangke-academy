@@ -175,7 +175,7 @@ export default function TaskFlow({ stage, courseKey, tasks, referenceTasks, reca
   const percent = totalFields ? Math.round((totalAnswered / totalFields) * 100) : 0;
 
   function updateAnswer(key: string, value: string | string[]) {
-    const next = composeLegacyAnswers(allFields, { ...answers, [key]: value }, key).answers as Answers;
+    const next = composeLegacyAnswers(allFields, { ...answers, [key]: value }, key, answers).answers as Answers;
     setAnswers(next);
     window.localStorage.setItem(storageKey(stage.key, workspaceId), JSON.stringify(next));
     if (userId && !workspaceId) void supabase.from("answers").upsert({ user_id: userId, stage_key: stage.key, question_key: key, content_version_id: null, value }, { onConflict: "user_id,stage_key,question_key" });
