@@ -8,6 +8,8 @@ import type { AnswerValue, Answers, FlowState } from "./types";
 export type RawAnswers = Record<string, unknown>;
 export type FlowMeta = { page?: string; mode?: string; edited?: string[] };
 export const FLOW_META_KEY = "_flow";
+/** Flag stored next to a mirrored legacy value that came from an automatic carry-over (not typed by the learner). */
+export const carriedFlag = (key: string) => `${key}@carried`;
 
 /** `${task}-answer-N` -> option key for option i, per taskSections.ts (`${taskKey}-option-${fieldIndex}-${i}`). */
 export function legacyOptionKey(legacyFieldKey: string, index: number) {
@@ -88,7 +90,8 @@ export function loadState(spec: FlowSpec, raw: RawAnswers, year = new Date().get
       answers[key] = q.kind === "multi" ? (Array.isArray(own) ? own.map(String) : own ? [String(own)] : []) : Array.isArray(own) ? String(own[0] ?? "") : String(own);
     } else {
       const legacyKey = q.legacyKeys[0] ?? q.legacyReadKey;
-      if (legacyKey) {
+      // An automatic carry-over mirrored to the legacy key must not come back as a typed answer (it would stop following its source).
+      if (legacyKey && !(q.defaultFrom && raw[carriedFlag(key)] === true)) {
         const v = fromLegacy(q, raw[legacyKey], legacyKey, year);
         if (v !== undefined) { answers[key] = v; migrated.push(key); if (q.derived) edited.add(key); }
       }
@@ -133,10 +136,11 @@ export function serializeState(spec: FlowSpec, state: FlowState, effective: Effe
     // dual write (legacy mirror)
     const legacyKey = q.legacyKeys[0];
     if (legacyKey && q.dualWrite !== false) {
-      const mirrorable = q.derived ? true : touched;
+      const mirrorable = q.derived || q.defaultFrom ? true : touched;
       if (mirrorable) {
         const v = effective(key);
         const empty = Array.isArray(v) ? v.length === 0 : String(v).trim() === "";
+        if (q.defaultFrom) put(task, carriedFlag(key), !touched && !empty);
         if (!empty || touched) { const legacy = toLegacy(q, v, legacyKey); if (legacy !== undefined) put(task, legacyKey, legacy); }
       }
     }
@@ -151,6 +155,7 @@ export function serializeState(spec: FlowSpec, state: FlowState, effective: Effe
 export function stripFlowMeta<T extends Record<string, unknown>>(answers: T): Omit<T, typeof FLOW_META_KEY> {
   const { [FLOW_META_KEY]: _ignored, ...rest } = answers;
   void _ignored;
+  for (const k of Object.keys(rest)) if (k.endsWith("@carried")) delete (rest as Record<string, unknown>)[k];
   return rest;
 }
 
