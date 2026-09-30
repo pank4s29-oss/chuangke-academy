@@ -5,6 +5,7 @@ import { countChars, createEngine, weekRange } from "./derive";
 import { loadFlowSpec, parseFlowText } from "./parse";
 import { accountedLegacyKeys, loadState, legacyOptionKey, serializeState, stripFlowMeta, taskKeyOf } from "./alias";
 import { collectLearnerText, findUnmatched } from "./fidelity";
+import { reversibleKeys } from "./derive";
 import { editDerived, regenerate, setAnswer, toggleMulti } from "./state";
 import { validateFlow } from "./validate";
 import type { FlowState } from "./types";
@@ -259,5 +260,42 @@ describe("coverage & fidelity (plan Phase 5)", () => {
   });
   it("both flows only reference existing pages and consult_session reuses the same questions", () => {
     expect(Object.keys(spec.flows)).toEqual(["self_study", "consult_session"]);
+  });
+});
+
+describe("two-way sentences (reverse update)", () => {
+  const k = "stage1.t1.a.sentence";
+  it("editing the sentence writes the slots back and keeps the sentence auto-composed", () => {
+    const st0 = setAnswer(setAnswer(empty, "stage1.t1.a.state", "舊狀態"), "stage1.t1.a.identity", "舊身分");
+    const st = editDerived(st0, k, "我服務的是【上過課但接不到客人】的【紋繡師】。", spec);
+    expect(st.answers["stage1.t1.a.state"]).toBe("上過課但接不到客人");
+    expect(st.answers["stage1.t1.a.identity"]).toBe("紋繡師");
+    expect(st.edited).toEqual([]);
+    expect(createEngine(spec, st).value(k)).toBe("我服務的是【上過課但接不到客人】的【紋繡師】。");
+  });
+  it("forgives a missing closing 。 and clears a slot when its brackets are emptied", () => {
+    const st = editDerived(setAnswer(empty, "stage1.t1.a.identity", "x"), k, "我服務的是【A】的【】", spec);
+    expect(st.answers["stage1.t1.a.state"]).toBe("A");
+    expect(st.answers["stage1.t1.a.identity"]).toBeUndefined();
+  });
+  it("typing over a blank marker drops the marker", () => {
+    const st = editDerived(empty, k, "我服務的是【＿＿＿】的【國中生家長】。", spec);
+    expect(st.answers["stage1.t1.a.state"]).toBeUndefined();
+    expect(st.answers["stage1.t1.a.identity"]).toBe("國中生家長");
+  });
+  it("text that breaks the pattern is still a locked manual edit; an edited sentence re-links when it matches again", () => {
+    let st = setAnswer(empty, "stage1.t1.a.state", "A");
+    st = editDerived(st, k, "我自己改的句子", spec);
+    expect(st.edited).toEqual([k]);
+    expect(st.answers["stage1.t1.a.state"]).toBe("A");
+    st = editDerived(st, k, "我服務的是【B】的【C】。", spec);
+    expect(st.edited).toEqual([]);
+    expect(st.answers[k]).toBeUndefined();
+    expect(createEngine(spec, st).value(k)).toBe("我服務的是【B】的【C】。");
+  });
+  it("only sentences whose slots are all free-text answers are reversible", () => {
+    expect(reversibleKeys(spec, k)).toEqual(["stage1.t1.a.state", "stage1.t1.a.identity"]);
+    expect(reversibleKeys(spec, "stage1.t1.b.quote")).toBeNull();
+    expect(reversibleKeys(spec, "stage1.t1.a.identity")).toBeNull();
   });
 });
