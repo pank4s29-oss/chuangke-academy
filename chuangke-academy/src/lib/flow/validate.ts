@@ -39,7 +39,8 @@ export function validateFlow(spec: FlowSpec, sources?: SourceTexts): ValidationR
   const warnings: string[] = [];
   const isQ = (k: string) => k in spec.questions || (k.endsWith("_other") && k.slice(0, -6) in spec.questions);
   const isD = (k: string) => k in spec.derived;
-  const known = (k: string) => isQ(k) || isD(k);
+  const isE = (k: string) => k in (spec.externals ?? {});
+  const known = (k: string) => isQ(k) || isD(k) || isE(k);
 
   for (const k of [...Object.keys(spec.questions), ...Object.keys(spec.derived), ...Object.keys(spec.tables)]) {
     if (!QUESTION_KEY_RE.test(k)) errors.push(`key 不符合命名規則（stage{N}.{task}…，全小寫）：${k}`);
@@ -58,6 +59,11 @@ export function validateFlow(spec: FlowSpec, sources?: SourceTexts): ValidationR
     const seen = new Set<string>();
     for (const o of q.options ?? []) { if (seen.has(o.id)) errors.push(`${key}：option id 重複 ${o.id}`); seen.add(o.id); }
     if (q.derived && !isD(q.derived)) errors.push(`${key}：derived 指向不存在的 ${q.derived}`);
+    if (q.defaultFrom) {
+      if (!known(q.defaultFrom)) errors.push(`${key}：defaultFrom 指向不存在的 ${q.defaultFrom}`);
+      if (q.derived) errors.push(`${key}：不能同時有 derived 與 defaultFrom`);
+      if ((q.kind === "single" || q.kind === "multi") && !isD(q.defaultFrom)) errors.push(`${key}：選擇題的 defaultFrom 必須是回傳選項 id 的 derived`);
+    }
     for (const lk of [...q.legacyKeys, ...(q.legacyOtherKey ? [q.legacyOtherKey] : [])]) {
       const prev = legacySeen.get(lk);
       if (prev && prev !== key) errors.push(`legacy key ${lk} 同時被 ${prev} 與 ${key} 使用`);
@@ -73,12 +79,19 @@ export function validateFlow(spec: FlowSpec, sources?: SourceTexts): ValidationR
     void cellKey;
   }
 
+  // externals (cross-stage carry-over)
+  for (const [id, e] of Object.entries(spec.externals ?? {})) {
+    if (!id.startsWith("ext.")) errors.push(`externals id 必須以 ext. 開頭：${id}`);
+    if (isQ(id) || isD(id)) errors.push(`externals id 與題目或 derived 重複：${id}`);
+    if (e.stage === spec.stage) errors.push(`externals ${id} 指向自己這個階段（${e.stage}），請直接用題目 key`);
+  }
+
   // derived refs + cycles
   const edges = new Map<string, string[]>();
   for (const [id, d] of Object.entries(spec.derived)) {
     const refs = derivedRefs(d);
     for (const r of refs) if (!known(r)) errors.push(`derived ${id} 引用不存在的 key：${r}`);
-    edges.set(id, refs.flatMap((r) => (isD(r) ? [r] : spec.questions[r]?.derived ? [spec.questions[r].derived!] : [])));
+    edges.set(id, refs.flatMap((r) => (isD(r) ? [r] : spec.questions[r]?.derived ? [spec.questions[r].derived!] : spec.questions[r]?.defaultFrom && isD(spec.questions[r].defaultFrom!) ? [spec.questions[r].defaultFrom!] : [])));
   }
   const state = new Map<string, 0 | 1 | 2>();
   const visit = (id: string, path: string[]): void => {
