@@ -76,4 +76,62 @@ describe("stage-02 guided flow", () => {
     expect(scene.answers["stage2.t22.moment_time"]).toBe("星期三晚上十一點");
     expect(scene.answers["stage2.t22.moment_thought"]).toBe("想到補習費");
   });
+
+  describe("前後呼應：carry-over defaults", () => {
+    const ext = {
+      "ext.s1.quote": "我想學怎麼開課，但不知道從哪開始",
+      "ext.s1.serve": "我服務的是【上過課但接不到客人】的【紋繡師】。",
+      "ext.s1.state": "上過課但接不到客人", "ext.s1.identity": "紋繡師",
+      "ext.s1.reason": "我以前也接不到客人，後來我把課程改成三堂",
+      "ext.s1.no": "我不收只想要證照的人",
+      "ext.s1.outcome": ["A", "D"],
+    };
+    const eng = (answers: FlowState["answers"] = {}) => createEngine(spec, { answers, edited: [] }, ext);
+    it("pulls stage-1 answers into stage-2 fields until the learner types", () => {
+      const e = eng();
+      expect(e.value("stage2.t21.q1")).toBe(ext["ext.s1.quote"]);
+      expect(e.carried("stage2.t21.q1")).toBe(ext["ext.s1.quote"]);
+      expect(e.value("stage2.t22.q1")).toBe(ext["ext.s1.serve"]);
+      expect(e.value("stage2.t22.q0")).toBe("o1"); // 2-E ticked D
+      expect(e.value("stage2.t23.q13")).toBe("上過課但接不到客人的紋繡師");
+      expect(e.value("stage2.t23.q15")).toBe(ext["ext.s1.reason"]);
+      expect(e.value("stage2.t22.q9")).toBe("紋繡師");
+      expect(e.text("stage2.t21.no_ref")).toBe("我不收只想要證照的人");
+      // typing decouples; clearing keeps it empty; the default is still available for "重新帶入"
+      const typed = eng({ "stage2.t21.q1": "我自己寫的" });
+      expect(typed.value("stage2.t21.q1")).toBe("我自己寫的");
+      expect(typed.carried("stage2.t21.q1")).toBe("");
+      expect(typed.defaultOf("stage2.t21.q1")).toBe(ext["ext.s1.quote"]);
+      expect(eng({ "stage2.t21.q1": "" }).value("stage2.t21.q1")).toBe("");
+    });
+    it("2-E without D defaults the D question to 'no', and chosen person 2 suppresses the stage-1 noun", () => {
+      const e = createEngine(spec, { answers: {}, edited: [] }, { ...ext, "ext.s1.outcome": ["A"] });
+      expect(e.value("stage2.t22.q0")).toBe("o0");
+      expect(eng({ "stage2.t22.q3": "o1" }).value("stage2.t23.q13")).toBe("");
+    });
+    it("carries stage-2 answers forward and keeps sources live", () => {
+      const e = eng({ "stage2.t21.q10": "怕被同行笑", "stage2.t24.q13": "一年後還在原地", "stage2.t21.q30": "怎麼讓客人先試再買", "stage2.t24.q10": ["o0", "o1"] });
+      expect(e.value("stage2.t25.fear")).toBe("怕被同行笑");
+      expect(e.value("stage2.t25.q31")).toBe("一年後還在原地");
+      expect(e.value("stage2.app.q0")).toBe("怎麼讓客人先試再買");
+      expect(e.value("stage2.t25.q8")).not.toBe("");
+      // the pattern sentence follows the carried fear, and editing it writes back over the carried default
+      expect(e.value("stage2.t25.q9")).toBe(""); // 'do' is still empty → incomplete
+      const st = editDerived({ answers: {}, edited: [] }, "stage2.t25.q9", "你不用【一個人扛】，我會【陪你做】。", spec);
+      expect(createEngine(spec, st, ext).value("stage2.t25.fear")).toBe("一個人扛");
+    });
+    it("a carried value is not mirrored back as a typed legacy answer", async () => {
+      const { serializeState, loadState, carriedFlag } = await import("./alias");
+      const e = eng();
+      const out = serializeState(spec, { answers: {}, edited: [] }, e.value, {}, "stage-02-2-1");
+      const all = Object.assign({}, ...Object.values(out));
+      expect(all["stage-02-2-1-answer-1"]).toBe(ext["ext.s1.quote"]);
+      expect(all[carriedFlag("stage2.t21.q1")]).toBe(true);
+      expect(loadState(spec, all).state.answers["stage2.t21.q1"]).toBeUndefined();
+      const typed = serializeState(spec, { answers: { "stage2.t21.q1": "mine" }, edited: [] }, eng({ "stage2.t21.q1": "mine" }).value, {}, "stage-02-2-1");
+      const allTyped = Object.assign({}, ...Object.values(typed));
+      expect(allTyped[carriedFlag("stage2.t21.q1")]).toBe(false);
+      expect(loadState(spec, allTyped).state.answers["stage2.t21.q1"]).toBe("mine");
+    });
+  });
 });
