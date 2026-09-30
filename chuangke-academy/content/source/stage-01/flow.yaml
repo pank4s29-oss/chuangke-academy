@@ -31,17 +31,25 @@ questions:
   stage1.t1.a.identity:
     kind: text
     label: "寫出被服務的身分（一個名詞就好）"
+    meaning: "把對象寫成一個清楚的身分，而不是模糊的『所有人』。"
+    why: "這個身分會和上一題的狀態自動組成第一句定位句，也會帶入後面的廣告受眾。"
+    answerExample: "剛開店的老闆、想轉職的人、國中生家長"
     legacyKeys: [stage-01-1-answer-2]
     sourceRef: {file: 作業, heading: "1-A　我服務誰"}
   stage1.t1.a.state:
     kind: text
     label: "題目 1 的狀態"
     hint: "用一句話寫出他現在的狀態（步驟 1 勾的那一格）"
+    meaning: "把你剛剛勾選的階段，改寫成這個人正在面對的具體狀態。"
+    why: "系統會把這格和『被服務的身分』自動帶入第一句，避免你重複抄寫或漏掉前面的判斷。"
+    answerExample: "上過課但還是接不到客人"
     origin: authored
     sourceRef: {file: 作業, heading: "1-A　我服務誰"}
   stage1.t1.a.sentence:
     kind: text
     label: "把上面兩格套進句子"
+    meaning: "確認前面兩個答案放進完整句子後，聽起來像不像你真的要服務的人。"
+    why: "這是任務 1 的第一句，後面會和問題句、差異化句一起組成你的定位藍圖。"
     derived: stage1.t1.a.sentence_auto
     legacyKeys: [stage-01-1-answer-3]
     sourceRef: {file: 作業, heading: "1-A　我服務誰"}
@@ -100,6 +108,8 @@ questions:
     kind: textarea
     label: "把三格串起來"
     hint: "句型：①＋②＋③，中間加「，」或「但」。"
+    meaning: "把『做過什麼、投入多少、結果如何』串成客人會說出口的真實抱怨。"
+    why: "這段會保留客人的問題脈絡，讓下一句的『從哪裡變成什麼』不是空泛口號。"
     derived: stage1.t1.b.quote_auto
     legacyKeys: [stage-01-1-answer-10]
     sourceRef: {file: 作業, heading: "1-B　我解決什麼問題"}

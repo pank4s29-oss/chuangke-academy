@@ -33,6 +33,12 @@ export const Question = z.object({
   kind: QuestionKind,
   label: z.string().min(1),
   hint: z.string().optional(),
+  /** Learner-facing explanation shown beside the field in guided mode. */
+  meaning: z.string().optional(),
+  /** Why this answer matters in the finished exercise. */
+  why: z.string().optional(),
+  /** A short example shown as a writing cue, not as a default answer. */
+  answerExample: z.string().optional(),
   task: z.string().optional(),
   options: z.array(Option).optional(),
   max: z.number().int().positive().optional(),

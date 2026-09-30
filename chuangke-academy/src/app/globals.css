@@ -117,6 +117,17 @@ button { cursor: pointer; }
 .flow-eyebrow { font-size: .8rem; letter-spacing: .08em; color: var(--pencil); }
 .flow-title { font-family: var(--serif); font-size: 1.55rem; line-height: 1.4; font-weight: 700; margin: .1rem 0 0; }
 .flow-label { font-weight: 700; margin-bottom: .2rem; } .flow-hint { color: var(--pencil); font-size: .85rem; }
+.flow-guide { margin: .55rem 0 .7rem; padding: .7rem .8rem; border: 1px solid color-mix(in srgb, var(--navy) 22%, var(--rule)); border-radius: .65rem; background: color-mix(in srgb, var(--navy) 5%, var(--sheet)); color: var(--ink); font-size: .86rem; line-height: 1.6; }
+.flow-guide-heading { display: flex; align-items: center; gap: .4rem; color: var(--navy); margin-bottom: .35rem; }
+.flow-guide-icon { display: inline-grid; place-items: center; width: 1.2rem; height: 1.2rem; border-radius: 50%; background: var(--navy); color: var(--sheet); font-size: .75rem; font-weight: 800; }
+.flow-guide-row { display: grid; grid-template-columns: 5.3rem 1fr; gap: .55rem; margin-top: .22rem; }
+.flow-guide-key { color: var(--pencil); font-size: .78rem; font-weight: 700; white-space: nowrap; }
+.flow-guide-example { margin-top: .45rem; padding-top: .45rem; border-top: 1px dashed var(--rule); color: var(--pencil); }
+.flow-guide-example span { color: var(--ink); font-weight: 700; margin-right: .3rem; }
+.flow-guide-impact { display: flex; gap: .55rem; align-items: baseline; margin-top: .45rem; padding-top: .45rem; border-top: 1px dashed var(--rule); color: var(--ok); }
+.flow-compose-status { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .55rem; margin: .45rem 0 .35rem; color: var(--pencil); font-size: .82rem; }
+.flow-compose-status strong { color: var(--navy); }
+.flow-compose-dot { display: inline-grid; place-items: center; width: 1.35rem; height: 1.35rem; border-radius: 50%; background: var(--hl); color: var(--ink); font-weight: 800; }
 .flow-md { overflow-wrap: anywhere; } .flow-md p { margin: .5rem 0; } .flow-md ul, .flow-md ol { padding-left: 1.3rem; margin: .5rem 0; }
 .flow-md table, .flow-table { border-collapse: collapse; width: 100%; font-size: .92rem; } .flow-md th, .flow-md td, .flow-table th, .flow-table td { border: 1px solid var(--rule); padding: .4rem .55rem; text-align: left; vertical-align: top; }
 .flow-md h2 { font-family: var(--serif); font-size: 1.25rem; margin: 1.4rem 0 .4rem; } .flow-md h3 { font-size: 1.05rem; margin: 1.1rem 0 .3rem; }
@@ -155,6 +166,7 @@ button { cursor: pointer; }
 .flow-bp-actions { display: flex; gap: .6rem; flex-wrap: wrap; margin: .8rem 0; }
 @media (max-width: 760px) {
   .flow-sheet { padding: 1rem .9rem 1.3rem; } .flow-title { font-size: 1.3rem; }
+  .flow-guide-row { grid-template-columns: 1fr; gap: .05rem; } .flow-guide-key { display: block; }
   .flow-table thead { display: none; } .flow-table tr { display: block; border: 1px solid var(--rule); border-radius: .5rem; margin-bottom: .6rem; } .flow-table th[scope="row"], .flow-table td { display: block; border: 0; }
   .flow-table td[data-label]::before { content: attr(data-label); display: block; font-size: .75rem; color: var(--pencil); }
 }

@@ -8,6 +8,7 @@ import { cellKey, tableRowCount } from "@/lib/flow/schema";
 import type { BlockT, FlowSpec } from "@/lib/flow/schema";
 import { toggleMulti } from "@/lib/flow/state";
 import type { AnswerValue, FlowState } from "@/lib/flow/types";
+import { getQuestionGuidance } from "@/lib/flow/guidance";
 import BlueprintPage from "./BlueprintPage";
 
 export type Ctx = {
@@ -23,6 +24,19 @@ function Field({ label, hint, children }: { label?: string; hint?: string; child
   return <div className="flow-field">{label && <div className="flow-label">{label}</div>}{hint && <div className="flow-hint">{hint}</div>}{children}</div>;
 }
 
+function QuestionGuide({ c, q }: { c: Ctx; q: string }) {
+  const def = c.spec.questions[q];
+  if (!def) return null;
+  const g = getQuestionGuidance(c.spec, q, c.eng);
+  return <aside className="flow-guide" aria-label={`${def.label}的作答引導`}>
+    <div className="flow-guide-heading"><span className="flow-guide-icon" aria-hidden="true">?</span><strong>先理解，再作答</strong></div>
+    <div className="flow-guide-row"><span className="flow-guide-key">這題在問什麼</span><span>{g.meaning}</span></div>
+    <div className="flow-guide-row"><span className="flow-guide-key">為什麼要填</span><span>{g.why}</span></div>
+    {def.answerExample && <div className="flow-guide-example"><span>可以這樣想：</span>{def.answerExample}</div>}
+    {g.downstream.length > 0 && <div className="flow-guide-impact"><span className="flow-guide-key">會自動帶入</span><span>{g.downstream.join("、")}</span></div>}
+  </aside>;
+}
+
 function Choice({ c, q, compact }: { c: Ctx; q: string; compact?: boolean }) {
   const def = c.spec.questions[q];
   const multi = def.kind === "multi";
@@ -35,6 +49,7 @@ function Choice({ c, q, compact }: { c: Ctx; q: string; compact?: boolean }) {
     <div className="flow-field">
       {!compact && <div className="flow-label">{def.label}</div>}
       {!compact && multi && def.max && <div className="flow-hint">最多選 {def.max} 個（已選 {cur.length}）</div>}
+      {!compact && <QuestionGuide c={c} q={q} />}
       <div className="flow-opts" role={multi ? "group" : "radiogroup"} aria-label={def.label}>
         {def.options?.map((o) => {
           const on = cur.includes(o.id);
@@ -62,6 +77,7 @@ function TextInput({ c, b }: { c: Ctx; b: Extract<BlockT, { type: "text" | "numb
   const dateDefault = b.type === "date" && b.defaultFrom ? c.eng.values[b.defaultFrom]?.text : "";
   return (
     <Field label={def.label} hint={def.hint}>
+      <QuestionGuide c={c} q={b.q} />
       {b.type === "textarea"
         ? <textarea className="flow-input" rows={3} placeholder={ph} value={v} onChange={(e) => c.set(b.q, e.target.value)} />
         : <div className="flow-inline">
@@ -84,11 +100,13 @@ function Sentence({ c, b }: { c: Ctx; b: Extract<BlockT, { type: "sentence" }> }
   const v = str(c.eng.value(b.q));
   return (
     <Field label={b.title ?? def.label} hint={def.hint}>
+      <QuestionGuide c={c} q={b.q} />
+      <div className="flow-compose-status"><span className="flow-compose-dot" aria-hidden="true">{edited ? "✎" : "↗"}</span><strong>{edited ? "這句已由你手動調整" : "這句會跟著上面的答案自動組合"}</strong>{!edited && derived?.complete && <span>前面答案已全部帶入</span>}</div>
       {derived?.parts && !edited && (
         <p className="flow-sentence" aria-live="polite">{derived.parts.map((p, i) => <span key={i} className={p.kind === "filled" ? "flow-mark" : p.kind === "blank" ? "flow-blank" : undefined}>{p.text}</span>)}</p>
       )}
       <textarea className="flow-input" rows={b.multiline ? 3 : 2} aria-label={`${b.title ?? def.label}（可修改）`} placeholder={derived?.parts ? "上面是自動組好的句子，可以直接在這裡修改" : undefined} value={edited ? str(c.st.answers[b.q] ?? "") : v} onChange={(e) => c.edit(b.q, e.target.value)} />
-      {edited && <button type="button" className="flow-link" onClick={() => c.regen(b.q)}>照選項重新組合</button>}
+      {edited && <button type="button" className="flow-link" onClick={() => c.regen(b.q)}>↻ 重新套用前面答案</button>}
     </Field>
   );
 }
@@ -144,7 +162,7 @@ export function BlockView({ b, c, index }: { b: BlockT; c: Ctx; index: number })
     case "sentence": return <Sentence c={c} b={b} />;
     case "readout": { const d = c.eng.values[b.derived]; return <Field label={b.title}><div className="flow-readout">{d?.parts ? d.parts.map((p, i) => <span key={i} className={p.kind === "filled" ? "flow-mark" : p.kind === "blank" ? "flow-blank" : undefined}>{p.text}</span>) : d?.text || "（還沒有內容）"}</div></Field>; }
     case "check": case "tip": { const d = c.eng.values[b.derived]; return <Tone text={d?.text ?? ""} tone={b.type === "tip" ? "neutral" : d?.tone} />; }
-    case "likert": return <div className="flow-field">{b.title && <div className="flow-label">{b.title}</div>}{b.items.map((q) => <div key={q} className="flow-likert"><div className="flow-likert-q">{c.spec.questions[q].label}{c.spec.questions[q].hint && <span className="flow-hint">　{c.spec.questions[q].hint}</span>}</div><Choice c={c} q={q} compact /></div>)}</div>;
+    case "likert": return <div className="flow-field">{b.title && <div className="flow-label">{b.title}</div>}{b.items.map((q) => <div key={q} className="flow-likert"><div className="flow-likert-q">{c.spec.questions[q].label}{c.spec.questions[q].hint && <span className="flow-hint">　{c.spec.questions[q].hint}</span>}</div><QuestionGuide c={c} q={q} /><Choice c={c} q={q} compact /></div>)}</div>;
     case "table": case "tableDynamic": return <Table c={c} b={b} />;
     case "score": { const v = c.eng.values[b.value]; return <div className="flow-score"><div className="flow-score-n">{v?.complete ? v.number : "—"}<small> / {b.total}</small></div><div><strong>{c.eng.values[b.label]?.text}</strong><div>{c.eng.values[b.detail]?.text}</div></div></div>; }
     case "schedule": {
