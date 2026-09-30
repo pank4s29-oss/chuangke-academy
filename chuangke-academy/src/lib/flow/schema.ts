@@ -46,6 +46,14 @@ export const Question = z.object({
   placeholder: z.string().optional(),
   /** Derived id that supplies the automatic value. The stored answer only exists once the learner edits it. */
   derived: z.string().optional(),
+  /**
+   * Carry-over default (前後呼應). A derived id, another question key or an `ext.*` key whose value pre-fills this
+   * question while the learner has not typed anything. Typing decouples the field; "重新帶入" re-attaches it.
+   * For single-choice questions the source must be a derived value whose text is an option id.
+   */
+  defaultFrom: z.string().optional(),
+  /** Learner-facing name of where a carried-over default comes from, e.g. 「階段一 1-A 的句子」. */
+  defaultNote: z.string().optional(),
   /** Derived-only value that is never edited by the learner (still mirrored to legacy keys). */
   readonly: z.boolean().optional(),
   legacyKeys: z.array(z.string()).default([]),
@@ -203,6 +211,8 @@ export const FlowFile = z.object({
   questions: z.record(Question).default({}),
   tables: z.record(TableDef).default({}),
   derived: z.record(Derived).default({}),
+  /** Answers of another stage this stage reads (前後呼應 across stages). Ids must start with "ext.". */
+  externals: z.record(z.object({ stage: z.string().regex(/^stage-\d+$/), key: z.string().min(1), label: z.string().optional() })).default({}),
   blueprint: Blueprint,
   dropped: z.array(z.object({ legacyKey: z.string(), reason: z.string().min(1) })).default([]),
 });
