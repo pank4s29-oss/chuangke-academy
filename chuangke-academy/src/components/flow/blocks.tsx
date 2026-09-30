@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { reversibleKeys } from "@/lib/flow/derive";
 import type { Engine } from "@/lib/flow/derive";
 import { cellKey, tableRowCount } from "@/lib/flow/schema";
 import type { BlockT, FlowSpec } from "@/lib/flow/schema";
@@ -98,14 +99,17 @@ function Sentence({ c, b }: { c: Ctx; b: Extract<BlockT, { type: "sentence" }> }
   const edited = c.st.edited.includes(b.q);
   const derived = def.derived ? c.eng.values[def.derived] : undefined;
   const v = str(c.eng.value(b.q));
+  const twoWay = reversibleKeys(c.spec, b.q) !== null;
+  // Unedited + incomplete: show the sentence skeleton (with blanks) so the learner can also fill it in from here.
+  const shown = edited ? str(c.st.answers[b.q] ?? "") : twoWay && derived?.parts ? derived.text : v;
   return (
     <Field label={b.title ?? def.label} hint={def.hint}>
       <QuestionGuide c={c} q={b.q} />
-      <div className="flow-compose-status"><span className="flow-compose-dot" aria-hidden="true">{edited ? "✎" : "↗"}</span><strong>{edited ? "這句已由你手動調整" : "這句會跟著上面的答案自動組合"}</strong>{!edited && derived?.complete && <span>前面答案已全部帶入</span>}</div>
+      <div className="flow-compose-status"><span className="flow-compose-dot" aria-hidden="true">{edited ? "✎" : "↗"}</span><strong>{edited ? "這句已由你手動調整" : twoWay ? "這句和上面的答案雙向同步：改哪一邊，另一邊都會跟著變" : "這句會跟著上面的答案自動組合"}</strong>{!edited && derived?.complete && <span>前面答案已全部帶入</span>}</div>
       {derived?.parts && !edited && (
         <p className="flow-sentence" aria-live="polite">{derived.parts.map((p, i) => <span key={i} className={p.kind === "filled" ? "flow-mark" : p.kind === "blank" ? "flow-blank" : undefined}>{p.text}</span>)}</p>
       )}
-      <textarea className="flow-input" rows={b.multiline ? 3 : 2} aria-label={`${b.title ?? def.label}（可修改）`} placeholder={derived?.parts ? "上面是自動組好的句子，可以直接在這裡修改" : undefined} value={edited ? str(c.st.answers[b.q] ?? "") : v} onChange={(e) => c.edit(b.q, e.target.value)} />
+      <textarea className="flow-input" rows={b.multiline ? 3 : 2} aria-label={`${b.title ?? def.label}（可修改）`} placeholder={derived?.parts ? "上面是自動組好的句子，可以直接在這裡修改" : undefined} value={shown} onChange={(e) => c.edit(b.q, e.target.value)} />
       {edited && <button type="button" className="flow-link" onClick={() => c.regen(b.q)}>↻ 重新套用前面答案</button>}
     </Field>
   );
