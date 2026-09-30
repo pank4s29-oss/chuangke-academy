@@ -18,6 +18,7 @@ import { buildRecallAnswers, type SavedAnswersByStage } from "@/lib/content/reca
 import { applyQuestionOverrides, type QuestionOverride } from "@/lib/content/overrides";
 import { buildRecallConfigMap, applyRecallConfigAnswers, type RecallSetting, type RecallTargetRow } from "@/lib/content/recallSettings";
 import { composeLegacyAnswers } from "@/lib/content/compositions";
+import { hasEmptySlot } from "@/lib/content/fieldState";
 
 type Props = { stage: Stage; courseKey: string; tasks: TaskWithFields[]; referenceTasks?: TaskWithFields[]; recallSettings?: RecallSetting[]; recallTargets?: RecallTargetRow[]; workspaceId?: string; nextStageKey?: string };
 type Tab = "lecture" | "assignment" | "blueprint";
@@ -28,7 +29,7 @@ const storageKey = (stageKey: string, workspaceId?: string) => `chuangke-draft-$
 
 function fieldIsComplete(field: AssignmentField, value: Answers[string]) {
   if (field.type === "checkboxes") return Array.isArray(value) ? value.length > 0 : Boolean(value);
-  return String(value ?? "").trim().length > 0;
+  return String(value ?? "").trim().length > 0 && !hasEmptySlot(value);
 }
 
 const fieldIsActive = isFieldActive;
