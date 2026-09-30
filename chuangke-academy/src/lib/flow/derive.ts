@@ -22,6 +22,61 @@ export function derivedRefs(d: Derived): string[] {
   }
 }
 
+const escapeRe = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * Two-way sentences: can this auto-composed sentence be split back into the answers it was built from?
+ * Only plain `template` sentences whose slots are ALL free-text questions (not choices, not derived,
+ * not read-only), each used once and separated by literal text, are reversible.
+ */
+export function reversibleKeys(spec: FlowSpec, sentenceKey: string): string[] | null {
+  const q = spec.questions[sentenceKey];
+  const d = q?.derived ? spec.derived[q.derived] : undefined;
+  if (!d || d.op !== "template") return null;
+  const matches = [...d.template.matchAll(TEMPLATE_KEY_RE)];
+  if (matches.length === 0) return null;
+  const keys = matches.map((m) => m[1]);
+  if (new Set(keys).size !== keys.length) return null;
+  for (const k of keys) {
+    const sq = spec.questions[k];
+    if (!sq || (sq.kind !== "text" && sq.kind !== "textarea") || sq.derived || sq.readonly) return null;
+  }
+  // Two slots with nothing between them cannot be told apart when parsing.
+  for (let i = 1; i < matches.length; i++) {
+    const gap = d.template.slice((matches[i - 1].index ?? 0) + matches[i - 1][0].length, matches[i].index ?? 0);
+    if (gap === "") return null;
+  }
+  return keys;
+}
+
+/**
+ * Parse an edited sentence back into its slot answers (reverse of the `template` derivation).
+ * Returns null when the text no longer follows the sentence pattern — the caller then treats it as
+ * a free manual edit instead. Blank markers and surrounding spaces are dropped from captured values.
+ */
+export function reverseTemplate(spec: FlowSpec, sentenceKey: string, text: string): Record<string, string> | null {
+  const keys = reversibleKeys(spec, sentenceKey);
+  const d = spec.questions[sentenceKey]?.derived ? spec.derived[spec.questions[sentenceKey].derived!] : undefined;
+  if (!keys || !d || d.op !== "template") return null;
+  const literals: string[] = [];
+  let last = 0;
+  for (const m of d.template.matchAll(TEMPLATE_KEY_RE)) { literals.push(d.template.slice(last, m.index ?? 0)); last = (m.index ?? 0) + m[0].length; }
+  literals.push(d.template.slice(last));
+  const build = (dropTail: boolean) => {
+    const lits = dropTail ? [...literals.slice(0, -1), literals[literals.length - 1].replace(/[。.！!？?]$/, "")] : literals;
+    return new RegExp("^" + lits.map((l, i) => escapeRe(l) + (i < keys.length ? "([\\s\\S]*?)" : "")).join("") + "$");
+  };
+  const input = text.trim();
+  let m = build(false).exec(input);
+  // Forgiving about the closing 。 only.
+  const tail = literals[literals.length - 1];
+  if (!m && /[。.！!？?]$/.test(tail)) m = build(true).exec(input);
+  if (!m) return null;
+  const out: Record<string, string> = {};
+  keys.forEach((k, i) => { out[k] = (m![i + 1] ?? "").split(d.blank).join("").trim(); });
+  return out;
+}
+
 export function condRefs(c: Cond): string[] { return [...(c.input ? [c.input] : []), ...(c.inputs ?? [])]; }
 
 const isEmpty = (v: AnswerValue | undefined) => v === undefined || (Array.isArray(v) ? v.length === 0 : v.trim() === "");
