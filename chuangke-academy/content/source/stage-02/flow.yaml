@@ -174,7 +174,12 @@ pages:
       - type: text
         q: stage2.t21.q38
       - type: text
+        q: stage2.t21.only_who
+      - type: text
+        q: stage2.t21.only_what
+      - type: sentence
         q: stage2.t21.q39
+        title: 我的篩選型空白句
       - type: choice
         q: stage2.t21.q40
         columns: 1
@@ -268,7 +273,16 @@ pages:
         text: 一頁完成一個小步驟。你可以先填一部分，答案會保留在工作區，之後再回來補。
         origin: authored
       - type: text
+        q: stage2.t22.moment_time
+      - type: text
+        q: stage2.t22.moment_doing
+      - type: text
+        q: stage2.t22.moment_saw
+      - type: text
+        q: stage2.t22.moment_thought
+      - type: sentence
         q: stage2.t22.q25
+        title: 他的那個時刻
       - type: text
         q: stage2.t22.q26
   p.t22.22c:
@@ -609,7 +623,12 @@ pages:
       - type: text
         q: stage2.t25.q8
       - type: text
+        q: stage2.t25.fear
+      - type: text
+        q: stage2.t25.do
+      - type: sentence
         q: stage2.t25.q9
+        title: 我最有力的那一句
       - type: choice
         q: stage2.t25.q10
         columns: 1
@@ -1206,11 +1225,33 @@ questions:
     sourceRef:
       file: 作業
       heading: 2.1-C
+  stage2.t21.only_who:
+    kind: text
+    label: 1.4-B 的相反
+    hint: 翻回 1.4-B 你寫的「我不收誰」，把它反過來
+    task: stage-02-2-1
+    optional: false
+    legacyKeys: []
+    origin: authored
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+  stage2.t21.only_what:
+    kind: text
+    label: 你這一行在做的事
+    task: stage-02-2-1
+    optional: false
+    legacyKeys: []
+    origin: authored
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
   stage2.t21.q39:
     kind: text
     label: 句型： 我只做1.4-B 的相反的你這一行在做的事
     task: stage-02-2-1
     optional: false
+    derived: stage2.t21.only_sentence_auto
     legacyKeys:
       - stage-02-2-1-answer-39
     origin: source
@@ -1632,11 +1673,52 @@ questions:
       - id: o4
         label: 其他
         other: true
+  stage2.t22.moment_time:
+    kind: text
+    label: 時間
+    task: stage-02-2-2
+    optional: false
+    legacyKeys: []
+    origin: authored
+    sourceRef:
+      file: 作業
+      heading: 2.2-B
+  stage2.t22.moment_doing:
+    kind: text
+    label: 他在做什麼
+    task: stage-02-2-2
+    optional: false
+    legacyKeys: []
+    origin: authored
+    sourceRef:
+      file: 作業
+      heading: 2.2-B
+  stage2.t22.moment_saw:
+    kind: text
+    label: 看到什麼
+    task: stage-02-2-2
+    optional: false
+    legacyKeys: []
+    origin: authored
+    sourceRef:
+      file: 作業
+      heading: 2.2-B
+  stage2.t22.moment_thought:
+    kind: text
+    label: 心裡想什麼
+    task: stage-02-2-2
+    optional: false
+    legacyKeys: []
+    origin: authored
+    sourceRef:
+      file: 作業
+      heading: 2.2-B
   stage2.t22.q25:
     kind: text
     label: 句型： 時間，他在做什麼，看到什麼，然後心裡想什麼
     task: stage-02-2-2
     optional: false
+    derived: stage2.t22.moment_sentence_auto
     legacyKeys:
       - stage-02-2-2-answer-25
     origin: source
@@ -2685,11 +2767,33 @@ questions:
     sourceRef:
       file: 作業
       heading: 2.5-B
+  stage2.t25.fear:
+    kind: text
+    label: 他害怕的那件事
+    hint: 抄 2.1-A 恐懼層那一句，或 2.2-A 第 4 格他失敗過的那件事
+    task: stage-02-2-5
+    optional: false
+    legacyKeys: []
+    origin: authored
+    sourceRef:
+      file: 作業
+      heading: 2.5-B
+  stage2.t25.do:
+    kind: text
+    label: 你要做的事
+    task: stage-02-2-5
+    optional: false
+    legacyKeys: []
+    origin: authored
+    sourceRef:
+      file: 作業
+      heading: 2.5-B
   stage2.t25.q9:
     kind: text
     label: 句型： 你不用他害怕的那件事，我會你要做的事
     task: stage-02-2-5
     optional: false
+    derived: stage2.t25.fear_sentence_auto
     legacyKeys:
       - stage-02-2-5-answer-9
     origin: source
@@ -3123,6 +3227,27 @@ questions:
       heading: stage-02-附錄
 tables: {}
 derived:
+  stage2.t21.only_sentence_auto:
+    op: template
+    template: 我只做【{{stage2.t21.only_who}}】的【{{stage2.t21.only_what}}】。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.1-C
+  stage2.t22.moment_sentence_auto:
+    op: template
+    template: "{{stage2.t22.moment_time}}，他{{stage2.t22.moment_doing}}，看到{{stage2.t22.moment_saw}}，然後{{stage2.t22.moment_thought}}。"
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.2-B
+  stage2.t25.fear_sentence_auto:
+    op: template
+    template: 你不用【{{stage2.t25.fear}}】，我會【{{stage2.t25.do}}】。
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.5-B
   stage2.t23.position_auto:
     op: template
     template: 對【{{stage2.t23.q13}}】而言，我是唯一{{stage2.t23.q10}}的定位服務，因為{{stage2.t23.q15}}。
