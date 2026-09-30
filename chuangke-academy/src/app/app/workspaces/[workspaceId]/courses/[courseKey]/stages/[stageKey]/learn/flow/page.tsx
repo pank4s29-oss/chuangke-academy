@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import FlowRunner from "@/components/flow/FlowRunner";
 import { course } from "@/lib/content/course";
 import { loadStageFlow } from "@/lib/flow/load";
+import type { FlowSpec } from "@/lib/flow/schema";
 
 type Props = { params: { workspaceId: string; courseKey: string; stageKey: string } };
 
@@ -13,6 +14,13 @@ export default function WorkspaceFlowPage({ params }: Props) {
   const base = `/app/workspaces/${params.workspaceId}/courses/${params.courseKey}/stages/${params.stageKey}`;
   const flow = loadStageFlow(params.stageKey);
   if (!flow) redirect(`${base}/learn`); // no flow.yaml → old TaskFlow
+  // Cross-stage carry-over: load the (already validated) flow of every stage this one reads answers from.
+  const externalSpecs: Record<string, FlowSpec> = {};
+  for (const e of Object.values(flow.spec.externals ?? {})) {
+    if (externalSpecs[e.stage]) continue;
+    const other = loadStageFlow(e.stage);
+    if (other) externalSpecs[e.stage] = other.spec;
+  }
   const next = course.stages[course.stages.findIndex((s) => s.key === stage.key) + 1]?.key;
-  return <FlowRunner spec={flow.spec} lectures={flow.lectures} stageKey={stage.key} courseKey={params.courseKey} workspaceId={params.workspaceId} learnHref={`${base}/learn`} nextHref={next ? `/app/workspaces/${params.workspaceId}/courses/${params.courseKey}/stages/${next}/learn` : "/app"} />;
+  return <FlowRunner spec={flow.spec} externalSpecs={externalSpecs} lectures={flow.lectures} stageKey={stage.key} courseKey={params.courseKey} workspaceId={params.workspaceId} learnHref={`${base}/learn`} nextHref={next ? `/app/workspaces/${params.workspaceId}/courses/${params.courseKey}/stages/${next}/learn` : "/app"} />;
 }
