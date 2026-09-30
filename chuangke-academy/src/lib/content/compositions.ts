@@ -24,7 +24,8 @@ function optionText(field: AssignmentField | undefined, value: AnswerValue | und
   }).filter(Boolean).join("、");
 }
 
-function put(out: Record<string, AnswerValue>, generated: string[], key: string, value: string) {
+function put(out: Record<string, AnswerValue>, generated: string[], key: string, value: string, preserveKey?: string) {
+  if (key === preserveKey) return;
   out[key] = value;
   generated.push(key);
 }
@@ -34,7 +35,7 @@ function put(out: Record<string, AnswerValue>, generated: string[], key: string,
  * The rules intentionally key off stable source field positions and sentence
  * wording, so teacher-edited prompts do not break the important Stage 1 flow.
  */
-export function composeLegacyAnswers(fields: AssignmentField[], answers: Record<string, AnswerValue>): CompositionResult {
+export function composeLegacyAnswers(fields: AssignmentField[], answers: Record<string, AnswerValue>, preserveKey?: string): CompositionResult {
   const out = { ...answers };
   const generated: string[] = [];
   const position = (field: AssignmentField) => Number(field.key.match(/-answer-(\d+)$/)?.[1] ?? Number.MAX_SAFE_INTEGER);
@@ -44,7 +45,7 @@ export function composeLegacyAnswers(fields: AssignmentField[], answers: Record<
   if (stage && identity && sentence) {
     const state = optionText(stage, answers[stage.key]);
     const person = text(answers[identity.key]);
-    put(out, generated, sentence.key, state || person ? `我服務的是【${state}】的【${person}】。` : "");
+    put(out, generated, sentence.key, state || person ? `我服務的是【${state}】的【${person}】。` : "", preserveKey);
   }
 
   // "把三格串起來" — preserve the labels selected in the three preceding
@@ -54,7 +55,7 @@ export function composeLegacyAnswers(fields: AssignmentField[], answers: Record<
     const preceding = fields.filter((field) => position(field) < position(quote) && field.type === "checkboxes").slice(-3);
     if (preceding.length === 3) {
       const parts = preceding.map((field) => optionText(field, answers[field.key])).filter(Boolean);
-      put(out, generated, quote.key, parts.length ? `${parts.join("，")}。` : "");
+      put(out, generated, quote.key, parts.length ? `${parts.join("，")}。` : "", preserveKey);
     }
   }
 
