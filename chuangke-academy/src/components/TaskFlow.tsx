@@ -17,6 +17,7 @@ import { createClient } from "@/lib/supabase/client";
 import { buildRecallAnswers, type SavedAnswersByStage } from "@/lib/content/recall";
 import { applyQuestionOverrides, type QuestionOverride } from "@/lib/content/overrides";
 import { buildRecallConfigMap, applyRecallConfigAnswers, type RecallSetting, type RecallTargetRow } from "@/lib/content/recallSettings";
+import { composeLegacyAnswers } from "@/lib/content/compositions";
 
 type Props = { stage: Stage; courseKey: string; tasks: TaskWithFields[]; referenceTasks?: TaskWithFields[]; recallSettings?: RecallSetting[]; recallTargets?: RecallTargetRow[]; workspaceId?: string; nextStageKey?: string };
 type Tab = "lecture" | "assignment" | "blueprint";
@@ -108,7 +109,7 @@ export default function TaskFlow({ stage, courseKey, tasks, referenceTasks, reca
 
   useEffect(() => {
     const saved = window.localStorage.getItem(storageKey(stage.key, workspaceId));
-    if (saved) { try { setAnswers(JSON.parse(saved) as Answers); setStatus("已載入本機草稿"); } catch { window.localStorage.removeItem(storageKey(stage.key, workspaceId)); } }
+    if (saved) { try { const raw = JSON.parse(saved) as Answers; setAnswers(composeLegacyAnswers(allFields, raw).answers as Answers); setStatus("已載入本機草稿"); } catch { window.localStorage.removeItem(storageKey(stage.key, workspaceId)); } }
     let alive = true;
     async function load() {
       const { data: auth } = await supabase.auth.getUser();
@@ -140,7 +141,7 @@ export default function TaskFlow({ stage, courseKey, tasks, referenceTasks, reca
         const configRecalled = applyRecallConfigAnswers(recallConfigMap, savedByStage, recalled.answers);
         const totalCount = recalled.count + configRecalled.count;
         if (totalCount > 0) setRecallStatus(`已自動帶入 ${totalCount} 個前置回顧答案；你仍可修改。`);
-        return configRecalled.answers;
+        return composeLegacyAnswers(allFields, configRecalled.answers).answers as Answers;
       });
       // Note: recallConfigMap here is whatever has loaded by the time this
       // runs; the effect below re-applies the same fill once recall config
@@ -150,7 +151,7 @@ export default function TaskFlow({ stage, courseKey, tasks, referenceTasks, reca
     }
     void load();
     return () => { alive = false; };
-  }, [stage.key, supabase, tasks, courseKey, workspaceId, recallConfigMap]);
+  }, [allFields, stage.key, supabase, tasks, courseKey, workspaceId, recallConfigMap]);
 
   // Re-applies the teacher's "回顧" auto-fill whenever the recall config
   // changes (e.g. a teacher just turned it on) without re-fetching answers.
@@ -173,7 +174,7 @@ export default function TaskFlow({ stage, courseKey, tasks, referenceTasks, reca
   const percent = totalFields ? Math.round((totalAnswered / totalFields) * 100) : 0;
 
   function updateAnswer(key: string, value: string | string[]) {
-    const next = { ...answers, [key]: value };
+    const next = composeLegacyAnswers(allFields, { ...answers, [key]: value }).answers as Answers;
     setAnswers(next);
     window.localStorage.setItem(storageKey(stage.key, workspaceId), JSON.stringify(next));
     if (userId && !workspaceId) void supabase.from("answers").upsert({ user_id: userId, stage_key: stage.key, question_key: key, content_version_id: null, value }, { onConflict: "user_id,stage_key,question_key" });

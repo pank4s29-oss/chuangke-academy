@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { buildStageBlueprintMarkdown, type BlueprintSection } from "./blueprint";
+import { buildStageBlueprint, buildStageBlueprintMarkdown, type BlueprintSection } from "./blueprint";
+import type { TaskWithFields } from "./taskSections";
 
 describe("buildStageBlueprintMarkdown", () => {
   const sections: BlueprintSection[] = [
@@ -44,5 +45,26 @@ describe("buildStageBlueprintMarkdown", () => {
     expect(markdown).toContain("- **待補欄位（依任務）**：");
     expect(markdown).toContain("  - 任務 1：我要找的人是");
     expect(markdown).toContain("  - 任務 2：年齡大約");
+  });
+
+  it("turns an old positional option key into the selected option label", () => {
+    const tasks: TaskWithFields[] = [{
+      key: "stage-01-1",
+      title: "任務 1",
+      lecture: "",
+      assignment: "",
+      fields: [{
+        key: "stage-01-1-answer-0",
+        prompt: "我服務誰",
+        type: "checkboxes",
+        multiple: false,
+        options: [
+          { key: "stage-01-1-option-0-0", label: "A. 還沒動作" },
+          { key: "stage-01-1-option-0-2", label: "C. 花過錢找別人解決，但沒解決" },
+        ],
+      }],
+    }];
+    const sections = buildStageBlueprint("階段一", tasks, { "stage-01-1-answer-0": "stage-01-1-option-0-2" });
+    expect(sections[0].items[0].value).toBe("C. 花過錢找別人解決，但沒解決");
   });
 });

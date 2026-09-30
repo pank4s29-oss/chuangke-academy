@@ -3,9 +3,19 @@ import type { AssignmentField, TaskWithFields } from "./taskSections";
 export type AnswerValue = string | string[] | undefined;
 export type BlueprintSection = { title: string; items: { label: string; value: string }[] };
 
-export function answerText(value: AnswerValue, labels: Record<string, string> = {}) {
-  if (Array.isArray(value)) return value.map((item) => labels[item] ?? item).join("、");
-  return String(value ?? "").trim();
+export function answerText(value: AnswerValue, labels: Record<string, string> = {}, field?: AssignmentField) {
+  const values = Array.isArray(value) ? value : value === undefined ? [] : [value];
+  return values.map((item) => {
+    const raw = String(item);
+    if (labels[raw]) return labels[raw];
+    const exact = field?.options?.find((option) => option.key === raw);
+    if (exact) return exact.label;
+    // Imported legacy drafts may store the positional option key, not the
+    // current option object key (for example ...-option-0-2).
+    const fieldNumber = field?.key.match(/-answer-(\d+)$/)?.[1];
+    const optionIndex = raw.match(new RegExp(`-option-${fieldNumber ?? "\\d+"}-(\\d+)$`))?.[1];
+    return optionIndex === undefined ? raw : field?.options?.[Number(optionIndex)]?.label ?? raw;
+  }).filter(Boolean).join("、").trim();
 }
 
 function isFieldFilled(field: AssignmentField, value: AnswerValue) {
@@ -76,7 +86,7 @@ export function buildStageBlueprint(stageTitle: string, tasks: TaskWithFields[],
   const taskSections = tasks
     .map((task) => ({
       title: task.title,
-      items: task.fields.map((field) => ({ label: field.prompt, value: answerText(answers[field.key], labels) || "尚未填寫" })),
+      items: task.fields.map((field) => ({ label: field.prompt, value: answerText(answers[field.key], labels, field) || "尚未填寫" })),
     }))
     .filter((section) => section.items.length > 0);
 
