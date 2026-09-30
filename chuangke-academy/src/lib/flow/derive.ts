@@ -114,9 +114,15 @@ export type Engine = {
   text(key: string): string;
   cond(c: Cond): boolean;
   labels(key: string): string[];
+  /** Carry-over default of a question (empty when it has none or the source is still empty). */
+  defaultOf(key: string): string;
+  /** The carried-over text that is currently shown (the learner has not typed over it), else "". */
+  carried(key: string): string;
 };
 
-export function createEngine(spec: FlowSpec, state: FlowState): Engine {
+export type Externals = Record<string, AnswerValue>;
+
+export function createEngine(spec: FlowSpec, state: FlowState, externals: Externals = {}): Engine {
   const values: Record<string, DerivedValue> = {};
   const visiting = new Set<string>();
   const editedSet = new Set(state.edited);
@@ -145,7 +151,22 @@ export function createEngine(spec: FlowSpec, state: FlowState): Engine {
     return v;
   }
 
+  const defaulting = new Set<string>();
+  function defaultOf(key: string): string {
+    const q = question(key);
+    const src = q?.defaultFrom;
+    if (!q || !src || defaulting.has(key)) return "";
+    defaulting.add(key);
+    try {
+      if (spec.derived[src]) { const d = derive(src); return d.complete ? d.text.trim() : ""; }
+      return (q.kind === "single" || q.kind === "multi") ? "" : text(src).trim();
+    } finally { defaulting.delete(key); }
+  }
+  const isStored = (key: string) => state.answers[key] !== undefined;
+  const carried = (key: string) => (isStored(key) ? "" : defaultOf(key));
+
   function value(key: string): AnswerValue {
+    if (spec.externals?.[key]) return externals[key] ?? "";
     if (spec.derived[key]) { const d = derive(key); return d.list && !d.text ? d.list : d.text; }
     const q = question(key);
     if (q?.derived && (q.readonly || !editedSet.has(key))) {
@@ -153,13 +174,18 @@ export function createEngine(spec: FlowSpec, state: FlowState): Engine {
       return d.complete ? d.text : "";
     }
     const stored = state.answers[key];
-    if (stored === undefined) return q?.kind === "multi" ? [] : "";
+    if (stored === undefined) {
+      const dv = defaultOf(key);
+      if (dv) return dv;
+      return q?.kind === "multi" ? [] : "";
+    }
     return stored;
   }
 
   function labels(key: string): string[] {
     const q = question(key);
     const v = value(key);
+    if (spec.externals?.[key]) return (Array.isArray(v) ? v : v ? [v] : []).map(String).filter(Boolean);
     if (q && (q.kind === "single" || q.kind === "multi")) return (Array.isArray(v) ? v : v ? [v] : []).map((id) => optionLabel(q, id, key));
     if (Array.isArray(v)) return v.filter(Boolean);
     return String(v).trim() ? [String(v).trim()] : [];
@@ -297,5 +323,5 @@ export function createEngine(spec: FlowSpec, state: FlowState): Engine {
   }
 
   for (const id of Object.keys(spec.derived)) derive(id);
-  return { values, value, text, cond, labels };
+  return { values, value, text, cond, labels, defaultOf, carried };
 }
