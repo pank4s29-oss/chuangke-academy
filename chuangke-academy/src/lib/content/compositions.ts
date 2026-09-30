@@ -59,5 +59,21 @@ export function composeLegacyAnswers(fields: AssignmentField[], answers: Record<
     }
   }
 
+  // Sentence patterns whose slots are not separate fields in the legacy form (1-B 步驟 3, 1-C 三種句型):
+  // insert the pattern with empty 【＿＿＿】 slots so the learner fills inside the brackets. Never overwrites
+  // anything the learner typed; the completeness check treats a pattern with an empty slot as unanswered.
+  const blank = "＿＿＿＿＿＿＿＿＿＿";
+  const patterns: Array<[RegExp, string]> = [
+    [/^句型[：:]\s*我幫他解決的問題是/, `我幫他解決的問題是，從【${blank}】，變成【${blank}】。`],
+    [/^句型[：:]\s*我以前也/, `我以前也【${blank}】，後來我【${blank}】。`],
+    [/^句型[：:]\s*我有一套/, `我有一套【${blank}】，專門解決【${blank}】。`],
+    [/^句型[：:]\s*我做過/, `我做過【${blank}】，達成【${blank}】。`],
+  ];
+  for (const field of fields) {
+    if (field.type !== "text" || !/^stage-01-1-answer-\d+$/.test(field.key) || text(answers[field.key]) !== "") continue;
+    const pattern = patterns.find(([re]) => re.test(field.prompt));
+    if (pattern) put(out, generated, field.key, pattern[1], preserveKey);
+  }
+
   return { answers: out, generated };
 }
