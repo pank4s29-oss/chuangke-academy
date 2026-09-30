@@ -31,3 +31,9 @@ export function isFieldActive(field: Pick<AssignmentField, "dependsOn">, answers
   const value = answers[field.dependsOn.fieldKey];
   return Array.isArray(value) ? value.includes(field.dependsOn.optionKey) : value === field.dependsOn.optionKey;
 }
+
+/** True when a fill-in sentence still has an empty 【＿＿＿】 slot (e.g. the auto-inserted sentence pattern the
+ *  learner has not filled in yet). Such a value must not count as "answered". */
+export function hasEmptySlot(value: unknown) {
+  return typeof value === "string" && /【[＿_\s]*】/.test(value);
+}
