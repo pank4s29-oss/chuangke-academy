@@ -3,20 +3,20 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { FLOW_META_KEY, loadState, mergeRows, serializeState, type FlowMeta, type RawAnswers } from "@/lib/flow/alias";
-import { createEngine } from "@/lib/flow/derive";
+import { createEngine, type Externals } from "@/lib/flow/derive";
 import { flowPages } from "@/lib/flow/schema";
 import type { FlowSpec } from "@/lib/flow/schema";
 import { editDerived, regenerate, setAnswer } from "@/lib/flow/state";
 import type { AnswerValue, FlowState } from "@/lib/flow/types";
 import { BlockView, type Ctx } from "./blocks";
 
-type Props = { spec: FlowSpec; lectures: Record<string, string>; stageKey: string; courseKey: string; workspaceId: string; learnHref: string; nextHref: string };
+type Props = { spec: FlowSpec; externalSpecs?: Record<string, FlowSpec>; lectures: Record<string, string>; stageKey: string; courseKey: string; workspaceId: string; learnHref: string; nextHref: string };
 type Row = { task_key: string; status: string; answer_json: unknown; submitted_at?: string | null };
 type Sync = "loading" | "saved" | "saving" | "error" | "local" | "dirty";
 
 const SYNC_TEXT: Record<Sync, string> = { loading: "載入中…", saved: "已同步", saving: "儲存中…", error: "尚未同步（按「重試」）", local: "未登入：只存在這個瀏覽器", dirty: "有變更，儲存中…" };
 
-export default function FlowRunner({ spec, lectures, stageKey, courseKey, workspaceId, learnHref, nextHref }: Props) {
+export default function FlowRunner({ spec, externalSpecs = {}, lectures, stageKey, courseKey, workspaceId, learnHref, nextHref }: Props) {
   const supabase = useMemo(() => createClient(), []);
   const flowIds = Object.keys(spec.flows);
   const [flowId, setFlowId] = useState(flowIds[0]);
@@ -32,7 +32,8 @@ export default function FlowRunner({ spec, lectures, stageKey, courseKey, worksp
   const localKey = `chuangke-flow-${workspaceId}-${stageKey}`;
   const rootRef = useRef<HTMLDivElement>(null);
 
-  const eng = useMemo(() => createEngine(spec, st), [spec, st]);
+  const [externals, setExternals] = useState<Externals>({});
+  const eng = useMemo(() => createEngine(spec, st, externals), [spec, st, externals]);
   const flow = spec.flows[flowId];
   const visible = useMemo(() => flowPages(flow).filter((id) => { const p = spec.pages[id]; return p && (!p.showWhen || eng.cond(p.showWhen)); }), [flow, spec, eng]);
   const pos = Math.max(0, visible.indexOf(pageId));
@@ -59,6 +60,22 @@ export default function FlowRunner({ spec, lectures, stageKey, courseKey, worksp
         raw = { ...raw, ...mergeRows((data ?? []) as Row[]) };
         for (const [t, r] of Object.entries(rows.current)) lastSaved.current[t] = JSON.stringify(r.answer_json ?? {});
       }
+      // Cross-stage carry-over: read the other stage(s) (drafts + saved rows), evaluate their derived sentences, keep only what this stage asked for.
+      const ext: Externals = {};
+      for (const [stage, otherSpec] of Object.entries(externalSpecs)) {
+        let oraw: RawAnswers = {};
+        for (const k of [`chuangke-draft-${workspaceId}-${stage}`, `chuangke-flow-${workspaceId}-${stage}`]) {
+          try { const l = window.localStorage.getItem(k); if (l) oraw = { ...oraw, ...JSON.parse(l) }; } catch { /* ignore */ }
+        }
+        if (uid) {
+          const { data: od } = await supabase.from("submissions").select("task_key,status,answer_json,submitted_at").eq("workspace_id", workspaceId).eq("stage_key", stage);
+          oraw = { ...oraw, ...mergeRows((od ?? []) as Row[]) };
+        }
+        const oeng = createEngine(otherSpec, loadState(otherSpec, oraw).state);
+        for (const [id, e] of Object.entries(spec.externals ?? {})) if (e.stage === stage) ext[id] = oeng.value(e.key);
+      }
+      if (!alive) return;
+      setExternals(ext);
       const { state, meta } = loadState(spec, raw);
       if (!alive) return;
       setSt(state);
