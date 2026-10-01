@@ -16,15 +16,16 @@ describe("stage-02 guided flow", () => {
   it("parses the generated sidecar and validates references", () => {
     const report = validateFlow(spec, { 作業: assignment, 講義: lecture });
     expect(report.errors).toEqual([]);
-    // 155 imported answer fields + 8 slot fields that feed the three sentence patterns below.
-    expect(Object.keys(spec.questions).length).toBe(163);
+    // 154 imported answer fields (the appendix 他的那個時刻 is one field, not three) + 8 slot fields that feed the three sentence patterns below.
+    expect(Object.keys(spec.questions).length).toBe(162);
     expect(Object.keys(spec.pages).length).toBeGreaterThan(30);
   });
 
   it("keeps every imported answer field mapped to a legacy key", () => {
     const legacy = Object.values(spec.questions).flatMap((q) => q.legacyKeys);
-    expect(legacy).toHaveLength(155);
-    expect(new Set(legacy).size).toBe(155);
+    // 155 legacy fields minus stage-02-附錄-answer-4 (dropped: the appendix 他的那個時刻 is one field in the assignment)
+    expect(legacy).toHaveLength(154);
+    expect(new Set(legacy).size).toBe(154);
     expect(legacy).toContain("stage-02-2-1-answer-0");
     expect(legacy).toContain("stage-02-2-5-answer-35");
     expect(legacy).toContain("stage-02-附錄-answer-7");
@@ -114,6 +115,9 @@ describe("stage-02 guided flow", () => {
       expect(e.value("stage2.t25.fear")).toBe("怕被同行笑");
       expect(e.value("stage2.t25.q31")).toBe("一年後還在原地");
       expect(e.value("stage2.app.q0")).toBe("怎麼讓客人先試再買");
+      // appendix 大家都覺得…但我主張… follows 2.3-A
+      const hook = eng({ "stage2.t23.q7": "要先學完才能開始", "stage2.t23.q10": "邊做邊學" });
+      expect(hook.value("stage2.app.q3")).toBe("大家都覺得要先學完才能開始，但我主張邊做邊學");
       expect(e.value("stage2.t25.q8")).not.toBe("");
       // the pattern sentence follows the carried fear, and editing it writes back over the carried default
       expect(e.value("stage2.t25.q9")).toBe(""); // 'do' is still empty → incomplete
