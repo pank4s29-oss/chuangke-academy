@@ -737,8 +737,6 @@ pages:
       - type: text
         q: stage2.app.q3
       - type: text
-        q: stage2.app.q4
-      - type: text
         q: stage2.app.q5
       - type: text
         q: stage2.app.q6
@@ -3190,7 +3188,7 @@ questions:
     kind: text
     defaultFrom: stage2.app.moment
     defaultNote: "2.2-B"
-    label: 他的那個時刻（抄 2.2-B）（第 1 小題）
+    label: 他的那個時刻（抄 2.2-B）
     task: stage-02-附錄
     optional: false
     legacyKeys:
@@ -3201,22 +3199,13 @@ questions:
       heading: stage-02-附錄
   stage2.app.q3:
     kind: text
-    label: 他的那個時刻（抄 2.2-B）（第 2 小題）
+    defaultFrom: stage2.t23.hook_auto
+    defaultNote: "2.3-A"
+    label: 大家都覺得＿＿，但我主張＿＿（抄 2.3-A）
     task: stage-02-附錄
     optional: false
     legacyKeys:
       - stage-02-附錄-answer-3
-    origin: source
-    sourceRef:
-      file: 作業
-      heading: stage-02-附錄
-  stage2.app.q4:
-    kind: text
-    label: 他的那個時刻（抄 2.2-B）（第 3 小題）
-    task: stage-02-附錄
-    optional: false
-    legacyKeys:
-      - stage-02-附錄-answer-4
     origin: source
     sourceRef:
       file: 作業
@@ -3327,6 +3316,14 @@ derived:
     sourceRef:
       file: 作業
       heading: 2.5-B
+  stage2.t23.hook_auto:
+    op: template
+    template: 大家都覺得{{stage2.t23.q7}}，但我主張{{stage2.t23.q10}}
+    blank: ＿＿
+    origin: source-derived
+    sourceRef:
+      file: 作業
+      heading: 2.3-A
   stage2.t23.position_auto:
     op: template
     template: 對【{{stage2.t23.q13}}】而言，我是唯一{{stage2.t23.q10}}的定位服務，因為{{stage2.t23.q15}}。
@@ -3765,4 +3762,6 @@ blueprint:
           value: stage2.app.offer
           fallback: 暫定
           multiline: true
-dropped: []
+dropped:
+  - legacyKey: stage-02-附錄-answer-4
+    reason: 作業附錄只有「他的那個時刻」一格；舊解析器把它多切成三小題（其中第 2、3 小題其實是下一項「大家都覺得…但我主張…」的標題列與作答線），已合併為 stage2.app.q3
